@@ -1,0 +1,407 @@
+/* BOILERPLATE */
+body {
+  background-color: Canvas;
+  color: CanvasText;
+  color-scheme: light dark;
+}
+
+::-moz-selection {
+  background: var(--mdBlue);
+  color: var(--lightText);
+}
+
+::selection {
+  background: var(--mdBlue);
+  color: var(--lightText);
+}
+
+/* Variables */
+:root {
+  --gray: #ccc;
+  --goldBright: #edd78e;
+  --gold: #bfa85e;
+  --goldDark: #9b843a;
+  --mdRed: #ff8383;
+  --mdBlue: #4062a3;
+  --blue: #06c;
+  --purple: #551a8b;
+  --lightText: #fafafa;
+  --darkBg: #1e1e1e;
+  --darkBorder: #353535;
+  --rounded: 5px;
+  --round: 30px;
+}
+
+/* INPUTS */
+input[type=checkbox],
+input[type=text]:not(#searchBar),
+input[type=email],
+input[type=number],
+input[type=password],
+input[type=date],
+input[type=datetime-local],
+textarea,
+select,
+#SortDiv select {
+  padding: 6px !important;
+}
+
+input[type=checkbox] {
+  border: 2px solid var(--gold) !important;
+  position: relative;
+  top: 2px;
+}
+
+#pageContent a {
+  color: var(--blue);
+}
+
+input[type=text]:not(#searchBar),
+input[type=email],
+input[type=number],
+input[type=password],
+input[type=date],
+input[type=datetime-local],
+textarea,
+select,
+#SortDiv select {
+  border: 2px solid var(--gray);
+}
+
+#calculateButton,
+#armyListCopy,
+#armyListX,
+#Reset button,
+a#CreateLink,
+#add-HeroscapeMap-button,
+input[type=submit],
+button[type=submit],
+.edit-button,
+.create-button,
+.buttonA,
+.dbObjEditLinkDiv button {
+  background-color: var(--mdBlue) !important;
+  border-color: var(--mdBlue);
+  color: var(--lightText);
+}
+#calculateButton:hover,
+#armyListCopy:hover,
+#armyListX:hover,
+#Reset button:hover,
+a#CreateLink:hover,
+#add-HeroscapeMap-button:hover,
+input[type=submit]:hover,
+button[type=submit]:hover,
+.edit-button:hover,
+.create-button:hover,
+.dbObjEditLinkDiv button:hover {
+  background-color: var(--gold);
+  border-color: var(--gold);
+  color: var(--darkBg);
+}
+#calculateButton:visited,
+#armyListCopy:visited,
+#armyListX:visited,
+#Reset button:visited,
+a#CreateLink:visited,
+#add-HeroscapeMap-button:visited,
+input[type=submit]:visited,
+button[type=submit]:visited,
+.edit-button:visited,
+.create-button:visited,
+.dbObjEditLinkDiv button:visited {
+  color: var(--lightText);
+}
+
+.edit-button {
+  border-radius: var(--rounded);
+  margin-bottom: 3px;
+  padding: 5px 10px;
+}
+
+.tournamentGroup .tournament:not(:last-child), .convention:not(:last-child), .conventionSeries:not(:last-child) { /* Chris Changed */
+  border-bottom: 1px solid var(--gray);
+  padding: 5px 3px 15px !important;
+}
+
+/*.convention { /* Chris Removed */
+  /*border: 1px solid var(--gray) !important;
+}*/
+
+@media (prefers-color-scheme: dark) {
+  input[type=text]:not(#searchBar),
+  input[type=email],
+  input[type=number],
+  input[type=password],
+  input[type=date],
+  input[type=datetime-local],
+  textarea,
+  select,
+  #SortDiv select {
+    border: 1px solid var(--lightText) !important;
+  }
+  #pageContent a {
+    color: var(--goldBright);
+  }
+  #pageContent a:visited {
+    color: var(--lightText);
+    text-decoration: underline;
+  }
+  #unitTable .unitDiv.activeUnit {
+    background-color: var(--dungeon) !important;
+  }
+  #Maps a {
+    color: var(--goldBright);
+  }
+  .navBar a:hover:not(.noHoverChange) {
+    background-color: var(--mdBlue);
+    color: var(--lightText);
+    transition: background 0.3s;
+  }
+  button,
+  #calculateButton,
+  #armyListCopy,
+  #armyListX,
+  #Reset button,
+  a#CreateLink,
+  #add-HeroscapeMap-button,
+  input[type=submit],
+  button[type=submit],
+  .edit-button,
+  .create-button {
+    background-color: var(--mdBlue);
+    border-color: var(--mdBlue);
+    font-size: 15px;
+    padding: 6px 12px;
+    color: var(--lightText);
+    cursor: pointer;
+    transition: 0.05s;
+  }
+  button:hover,
+  #calculateButton:hover,
+  #armyListCopy:hover,
+  #armyListX:hover,
+  #Reset button:hover,
+  a#CreateLink:hover,
+  #add-HeroscapeMap-button:hover,
+  input[type=submit]:hover,
+  button[type=submit]:hover,
+  .edit-button:hover,
+  .create-button:hover {
+    background-color: var(--gold) !important;
+    border-color: var(--gold) !important;
+    color: var(--darkBg) !important;
+  }
+  .create-button {
+    padding: 10px 12px 6px 6px !important;
+  }
+  .rightArrow:hover,
+  .leftArrow:hover {
+    cursor: pointer;
+  }
+  .tournamentGroup .tournament:not(:last-child), .convention:not(:last-child), .conventionSeries:not(:last-child) { /* Chris Changed */
+    border-bottom: 1px solid var(--lightText) !important;
+    padding: 5px 3px 15px;
+  }
+  .maxElem,
+  .tournamentTag {
+    color: var(--goldBright) !important;
+  }
+  .tagInfo {
+    background-color: var(--goldBright) !important;
+    color: black !important;
+  }
+  .tagHoverDescription {
+    padding: 5px 10px;
+    background-color: var(--goldBright) !important;
+    border-color: var(--goldBright) !important;
+  }
+  #ArmyBuilderLink a {
+    color: var(--goldBright) !important;
+  }
+  .bracketGame {
+    border-color: var(--gold) !important;
+  }
+  .mapImageDivFinished {
+    background-color: var(--darkBg) !important;
+    border-radius: var(--rounded) !important;
+  }
+  .mapImageDivFinished img {
+    margin: 10px 0 !important;
+  }
+  #matchupsDiv table,
+  #matchupsDiv th,
+  #matchupsDiv td {
+    border-color: var(--goldBright) !important;
+  }
+  #matchupsDiv .mapLinkFinished {
+    color: var(--goldBright) !important;
+  }
+  .gameWinner {
+    background-color: var(--gold) !important;
+	color: black; /* Chris Added */
+  }
+  .tagDivName {
+    padding: 7px 0 0 1px !important;
+  }
+  /*.convention { /* Chris Removed * /
+    border: 1px solid var(--goldDark) !important;
+  }*/
+  #add-HeroscapeMap-button {
+    border-color: var(--mdBlue) !important;
+    background-color: var(--mdBlue) !important;
+    color: var(--lightText);
+  }
+  .userSetting {
+    border-color: var(--gold) !important;
+  }
+  .mapImg {
+    border-radius: 2px !important;
+  }
+  img[alt="Down Arrow"] {
+    filter: invert(1) !important;
+  }
+  #FormatGlossaryListBasic p,
+  #FormatGlossaryListDiv p {
+    color: var(--lightText);
+  }
+  .highlightedFormat {
+    padding: 8px 10px;
+    background-color: var(--goldBright) !important;
+    color: black !important;
+  }
+  .noBuilderEffect {
+    color: var(--mdRed) !important;
+  }
+  footer {
+    border-top-color: var(--gold);
+  }
+  
+  .versionChangeImage { /* Chris Added */
+	background-color: white;
+    border-radius: 15px;
+}
+}
+button {
+  cursor: pointer !important;
+  padding: 5px 10px;
+  font-size: 15px;
+  cursor: pointer;
+}
+
+/* Damage Calculator */
+#pageContent article .powers {
+  width: auto;
+}
+
+footer {
+  margin-top: 50px;
+}
+
+/* BUILDER REDESIGN */
+div#tournamentBuilderDiv {
+  padding-bottom: 15px;
+}
+
+img#logoImg {
+  padding: 5px;
+  margin: 0 10px;
+  border-radius: var(--round);
+}
+
+.toggleSwitch {
+  width: auto !important;
+  padding: 8px !important;
+  border-radius: var(--round) !important;
+  border: 2px solid #ccc !important;
+}
+
+.toggleSwitchString,
+.toggleSwitchSelected {
+  padding: 4px 10px !important;
+}
+
+.toggleSwitchSelected {
+  border-radius: var(--round) !important;
+  background-color: var(--goldBright) !important;
+}
+
+#armyListCopy,
+#armyListX {
+  padding: 5px 10px;
+}
+
+#SearchAndSortDiv {
+  margin: 20px 10px;
+}
+
+#unitTable, #partialCardScoringUnitTable {
+  line-height: 1.1;
+}
+#unitTable td, #partialCardScoringUnitTable td {
+  padding: 0 0 5px 10px;
+}
+#unitTable td.labelCell, #partialCardScoringUnitTable td.labelCell {
+  padding-top: 5px;
+}
+#unitTable td.unitDivName, #partialCardScoringUnitTable td.unitDivName {
+  font-size: 19px;
+}
+
+#unitTableHeader1,
+#unitTablePartialHeader1 {
+  padding: 8px 0px 10px 10px;
+}
+
+#ArmyStatsDiv {
+  padding: 15px;
+  width: auto !important;
+}
+
+#armyList,
+#armyPartial1List,
+#armyPartial2List {
+  padding: 15px 0;
+}
+
+/* BUILDER DARK MODE */
+@media (prefers-color-scheme: dark) {
+  div#tournamentBuilderDiv a {
+    color: var(--goldBright);
+  }
+  img#centerLogoImg {
+    background: var(--lightText);
+  }
+  img#centerLogoImg .toggleSwitch .slider {
+    background-color: var(--darkBorder);
+  }
+  div#Figures {
+    border-color: var(--darkBorder);
+  }
+  .unitTableHeaderRow {
+    background-color: var(--darkBg) !important;
+  }
+  .labelCell {
+    background-color: var(--darkBorder) !important;
+  }
+  /* BUILDER RIGHT COLUMN */
+  #ArmyStatsDiv {
+    border: 2px solid #353535 !important;
+    background: #1e1e1e !important;
+  }
+  .armyStatsValue {
+    color: var(--gold) !important;
+  }
+  .toggleSwitch {
+    border: 2px solid var(--darkBorder) !important;
+    /* Chris: "Keep x0s" needs a class and/or this inline style tag below!
+    <span class="keep-zeroes-label-and-checkbox" style="display:inline-block">
+        <label>Keep x0s <input id="armyMinCheckbox" type="checkbox" onclick="changeArmyMin()">
+        </label>
+    </span>
+    */
+  }
+  .armyDisplayCost {
+    color: var(--mdRed) !important;
+  }
+}/*# sourceMappingURL=main.css.map */

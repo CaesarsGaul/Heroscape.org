@@ -1,0 +1,93 @@
+body {
+  color-scheme: light;
+}
+
+div#tournamentBuilderDiv a {
+  color: var(--blue) !important;
+}
+
+.unitTableHeaderRow {
+  background-color: lightgrey !important;
+}
+
+.labelCell {
+  background-color: lightblue !important;
+}
+
+#ArmyStatsDiv {
+  background-color: white !important;
+}
+
+.armyStatsValue {
+  color: var(--blue) !important;
+}
+
+.toggleSwitch {
+  border: 1px solid var(--darkBorder) !important;
+}
+
+.toggleSwitchSelected {
+  background-color: var(--goldBright) !important;
+}
+
+#pageContent a {
+  color: var(--blue) !important;
+}
+#pageContent a:visited {
+  color: var(--purple) !important;
+}
+
+input[type=text]:not(#searchBar),
+input[type=email],
+input[type=number],
+input[type=password],
+input[type=date],
+input[type=datetime-local],
+textarea,
+select,
+#SortDiv select {
+  border: 2px solid var(--gray) !important;
+}
+
+#calculateButton,
+#armyListCopy,
+#armyListX,
+#Reset button,
+a#CreateLink,
+#add-HeroscapeMap-button,
+input[type=submit],
+button[type=submit] {
+  background-color: var(--mdBlue) !important;
+  border-color: var(--mdBlue) !important;
+  color: var(--lightText) !important;
+}
+#calculateButton:hover,
+#armyListCopy:hover,
+#armyListX:hover,
+#Reset button:hover,
+a#CreateLink:hover,
+#add-HeroscapeMap-button:hover,
+input[type=submit]:hover,
+button[type=submit]:hover {
+  background-color: var(--gold) !important;
+  border-color: var(--gold) !important;
+  color: var(--darkBg) !important;
+}
+#calculateButton:visited,
+#armyListCopy:visited,
+#armyListX:visited,
+#Reset button:visited,
+a#CreateLink:visited,
+#add-HeroscapeMap-button:visited,
+input[type=submit]:visited,
+button[type=submit]:visited {
+  color: var(--lightText) !important;
+}
+
+.tournamentGroup .tournament:not(:last-child) {
+  border-bottom: 1px solid var(--gray) !important;
+}
+
+.convention {
+  border: 1px solid var(--gray) !important;
+}/*# sourceMappingURL=lightModePlease.css.map */

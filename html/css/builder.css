@@ -1,0 +1,54 @@
+#SearchDiv {
+	vertical-align: top;
+}
+.sortDiv {
+	display: inline-block;
+}
+.invertSortLabel {
+	display: block;
+}
+.invertSortP {
+	display: inline-block;
+	margin-top: 0;
+	margin-bottom: 0;
+}
+
+#FilterDiv {
+	/*display: inline-block;*/
+	max-width: 950px;
+	text-align: center;
+	margin: auto;
+	margin-top: 10px;
+	margin-bottom: 10px;
+}
+#FilterDiv h2 {
+	width: fit-content;
+	margin: auto;
+	margin-top: 0;
+	margin-bottom: 0;
+	padding-left: 50px;
+	padding-right: 50px;
+}
+#FiltersDiv {
+	display: none;
+	cursor: pointer;
+}
+#FiltersDiv p {
+	margin-top: 0;
+	margin-bottom: 0;
+}
+.filterLabel {
+	margin-left: 10px;
+	margin-right: 10px;
+}
+#FiltersDivGroup1 {
+	display: block;
+}
+.filtersDivGroup {
+	display: inline-block;
+	width: 30%;
+	vertical-align: top;
+}
+.filtersMultiSelect {
+	height: 100px;
+}

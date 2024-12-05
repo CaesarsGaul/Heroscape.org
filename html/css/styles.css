@@ -1,0 +1,614 @@
+
+:root {
+	--grass: #00d941;
+	--sand: #bfa85e;
+	--rock: #4062a3;
+	--swamp: #077a2a;
+	/*--swamp_water: ;*/
+	--dungeon: #696868;
+	--shadow: #000000;
+	--snow: #FFFFFF;
+	--lava_field: #d1434c;
+	--lava_molten: #FF0000;
+	
+	--primary_color: var(--sand);
+	
+	--nav_bar_background_color: var(--primary_color);
+	--nav_bar_text_color: white;
+	--nav_bar_hover_background_color: var(--grass);
+	--nav_bar_hover_text_color: var(--dungeon);
+	--nav_bar_current_page_background_color: var(--rock);
+	--nav_bar_current_page_text_color: white;
+}
+
+nav.subNavBar {
+	border-top: 1px solid black;
+}
+.subNavBar {
+	text-align: center !important;
+}
+@media screen and (max-width: 650px) {
+	.subNavBar a {
+		display: inline-block !important;
+		width: fit-content !important;
+		float: left !important;
+		z-index: 95 !important;
+	}
+	.subNavBar img.showOnMobile {
+		display: none !important;
+	}
+}
+.subNavBar {
+	
+}
+
+
+
+.armyDisplayCost {
+	color: red;
+	font-size: 10px;
+}
+
+@media screen and (max-width: 650px) {
+	article {
+		width: calc(100% - 20px);
+	}
+}
+
+body {
+	/*max-width: 950px;*/
+	margin: auto;
+	font-family: "Segoe UI", Segoe, Arial, sans-serif;
+}
+@media screen and (min-width: 801px) {
+	body {
+		position: relative;
+	}
+}
+@media screen and (max-width: 800px) {
+	body {
+		/*margin-top: 107px;*/
+	}
+}
+
+#pageContent {
+	min-height: calc(100vh - 132px) !important;
+}
+
+article {
+	text-align: center;
+	max-width: 950px;
+	margin: auto;
+}
+
+#LeftColumn {
+	
+}
+#RightColumn {
+
+}
+@media screen and (min-width: 801px) {
+	#LeftColumn, #RightColumn {
+		display: inline-block;
+		vertical-align: top;
+	}
+	#LeftColumn {
+		width: 400px;
+	}
+	#RightColumn {
+		width: calc(100% - 410px);
+	}
+}
+
+#ArmyStatsDiv {
+	background-color: white;
+	text-align: center;
+	position: relative;
+}
+@media screen and (min-width: 801px) {
+	#ArmyStatsDiv {
+		border: 2px solid black;
+		margin-bottom: 5px;
+		/*position: relative;*/
+	}
+	#UnitStatsDiv {
+		border: 2px solid black;
+	}
+}
+@media screen and (max-width: 800px) {
+	#ArmyStatsDiv {
+		display: block;
+		/*position: fixed;*/
+		/*top: 0;*/
+		width: 100%;
+		border-bottom: 1px solid black;
+	}
+}
+#ArmyStatsDiv h2 {
+	margin: 0;
+}
+@media screen and (max-width: 800px) {
+	#ArmyStatsDiv h2 {
+		margin-bottom: 8px;
+	}
+}
+.armyStatsGroup {
+	display: inline-block;
+	margin-left: 20px;
+	margin-right: 20px;
+}
+.armyStatsValue {
+	display: inline-block;
+	color: blue;
+}
+.armyStatsLabel {
+	display: inline-block;
+}
+
+#UnitStatsDiv {
+	display: none;
+	position: relative;
+	z-index: 2000;
+}
+@media screen and (max-width: 800px) {
+	#UnitStatsDiv {
+		position: fixed;
+		bottom: 0px;  
+		max-width: calc(100% - 20px);
+		max-height: calc(100% - 5px);
+		margin-left: 10px;
+		overflow: scroll;
+	}
+}
+
+#Figures {
+	overflow: scroll;
+}
+#FiguresPartialCardScoring {
+	/*display: none;*/
+	overflow: scroll;
+}
+@media screen and (min-width: 801px) {
+	#Figures {
+		display: inline-block;
+		height: calc(100vh - 170px);
+		border: 2px solid black;
+		width: calc(100% - 5px);
+	}
+	#FiguresPartialCardScoring {
+		/*display: none;*/
+		height: 85vh;
+		border: 2px solid black;
+		width: calc(100% - 5px);
+	}
+}
+@media screen and (max-width: 800px) {
+	#Figures {
+		/*height: calc(100vh - 35px);*/
+		height: calc(100vh - 270px);
+	}
+	#FiguresPartialCardScoring {
+		height: calc(100vh - 370px);
+	}
+}
+
+h1 {
+	
+}
+@media screen and (min-width: 801px) {
+	h1 {
+		text-align: center;
+		/*margin-left: 10px;*/
+		/*display: inline-block;*/
+	}
+}
+@media screen and (max-width: 800px) {
+	h1 {
+		/*display: none;*/
+		text-align: center;
+	}
+}
+
+#ToggleSwitches {
+	/*text-align: left;*/
+	display: block;
+	text-align: center;
+	margin-top: 10px;
+	margin-bottom: 10px;
+}
+.toggleSwitch {
+	display: inline-block;
+	width: 170px;
+	border: 1px solid black;
+	border-radius: 5px;
+	vertical-align: top;
+	padding: 5px;
+}
+.toggleSwitchString {
+	padding-left: 2px;
+	padding-right: 2px;
+	padding-top: 5px;
+	padding-bottom: 5px;
+	border-radius: 10px;
+}
+.toggleSwitchSelected {
+	/*background-color: var(--grass);*/
+	background-color: #FFFF00;
+	color: var(--shadow);
+}
+@media screen and (min-width: 801px) {
+	#ToggleSwitches {
+		/*display: inline-block;*/
+		/*position: absolute;*/
+		/*right: 10;
+		top: 35px;*/
+	}
+}
+@media screen and (max-width: 800px) {
+	#ToggleSwitches {
+		/*margin-bottom: 10px;*/
+	}
+}
+
+input[type=number] {
+	width: 50px;
+}
+
+
+#unitTable, #partialCardScoringUnitTable {
+	margin: auto;
+	position: relative;
+	width: 100%;
+	font-size: 20px;
+	border-collapse: collapse;
+}
+
+.unitTableHeaderRow {
+	position: sticky;
+	top: 0;
+	font-size: 16px;
+	background-color: lightgrey;
+	z-index: 1000;
+}
+
+#unitTable td, #partialCardScoringUnitTable td {
+	padding-left: 5px;
+	padding-right: 5px;
+}
+
+#unitTableHeader1 {
+	/*width: 66%;*/
+	text-align: left;
+	padding-left: 10px;
+}
+#unitTableHeader2 {
+	width: 80px;
+}
+#unitTableHeader3 {
+	width: 90px;
+}
+
+#unitTablePartialHeader1 {
+	/*width: 45%;*/
+	text-align: left;
+	padding-left: 10px;
+}
+#unitTablePartialHeader2 {
+	width: 80px;
+}
+#unitTablePartialHeader3 {
+	width: 90px;
+}
+#unitTablePartialHeader4 {
+	width: 90px;
+}
+
+
+.unitDataCell {
+	text-align: center;
+}
+
+.arrow {
+	/*width: 30px;*/
+	width: 20px;
+}
+.arrowNoClick {
+	opacity: 0.3;
+}
+.rightArrow {
+	margin-left: 5px;
+}
+.leftArrow {
+	margin-right: 5px;
+}
+.arrow, .arrowValue {
+	vertical-align: middle;
+}
+
+.centerTd {
+	text-align: center;
+}
+
+/* The switch - the box around the slider */
+.switch {
+	position: relative;
+	display: inline-block;
+	width: 50px;
+	height: 20px;
+	/*vertical-align: top;*/
+}
+
+/* Hide default HTML checkbox */
+.switch input {
+	opacity: 0;
+	width: 0;
+	height: 0;
+	/*float: left;*/
+}
+
+/* The slider */
+.slider {
+	position: absolute;
+	cursor: pointer;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	background-color: #ccc;
+	border: 1px solid black;
+	border-radius: 5px;
+	-webkit-transition: .4s;
+	transition: .4s;
+	/*padding-left: 20px;*/
+}
+
+.slider:before {
+	position: absolute;
+	content: "";
+	height: 17px;
+	width: 17px;
+	left: 4px;
+	bottom: 1px;
+	background-color: white;
+	-webkit-transition: .4s;
+	transition: .4s;
+}
+
+input:checked + .slider {
+	/*background-color: #2196F3;*/
+}
+
+/*#vcCheckbox:checked + .slider:after {
+	content: "VC";
+}
+
+#vcCheckbox:not(:checked) + .slider:after {
+	content: "Classic";
+}
+
+#deltaCheckbox:checked + .slider:after {
+	content: "Delta";
+}
+
+#deltaCheckbox:not(:checked) + .slider:after {
+	content: "Standard";
+}
+
+#partialCheckbox:checked + .slider:After {
+	content: "Partial";
+}
+
+#partialCheckbox:not(:checked) + .slider:after {
+	content: "Full";
+}*/
+
+input:focus + .slider {
+	box-shadow: 0 0 1px #2196F3;
+}
+
+input:checked + .slider:before {
+	-webkit-transform: translateX(23px);
+	-ms-transform: translateX(23px);
+	transform: translateX(23px);
+}
+
+/* Rounded sliders */
+.slider.round {
+	border-radius: 34px;
+}
+
+.slider.round:before {
+	border-radius: 50%;
+}
+
+/* Unit Div Box */
+
+.activeUnit {
+	background-color: lightblue;
+}
+
+.unitDivName {
+	/*color: blue;*/
+	text-align: left;
+}
+
+.UnitStatsColumn {
+	display: inline-block;
+	width: 30%;
+}
+
+#UnitReleaseSet {
+	margin-bottom: 10px;
+	font-style: italic;
+}
+
+.topUnitStatsColumn {
+	
+}
+@media screen and (min-width: 801px) {
+	.topUnitStatsColumn {
+		vertical-align: top;
+		margin-top: 10px;
+	}
+}
+@media screen and (max-width: 800px) {
+	.topUnitStatsColumn {
+		
+	}
+	#UnitReleaseSet {
+		margin-top: 10px;
+	}
+}
+
+.UnitStat {
+	text-align: left;
+	margin-top: 1px;
+	margin-bottom: 1px;
+	padding-left: 5px;
+}
+
+#UnitName a, #UnitName a:visited {
+	color: inherit;
+}
+
+#UnitImg, .unitImg {
+	width: 200px;
+	display: inline-block;
+	margin: auto;
+	padding: 10px;
+}
+@media screen and (max-width: 800px) {
+	#UnitImg {
+		display: none;
+	}
+}
+
+.unitPowerName {
+	font-weight: bold;
+	margin-top: 10px;
+}
+
+.unitPowerText {
+	/*font-style: italic;*/
+	max-width: 500px;
+	text-align: left;
+}
+
+#UnitPowerRankings {
+	text-align: left;
+}
+
+#UnitStatsDivX {
+	position: absolute;
+	top: 2px;
+	right: 2px;
+	background-color: red;
+	color: white;
+	width: 40px;
+	height: 40px;
+	font-size: 20px;
+}
+
+/* Search & Sort */
+#SearchAndSortDiv {
+	margin: 10px;
+	text-align: center;
+}
+
+#SearchDiv, #SortDiv {
+	display: inline-block;
+}
+
+#SearchDiv {
+	
+}
+#SearchDiv input {
+	padding: 3px;
+}
+
+#SortDiv {
+	
+}
+#SortDiv select {
+	padding: 3.3px;
+}
+@media screen and (min-width: 801px) {
+	#SearchDiv {
+		margin-right: 20px;
+	}
+
+}
+@media screen and (max-width: 800px) {
+	#SortDiv {
+		margin-left: 20px;
+	}
+}
+
+.logoImg {
+	height: 30px;
+}
+
+.armyBtn {
+	display: inline-block;
+	padding-left: 10px;
+	padding-right: 10px;
+	padding-top: 5px;
+	padding-bottom: 5px;
+	
+	position: absolute;
+	top: 5px;
+}
+
+#armyListX {
+	right: 50px;
+	/*margin-right: 50px;*/
+}
+
+#armyListCopy {
+	right: 90px;
+}
+
+#viewArmyBtn {
+	right: 150px;
+}
+
+#modeSwitchDiv {
+	text-align: center;
+}
+#modeSwitchDiv button {
+	padding-left: 10px;
+	padding-right: 10px;
+	padding-top: 5px;
+	padding-bottom: 5px;
+}
+#partialCardScoringModeButton {
+	display: none;
+}
+#PartialScoringStatsDiv {
+	/*display: none;*/
+}
+
+.partialScoringArmyDiv {
+	position: relative;
+}
+
+.labelCell {
+	background-color: lightblue;
+	text-align: center;
+}
+
+.ohsIcon {
+	background-color: yellow;
+	color: red;
+	display: inline-block;
+	width: 50px;
+	text-align: center;
+	border: 1px solid black;
+	margin-right: 5px;
+	font-weight: bold;
+	border-radius: 10px;
+}
+
+.createOhsLink {
+	display: inline-block;
+}

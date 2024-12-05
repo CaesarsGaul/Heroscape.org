@@ -1,0 +1,228 @@
+body {
+  background-color: Canvas;
+  color: CanvasText;
+  color-scheme: dark;
+}
+
+input[type=text]:not(#searchBar),
+input[type=email],
+input[type=number],
+input[type=password],
+input[type=date],
+input[type=datetime-local],
+textarea,
+select,
+#SortDiv select {
+  border: 1px solid var(--lightText) !important;
+}
+
+#pageContent a {
+  color: var(--goldBright);
+}
+#pageContent a:visited {
+  color: var(--lightText);
+}
+
+#Maps a {
+  color: var(--goldBright);
+}
+
+.navBar a:hover:not(.noHoverChange) {
+  background-color: var(--mdBlue);
+  color: var(--lightText);
+  transition: background 0.3s;
+}
+
+button {
+  cursor: pointer !important;
+}
+
+#calculateButton,
+#armyListCopy,
+#armyListX,
+#Reset button,
+a#CreateLink,
+#add-HeroscapeMap-button,
+input[type=submit],
+button[type=submit] {
+  background-color: var(--mdBlue);
+  border-color: var(--mdBlue);
+  font-size: 16px;
+  color: var(--lightText);
+  cursor: pointer;
+  transition: 0.1s;
+}
+#calculateButton:hover,
+#armyListCopy:hover,
+#armyListX:hover,
+#Reset button:hover,
+a#CreateLink:hover,
+#add-HeroscapeMap-button:hover,
+input[type=submit]:hover,
+button[type=submit]:hover {
+  background-color: var(--gold) !important;
+  border-color: var(--gold) !important;
+  color: var(--darkBg) !important;
+}
+
+.rightArrow:hover,
+.leftArrow:hover {
+  cursor: pointer;
+}
+
+.tournamentGroup .tournament:not(:last-child) {
+  border-bottom: 1px solid var(--lightText) !important;
+  padding: 5px 3px 15px;
+}
+
+.maxElem,
+.tournamentTag {
+  color: var(--goldBright) !important;
+}
+
+.tagInfo {
+  background-color: var(--goldBright) !important;
+  color: black !important;
+}
+
+.tagHoverDescription {
+  padding: 5px 10px;
+  background-color: var(--goldBright) !important;
+  border-color: var(--goldBright) !important;
+}
+
+#ArmyBuilderLink a {
+  color: var(--goldBright) !important;
+}
+
+.bracketGame {
+  border-color: var(--gold) !important;
+}
+
+.mapImageDivFinished {
+  background-color: var(--darkBg) !important;
+  border-radius: var(--rounded) !important;
+}
+.mapImageDivFinished img {
+  margin: 10px 0 !important;
+}
+
+#matchupsDiv table,
+#matchupsDiv th,
+#matchupsDiv td {
+  border-color: var(--goldBright) !important;
+}
+
+#matchupsDiv .mapLinkFinished {
+  color: var(--goldBright) !important;
+}
+
+.gameWinner {
+  background-color: var(--gold) !important;
+}
+
+.tagDivName {
+  padding: 7px 0 0 1px !important;
+}
+
+.convention {
+  border: 1px solid var(--goldDark) !important;
+}
+
+#add-HeroscapeMap-button, .create-button { /* Chris added .create-button class */
+  border-color: var(--mdBlue) !important;
+  background-color: var(--mdBlue) !important;
+  color: var(--lightText);
+}
+.edit-button { /* Chris Added */
+	border-color: var(--mdBlue) !important;
+	background-color: var(--mdBlue) !important;
+	color: var(--lightText);
+	border-radius: 5px;
+	margin-bottom: 3px;
+  }
+
+.userSetting {
+  border-color: var(--gold) !important;
+}
+
+.mapImg {
+  border-radius: 2px !important;
+}
+
+#FormatGlossaryListBasic p,
+#FormatGlossaryListDiv p {
+  color: var(--lightText);
+}
+
+.highlightedFormat {
+  padding: 8px 10px;
+  background-color: var(--goldBright) !important;
+  color: black !important;
+}
+
+.noBuilderEffect {
+  color: var(--mdRed) !important;
+}
+
+footer {
+  border-top-color: var(--gold);
+}
+
+/* BUILDER DARK MODE */
+div#tournamentBuilderDiv a {
+  color: var(--goldBright) !important;
+}
+
+img#centerLogoImg {
+  background: var(--lightText) !important;
+}
+img#centerLogoImg .toggleSwitch .slider {
+  background-color: var(--darkBorder) !important;
+}
+
+div#Figures {
+  border-color: var(--darkBorder) !important;
+}
+
+.unitTableHeaderRow {
+  background-color: var(--darkBg) !important;
+}
+
+.labelCell {
+  background-color: var(--darkBorder) !important;
+  padding: 15px 0;
+  /* Chris: <tr class="labelRow">
+  <td class="labelCell" colspan="5">
+  Can Label Row colpan be set to "5" instead of "3"?
+  </td></tr>
+  */
+}
+
+/* BUILDER RIGHT COLUMN */
+#ArmyStatsDiv {
+  border: 2px solid #353535 !important;
+  background: #1e1e1e !important;
+}
+
+.armyStatsValue {
+  color: var(--gold) !important;
+}
+
+.toggleSwitch {
+  border: 2px solid var(--darkBorder) !important;
+  /* Chris: "Keep x0s" needs a class and/or this inline style tag below!
+  <span class="keep-zeroes-label-and-checkbox" style="display:inline-block">
+      <label>Keep x0s <input id="armyMinCheckbox" type="checkbox" onclick="changeArmyMin()">
+      </label>
+  </span>
+  */
+}
+
+.toggleSwitchSelected {
+  background-color: var(--gold) !important;
+}
+
+.armyDisplayCost {
+  color: var(--softRed) !important;
+}/*# sourceMappingURL=darkModePlease.css.map */

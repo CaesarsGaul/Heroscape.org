@@ -1,0 +1,65 @@
+#TournamentInfoDiv {
+	text-align: center;
+}
+
+#TournamentInfoDiv ul {
+	text-align: left;
+}
+
+#TournamentMaxesP {
+	
+}
+
+#TournamentTagsP {
+	
+}
+
+.tournamentDescriptionP {
+	
+}
+
+.tournamentDescriptionP span {
+	margin-left: 20px;
+	margin-right: 20px;
+}
+
+.maxElem {
+	color: green;
+}
+
+.maxElemFull {
+	color: red;
+}
+
+.tournamentTag {
+	color: green;
+	position: relative;
+}
+
+.tagInfo {
+	border: 1px solid black;
+	border-radius: 26px;
+	font-size: 10px;
+	width: 15px;
+	height: 15px;
+	display: inline-block;
+	margin-left: 2px;
+	background-color: yellow;
+	text-decoration: none;
+	vertical-align: top;
+	font-weight: bold;
+}
+
+.tagHoverDescription {
+	display: none;
+	position: absolute;
+	top: 20px;
+	border: 1px solid black;
+	border-radius: 5px;
+	background-color: yellow;
+	color: black;
+}
+
+.tagInfo:hover + .tagHoverDescription {
+	display: block;
+}

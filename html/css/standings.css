@@ -1,0 +1,17 @@
+th {
+	padding-left: 10px;
+	padding-right: 10px;
+}
+
+table {
+	text-align: center;
+}
+
+table td {
+	max-width: 200px;
+}
+
+td a {
+	text-decoration: none;
+	color: inherit;
+}

@@ -1,0 +1,31 @@
+article {
+	max-width: 800px;
+	margin: auto;
+}
+
+h1, h2 {
+	text-align: center;
+}
+
+article .bold {
+	font-weight: bold;
+}
+
+article .highlight {
+	background-color: yellow;
+}
+
+article p {
+	text-align: left;
+}
+article p.topNotice {
+	text-align: center;
+	font-style: italic;
+}
+article p.indented {
+	margin-left: 50px;
+}
+
+article ul {
+	text-align: left;
+}
