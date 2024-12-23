@@ -26,10 +26,22 @@
 			<p>Scroll through the list of figures to find each given figure, and use the 
 			'+' & '-' buttons to increase (or decrease) the quantity of that figure in your army.</p>
 			
-			<h2>Settings</h2>
+			<h2 id='Settings'>Settings</h2>
 			<ul>
-				<li>Unit List : Classic v. VC</li>
-				<li>Pricing : Standard v. Delta</li>
+				<li>
+					Unit List : Classic v. VC
+					<ul>
+						<li>Classic includes all units from the original printing of Heroscape, plus units produced by Renegade</li>
+						<li>VC adds the Valhalla Customs units, which comprises the C3V (Custom Content Creators of Valhalla) and SoV (Soldiers of Valhalla) units</li>
+					</ul>
+				</li>
+				<li>
+					Pricing : Standard v. Delta 
+					<ul>
+						<li>Standard pricing is the price printed on the army card</li>
+						<li>Delta pricing is the current alternative price set by the delta committee. Note that some units have a different delta price in Classic v. VC</li>
+					</ul>
+				</li>
 			</ul>
 			
 			<h2>Searching</h2>

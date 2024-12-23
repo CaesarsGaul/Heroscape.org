@@ -110,9 +110,9 @@ class ReleaseSet extends HS_DatabaseObject {
 		return $whereArray;
 	}
 
+	// @DoNotUpdate
 	public static function getOrderBy() {
-	// TODO: fill in this array with column(s) to order results by like this: array("ReleaseSet.name" => "ASC")
-		return array();
+		return array("ReleaseSet.releaseDate" => "ASC");
 	}
 
 	public static function getPrimaryKey() {

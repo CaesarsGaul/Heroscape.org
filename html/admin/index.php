@@ -14,10 +14,10 @@
 
 	<!-- Internal Files -->
 	<script src="/js/scripts.js"></script>
-	<!--<script src="/connect/socket.io/socket.io.js"></script>-->
+	<script src="/connect/socket.io/socket.io.js"></script>
 		
 	<script>
-		/*socket = null;
+		socket = null;
 		function createSocket() {
 			if (socket != null) {
 				return;
@@ -29,10 +29,11 @@
 				
 				alert("Server restarted successfully");
 			});
-		}*/
+		}
+		createSocket();
+		socket.emit('checkSiteAdmin', JSON.stringify({}));
 		
-		
-		function _restartServer(refThis, refEvent) {
+		/*function _restartServer(refThis, refEvent) {
 			// Do not submit form normally, use Ajax instead
 			refEvent.preventDefault();
 			
@@ -48,8 +49,11 @@
 			};		
 			
 			submitAjaxRequest(url, formData, successFcn, errorFcn);
-		}
+		}*/
 		
+		function updatePlayerRankings() {
+			socket.emit('updatePlayerRankings', JSON.stringify({}));
+		}
 		
 	</script>
 </head>
@@ -62,11 +66,12 @@
 		<article>	
 			<h1>Site Admin Actions</h1>
 			
-			<form method="POST" action="/php/restartServer.php" onsubmit="_restartServer(this, event)">
+			<!--<form method="POST" action="/php/restartServer.php" onsubmit="_restartServer(this, event)">
 				<button type='submit'>Restart Server</button>
-			</form>
+			</form>-->
 			
-				
+			<button onclick='updatePlayerRankings()'>Update Player Rankings</button>
+			
 		</article>
 
 	</div>

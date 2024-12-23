@@ -29,7 +29,7 @@
 	<script src='/js/armyBuilder.js'></script>
 	<script src='/js/tournament.js'></script>
 	
-	<script>
+	<script> 
 		loadUnits();
 	
 		function setupPage() {
@@ -201,6 +201,8 @@
 				<span class="slider round"></span>
 			</label>
 			<span id='vcToggle' class='toggleSwitchString'>VC</span>
+			<a class="tagInfo" href="/about/builder/#Settings" target="_blank">?</a>
+			<span class="tagHoverDescription">Exclude or Include Valhalla Customs Units.</span>
 		</span>
 		
 		<img class='logoImg' id='centerLogoImg' src='/images/autoloadIcon.png' />
@@ -212,8 +214,9 @@
 				<span class="slider round"></span>
 			</label>
 			<span id='deltaToggle' class='toggleSwitchString'>Delta</span>
+			<a class="tagInfo" href="/todo#todo" target="_blank">?</a>
+			<span class="tagHoverDescription">Switch between standard or delta pricing. Note that some units have a different delta price for VC-inclusive events.</span>
 		</span>
-		
 		<span>
 			<label>
 				Keep x0s

@@ -766,7 +766,7 @@
 							const armies = player.playerArmys;
 							if (armies.length > 0) {
 								for (let i = 0; i < armies.length; i++) {
-									parentElem.appendChild(createP({innerHTML: "Army #"+(i+1)+" : " + armies[i].army}));
+									parentElem.appendChild(createP({innerHTML: "Army #"+(i+1)+" : " + armies[i].toDisplayString()}));
 								}	
 								var changeArmyP = createP({});
 								parentElem.appendChild(changeArmyP);
@@ -1238,7 +1238,7 @@
 			
 			var armyString = "";
 			if (player.playerArmys.length > 0) {
-				if (player.playerArmys[0].army !== undefined) {
+				if (player.playerArmys[0].toDisplayString() !== null) {
 					for (let j = 0; j < player.playerArmys.length; j++) {
 						if (player.playerArmys[j].id !== undefined) {
 							if (j > 0) {
@@ -1247,7 +1247,7 @@
 							if (player.playerArmys.length > 1) {
 								armyString += (j+1) + ") ";
 							}
-							armyString += player.playerArmys[j].army;
+							armyString += player.playerArmys[j].toDisplayString();
 							/*if (player.playerArmys.length > 1) {
 								armyString += ". ";
 							}*/
@@ -1901,8 +1901,8 @@
 							var pcsDiv = createDiv({});
 							pcsTd.appendChild(pcsDiv);
 							var pcsUrl = "";
-							pcsUrl += "/scoring?army1="+game.heroscapeGamePlayers[0].player.playerArmys[0].army;
-							pcsUrl += "&army2="+game.heroscapeGamePlayers[1].player.playerArmys[0].army;
+							pcsUrl += "/scoring?army1="+game.heroscapeGamePlayers[0].player.playerArmys[0].toDisplayString();
+							pcsUrl += "&army2="+game.heroscapeGamePlayers[1].player.playerArmys[0].toDisplayString();
 							pcsUrl += "&delta="+ (currentTournament.useDeltaPricing
 									? "true"
 									: "false");
@@ -2024,7 +2024,7 @@
 							armysDiv.appendChild(createDiv({
 								class: "matchupArmyDiv", 
 								innerHTML: "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Army #" + 
-									(k+1) + " : " + player.playerArmys[k].army}));
+									(k+1) + " : " + player.playerArmys[k].toDisplayString()}));
 						}
 					}
 				}
@@ -3002,7 +3002,11 @@
 								"conventionSeriesID": {}
 							},
 							"Player.tournamentID": {
-								"PlayerArmy.playerID": {},
+								"PlayerArmy.playerID": {
+									"PlayerArmyCard.playerArmyID": {
+										"cardID": {}
+									}
+								},
 								"teamCaptainID": {
 									"userID": {},
 									"tournamentID": {}

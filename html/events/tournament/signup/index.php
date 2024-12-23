@@ -108,15 +108,59 @@
 			if (player != null) {
 				var armyStrs = [];
 				if (tournament instanceof HeroscapeTournament) {
+					
+					var playerArmyIds = [];
+					for (let i = 0; i < player.playerArmys.length; i++) {
+						playerArmyIds.push(player.playerArmys[i].id);
+					}
+					if (playerArmyIds.length > 0 && getSubdomain() == '') {
+						socket.emit("deletePlayerArmyCards", JSON.stringify({
+							playerArmyIds: playerArmyIds
+						}));
+					}
+					
 					for (let i = 0; i < armies.length; i++) {
 						const armyNumber = i+1;
 						const armyStr = armies[i].toString(false, true);
 						if (player.playerArmys.length > i) {
 							player.playerArmys[i].armyNumber = armyNumber;
-							player.playerArmys[i].army = armyStr;
+							
+							var army = player.playerArmys[i];
+							if (getSubdomain() == '') {
+								
+								//for (let k = 0; k < army.playerArmyCards.length; k++) {
+									//army.playerArmyCards[k]._serverDelete();
+									
+								//}
+								
+								army.playerArmyCards = [];
+								for (const [name, quantity] of Object.entries(armies[i].units)) {
+									var playerArmyCard = new PlayerArmyCard();
+									playerArmyCard.playerArmy = army;
+									playerArmyCard.card = _findCard(name);
+									playerArmyCard.quantity = quantity;
+									army.playerArmyCards.push(playerArmyCard)
+								}
+							} else {
+								army.army = armyStr;
+							}
+							
 						} else {
 							var army = new PlayerArmy();
-							army.army = armyStr;
+							
+							if (getSubdomain() == '') {
+								army.playerArmyCards = [];
+								for (const [name, quantity] of Object.entries(armies[i].units)) {
+									var playerArmyCard = new PlayerArmyCard();
+									playerArmyCard.playerArmy = army;
+									playerArmyCard.card = _findCard(name);
+									playerArmyCard.quantity = quantity;
+									army.playerArmyCards.push(playerArmyCard)
+								}
+							} else {
+								army.army = armyStr;
+							}
+							
 							army.armyNumber = armyNumber;
 							army.player = player;
 							player.playerArmys.push(army);
@@ -145,6 +189,15 @@
 				window.location.href = 
 					window.location.origin + "/events/tournament/?Tournament="+tournament.id;
 			}
+		}
+		
+		function _findCard(cardName) {
+			for (let i = 0; i < Card.list.length; i++) {
+				if (Card.list[i].name == cardName) {
+					return Card.list[i];
+				}
+			}
+			return null;
 		}
 		
 		function redrawPage() {
@@ -420,6 +473,15 @@
 		
 		<script>
 			const tournamentID = findGetParameter("Tournament");
+			
+			Card.load(
+				{},
+				function (cards) {
+					
+				},
+				{joins: {}}
+			);
+			
 			if (tournamentID != null) {
 				Tournament.load(
 					{id: tournamentID},
@@ -433,7 +495,11 @@
 							"conventionSeriesID": {}
 						},
 						"Player.tournamentID": {
-							"PlayerArmy.playerID": {}
+							"PlayerArmy.playerID": {
+								"PlayerArmyCard.playerArmyID": {
+									"cardID": {}
+								}
+							}
 						},
 						"figureSetID": {},
 						"TournamentFormatTag.tournamentID": {

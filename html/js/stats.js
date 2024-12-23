@@ -113,7 +113,7 @@ function _mergePlayerArmy(player) {
 		if (i > 0) {
 			army += ",";
 		}
-		army += player.playerArmys[i].army;
+		army += player.playerArmys[i].toDisplayString();
 	}
 	army = army.split(",");
 	return army;

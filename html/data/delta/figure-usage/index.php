@@ -24,6 +24,12 @@
 			display: block;
 		}
 		
+		p {
+			text-align: left;
+		}
+		ul {
+			text-align: left;
+		}
 	</style>
 	
 	<!-- Internal Files -->
@@ -61,8 +67,17 @@
 					for (let k = 0; k < player.playerArmys.length; k++) {
 						const playerArmy = player.playerArmys[k];
 						
-						if (playerArmy.army != undefined && playerArmy.army != null) { 
-							const armyFigs = playerArmy.army.split(",");
+						for (let l = 0; l < playerArmy.playerArmyCards.length; l++) {
+							const playerArmyCard = playerArmy.playerArmyCards[l];
+							
+							if (figures[playerArmyCard.card.name] === undefined) {
+								figures[playerArmyCard.card.name] = 0;
+							}
+							figures[playerArmyCard.card.name] += 1;
+						}
+						
+						/*if (playerArmy.toDisplayString() != null) { 
+							const armyFigs = playerArmy.toDisplayString().split(",");
 							for (let l = 0; l < armyFigs.length; l++) {
 								var fig = armyFigs[l];
 								fig = fig.trim();
@@ -78,7 +93,7 @@
 								}
 								figures[fig] += 1;
 							}
-						}
+						}*/
 					}
 				}
 			}
@@ -111,19 +126,25 @@
 					innerHTML: fig.quantity + " : " + fig.name
 				}));
 			}
-			
-			parentDiv.appendChild(createDiv({
-				innerHTML: "Note: figures used once are excluded from search results."}));
 		}
 	</script>
 </head>
 <body><div id='content'>
 
 	<?php include(Nav); ?>
-
+	<?php include(DataNav); ?>
+	
 	<div id='pageContent'>
 		<h1>Delta Figure Usage Data</h1>
 		<article>
+			<p>Notes:</p>
+			<ul>
+				<li>Tournaments that have not started are excluded</li>
+				<li>Tournaments where you bring > 1 army are excluded</li>
+				<li>Multiplayer tournaments are excluded</li>
+				<li>Temporary user's armies are excluded</li>
+				<li>Figures used only once in the given time frame are skipped</li>
+			</ul>
 			<div id='SearchDiv'>
 				<label>
 					Start Date: 
@@ -146,7 +167,29 @@
 			<div id='ResultsDiv'></div>
 
 			<script>
-				HeroscapeTournament.load(
+				Card.load(
+					{},
+					function (cards) {
+						
+					},
+					{joins: {
+						"figureSetID": {}
+					}}
+				);
+				FigureUsageView.load(
+					{Tournament_started: true,
+						HeroscapeTournament_useDeltaPricing: true,
+						Tournament_maxNumPlayersPerGame: 2,
+						Tournament_figureSetID: 1,
+						HeroscapeTournament_numArmies: 1},
+					function (viewEntries) {
+						console.log(viewEntries);
+						DatabaseObject.extractView(FigureUsageView.list);						
+						displayFigureData();
+					},
+					{joins: {}}
+				);
+				/*HeroscapeTournament.load(
 					{startBefore: today,
 						useDeltaPricing: 1},
 					function (tournaments) {
@@ -154,10 +197,14 @@
 					},
 					{joins: {
 						"Player.tournamentID": {
-							"PlayerArmy.playerID": {}
+							"PlayerArmy.playerID": {
+								/*"PlayerArmyCard.playerArmyID": {
+									"cardID": {}
+								}*
+							}
 						}
 					}}
-				);
+				);*/
 			</script>
 				
 			

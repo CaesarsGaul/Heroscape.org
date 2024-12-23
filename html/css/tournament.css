@@ -58,6 +58,7 @@
 	border-radius: 5px;
 	background-color: yellow;
 	color: black;
+	z-index: 1000;
 }
 
 .tagInfo:hover + .tagHoverDescription {

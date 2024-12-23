@@ -33,7 +33,7 @@
 		
 		.section {
 			width: 100%;
-			min-height: 100px;
+			/*min-height: 100px;*/
 		}
 		
 		/*.betaTesting {
@@ -53,7 +53,7 @@
 		}
 		
 		#createOhsLink {
-			display: inline-block;
+			/*display: inline-block;*/
 		}
 		
 		.mapName {
@@ -70,6 +70,36 @@
 		
 		#Leagues {
 			border-bottom: none !important;
+		}
+		
+		.altVersion {
+			display: inline-block;
+			margin-right: 30px;
+		}
+		.altVersion a {
+			
+		}
+		
+		#Map {
+			text-align: center;
+		}
+		#Map img {
+			display: inline-block;
+			width: 300px;
+		}
+		#Map h3 {
+			margin-top: 0;
+		}
+		.highlightMapInfo {
+			display: inline-block;
+			margin-left: 10px;
+			vertical-align: top;
+		}
+		.highlightMapInfo p, .highlightMapInfo a {
+			display: block;
+			margin-top: 0;
+			margin-bottom: 0;
+			text-align: left;
 		}
 	</style>
 	
@@ -89,15 +119,13 @@
 
 	<div id='pageContent'>
 		<h1>Heroscape.org Software</h1>
-		<article>
-			<!--<div class='betaTesting'>Warning: Site under active development & beta testing.</div>-->
-			
+		<article>			
 			<div>
 				<p>Heroscape.org contains several tools designed to enhance the game of Heroscape. See the <a href='/about'>about</a> page for more information.</p>
 			</div>
 			
 			<div class='column'>
-				<div class='section'>
+				<!--<div class='section'>
 					<h2>Seasons</h2>
 					<p>A season tracks tournament results for some pre-determined group of tournaments.</p>
 					<div id='Seasons'></div>
@@ -120,9 +148,9 @@
 								"leagueID": {}
 							}});
 					</script>
-				</div>
+				</div>-->
 				
-				<div class='section'>
+				<!--<div class='section'>
 					<h2>Leagues</h2>
 					<p>A league tracks tournament results a given timeframe within a given season.</p>
 					<div id='Leagues'></div>
@@ -145,10 +173,12 @@
 							}}
 						);
 					</script>
-				</div>
+				</div>-->
+				
+				<h2>Tournaments</h2>
 				
 				<div class='section'>
-					<h2>Current Tournaments</h2>
+					<h3>Current</h3>
 					<div id='currentTournaments'></div>
 					<script>
 						HeroscapeTournament.load(
@@ -175,7 +205,7 @@
 				</div>
 				
 				<div class='section'>
-					<h2>Upcoming Tournaments</h2>
+					<h3>Upcoming</h3>
 					<div id='upcomingTournaments'></div>
 					<script>
 						HeroscapeTournament.load(
@@ -202,114 +232,29 @@
 			</div>
 			
 			<div class='column'>
-				<div id='ohsSection' class='section'>
+				<!--<div id='ohsSection' class='section'>
 					<h2>Create OHS Game Link</h2>
 					<p><a href='/ohs'>Create Link</a></p>
-				</div>
+				</div>-->
 				
-				<div id='mapSection' class='section'>
-					<h2>Highlighted Map</h2>
-					<div id='Map'></div>
-					<script>
-						HeroscapeMap.load(
-							{},
-							function (maps) {
-								const mapIdx = Math.floor(Math.random() * maps.length);
-								const map = maps[mapIdx];
-								var parentElem = document.getElementById("Map");
-								parentElem.appendChild(createP({
-									innerHTML: map.name,
-									class: "mapName"}));
-								if (map.authorName != null) {
-									var authorP = createP({innerHTML: "By ", id: "mapUserName"});
-									parentElem.appendChild(authorP);
-									authorP.appendChild(createA({
-										href: "/user/?userName="+map.authorName,
-										target: "_blank",
-										innerHTML: map.authorName
-									}));
-								}
-								if (map.buildInstructionsUrl != null) {
-									parentElem.appendChild(createA({
-										innerHTML: "Build Instructions", 
-										href: map.buildInstructionsUrl}));
-								}
-								if (map.numberOfPlayers != null) {
-									parentElem.appendChild(createP({innerHTML: map.numberOfPlayers + " Players"}));
-								}
-								if (map.heroscapeMapSets.length > 0) {
-									var setsP = createP({innerHTML: ""});
-									parentElem.appendChild(setsP);
-									for (let i = 0; i < map.heroscapeMapSets.length; i++) {
-										if (i > 0) {
-											setsP.innerHTML += ", ";
-										}
-										setsP.innerHTML += map.heroscapeMapSets[i].terrainSet.abbreviation + 
-											" x" + map.heroscapeMapSets[i].quantity;
-									}
-								}
-								if (map.tags.length > 0) {
-									var tagsP = createP({innerHTML: "Tags: "});
-									parentElem.appendChild(tagsP);
-									for (let i = 0; i < map.tags.length; i++) {
-										if (i > 0) {
-											tagsP.innerHTML += ", ";
-										}
-										tagsP.innerHTML += map.tags[i].tag;
-									}
-								}
-								if (map.ohsGdocId != null) {
-									var ohsDiv = createDiv({});
-									parentElem.appendChild(ohsDiv);
-									/*ohsDiv.appendChild(createSpan({
-										class: "ohsIcon",
-										innerHTML: "OHS"
-									}));*/
-									
-									ohsDiv.appendChild(createA({
-										innerHTML: "Create OHS Game",
-										id: "createOhsLink",
-										class: "createOhsLink",
-										href: "/ohs?HeroscapeMap="+map.id+"&create=y",
-										target: "_blank"}));
-								}
-								if (map.imageUrl != null) {
-									parentElem.appendChild(createImg({
-										src: map.imageUrl,
-
-										class: "highlightMap"}));
-								}
-							},
-							{joins: {
-								"HeroscapeMapSet.mapID": {
-									"terrainSetID": {}
-								},
-								"HeroscapeMapTagLink.mapID": {
-									"tagID": {}
-								}
-							}}
-						);
-				</script>
-				</div>
 				
-				<div class='section'>
+				
+				<!--<div class='section'>
 					<h2>Glyphs</h2>
 					<a href='https://heroscape.org/map/glyph/'>Glyphs</a>
-				</div>
+				</div>-->
+				
+				<h2>Conventions</h2>
 				
 				<div class='section'>
-					<h2>Tournament Format Glossary</h2>
-					<a href='https://heroscape.org/events/tournament/format-glossary'>Tournament Format Glossary</a>
-				</div>
-				
-				<div class='section'>
-					<h2>Conventions</h2>
-					<div id='Conventions'></div>
+					<h3>Current</h3>
+					<div id='CurrentConventions'></div>
 					<script>
 						Convention.load(
-							{endAfter: today},
+							{startBefore: today,
+								endAfter: today},
 							function (conventions) {
-								var parentElem = document.getElementById("Conventions");
+								var parentElem = document.getElementById("CurrentConventions");
 								for (let i = 0; i < conventions.length; i++) {
 									const convention = conventions[i];
 									var newDiv = createDiv({});
@@ -327,31 +272,24 @@
 				</div>
 				
 				<div class='section'>
-					<h2>Alt Versions</h2>
-					<div id='AltVersions'></div>
+					<h3>Upcoming</h3>
+					<div id='UpcomingConventions'></div>
 					<script>
-						FigureSet.load(
-							{"public": true},
-							function (figureSets) {
-								var parentElem = document.getElementById("AltVersions");
-								for (let i = 0; i < figureSets.length; i++) {
-									const figureSet = figureSets[i];
-									//if (figureSet.sDomain.length > 0) {
-										var newDiv = createDiv({});
-										parentElem.appendChild(newDiv);
-										
-										const figureSetUrl = figureSet.sDomain.length > 0
-											? "https://"+figureSet.sDomain + ".heroscape.org"
-											: "https://heroscape.org";
-										
-										newDiv.appendChild(createA({
-											href: figureSetUrl, 
-											innerHTML: figureSet.name}));
-									//}
+						Convention.load(
+							{startAfter: today},
+							function (conventions) {
+								var parentElem = document.getElementById("UpcomingConventions");
+								for (let i = 0; i < conventions.length; i++) {
+									const convention = conventions[i];
+									var newDiv = createDiv({});
+									parentElem.appendChild(newDiv);
+									newDiv.appendChild(createA({
+										href: "/events/convention/?Convention="+convention.id, 
+										innerHTML: convention.name}));
 								}
 							},
 							{joins: {
-								
+								"Season.leagueID": {}
 							}}
 						);
 					</script>
@@ -360,6 +298,127 @@
 			</div>
 			
 			
+			
+			<div class='fullWidthSection'>
+				<h2>Highlighted Map</h2>
+				<div id='Map'></div>
+				<script>
+					HeroscapeMap.load(
+						{},
+						function (maps) {
+							const mapIdx = Math.floor(Math.random() * maps.length);
+							const map = maps[mapIdx];
+							var parentElem = document.getElementById("Map");
+							
+							if (map.imageUrl != null) {
+								parentElem.appendChild(createImg({
+									src: map.imageUrl,
+									class: "highlightMap"}));
+							}
+							
+							var rightColumnDiv = createDiv({class: 'highlightMapInfo'});
+							parentElem.appendChild(rightColumnDiv);
+							
+							rightColumnDiv.appendChild(createH3({
+								innerHTML: map.name,
+								class: "mapName"}));
+							if (map.authorName != null) {
+								var authorP = createP({innerHTML: "By ", id: "mapUserName"});
+								rightColumnDiv.appendChild(authorP);
+								authorP.appendChild(createA({
+									href: "/user/?userName="+map.authorName,
+									target: "_blank",
+									innerHTML: map.authorName
+								}));
+							}
+							if (map.buildInstructionsUrl != null) {
+								rightColumnDiv.appendChild(createA({
+									innerHTML: "Build Instructions", 
+									href: map.buildInstructionsUrl}));
+							}
+							if (map.numberOfPlayers != null) {
+								rightColumnDiv.appendChild(createP({innerHTML: map.numberOfPlayers + " Players"}));
+							}
+							if (map.heroscapeMapSets.length > 0) {
+								var setsP = createP({innerHTML: ""});
+								rightColumnDiv.appendChild(setsP);
+								for (let i = 0; i < map.heroscapeMapSets.length; i++) {
+									if (i > 0) {
+										setsP.innerHTML += ", ";
+									}
+									setsP.innerHTML += map.heroscapeMapSets[i].terrainSet.abbreviation + 
+										" x" + map.heroscapeMapSets[i].quantity;
+								}
+							}
+							if (map.tags.length > 0) {
+								var tagsP = createP({innerHTML: "Tags: "});
+								rightColumnDiv.appendChild(tagsP);
+								for (let i = 0; i < map.tags.length; i++) {
+									if (i > 0) {
+										tagsP.innerHTML += ", ";
+									}
+									tagsP.innerHTML += map.tags[i].tag;
+								}
+							}
+							if (map.ohsGdocId != null) {
+								//var ohsDiv = createDiv({});
+								//rightColumnDiv.appendChild(ohsDiv);
+								
+								rightColumnDiv.appendChild(createA({
+									innerHTML: "Create OHS Game",
+									id: "createOhsLink",
+									href: "/ohs?HeroscapeMap="+map.id+"&create=y",
+									target: "_blank"}));
+							}
+						},
+						{joins: {
+							"HeroscapeMapSet.mapID": {
+								"terrainSetID": {}
+							},
+							"HeroscapeMapTagLink.mapID": {
+								"tagID": {}
+							}
+						}}
+					);
+				</script>
+			</div>
+			
+			<!--<div class='fullWidthSection'>
+				<a href='https://heroscape.org/events/tournament/format-glossary'>Tournament Format Glossary</a>
+			</div>-->
+			
+			<div class='fullWidthSection'>
+				<h2>Alt Versions</h2>
+				<div id='AltVersions'></div>
+				<script>
+					FigureSet.load(
+						{"public": true},
+						function (figureSets) {
+							var parentElem = document.getElementById("AltVersions");
+							for (let i = 0; i < figureSets.length; i++) {
+								const figureSet = figureSets[i];
+								//if (figureSet.sDomain.length > 0) {
+									var newDiv = createDiv({
+										class: "altVersion"
+									});
+									parentElem.appendChild(newDiv);
+									
+									const figureSetUrl = figureSet.sDomain.length > 0
+										? "https://"+figureSet.sDomain + ".heroscape.org"
+										: "https://heroscape.org";
+									
+									newDiv.appendChild(createA({
+										href: figureSetUrl, 
+										innerHTML: figureSet.name}));
+								//}
+							}
+						},
+						{joins: {
+							
+						}}
+					);
+				</script>
+			</div>
 		</article>
 	</div>
 	

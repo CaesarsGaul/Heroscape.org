@@ -135,6 +135,12 @@ class Card extends HS_DatabaseObject {
 				$clientLinkObj->childClassName::create($clientLinkObj);
 			}
 		}
+		if (isset($clientDataObj->playerArmyCards)) {
+			foreach ($clientDataObj->playerArmyCards as $clientLinkObj) {
+				$clientLinkObj->card = $this;
+				$clientLinkObj->childClassName::create($clientLinkObj);
+			}
+		}
 	}
 
 	/* Public Static Functions */
@@ -318,7 +324,7 @@ class Card extends HS_DatabaseObject {
 	}
 
 	public static function getNTo1LinkClasses() {
-		return array("DeltaUpdateCost" => "cardID", "CardPowerRanking" => "cardID");
+		return array("DeltaUpdateCost" => "cardID", "CardPowerRanking" => "cardID", "PlayerArmyCard" => "cardID");
 	}
 
 	public static function getForeignKeys() {
@@ -401,6 +407,9 @@ class Card extends HS_DatabaseObject {
 		}
 		if (CardPowerRanking::countEntries(array("CardPowerRanking.cardID" => $this->id)) > 0) {
 			return "Unable to delete Card because one or more Card Power Ranking is dependent on it.";
+		}
+		if (PlayerArmyCard::countEntries(array("PlayerArmyCard.cardID" => $this->id)) > 0) {
+			return "Unable to delete Card because one or more Player Army Card is dependent on it.";
 		}
 		
 		// N-M Links
@@ -578,6 +587,18 @@ class Card extends HS_DatabaseObject {
 			foreach ($clientDataObj->cardPowerRankings as $clientLinkObj) {
 				if (isset($clientLinkObj->id)) {
 					$linkObj = CardPowerRanking::fromDB($clientLinkObj->id);
+					$linkObj->updateInDB($clientLinkObj);
+				} else {
+					$clientLinkObj->card = $this;
+					$clientLinkObj->childClassName::create($clientLinkObj);
+				}
+			}
+		}
+		if (isset($clientDataObj->playerArmyCards) &&
+				isset($clientDataObj->updateNto1) && $clientDataObj->updateNto1) {
+			foreach ($clientDataObj->playerArmyCards as $clientLinkObj) {
+				if (isset($clientLinkObj->id)) {
+					$linkObj = PlayerArmyCard::fromDB($clientLinkObj->id);
 					$linkObj->updateInDB($clientLinkObj);
 				} else {
 					$clientLinkObj->card = $this;

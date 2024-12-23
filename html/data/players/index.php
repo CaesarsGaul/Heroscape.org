@@ -3,14 +3,27 @@
 <head>
 	<?php require_once("/var/www/Application/Templates/Head.php"); ?>
 
-	<title>Heroscape.org Software</title>
+	<title>Data | Player Rankings</title>
 	
 	<!-- CSS -->
 	<!--<link rel="stylesheet" type="text/css" href="/css/TODO.css">-->
 	<style>
+		#StandingsTable {
+			margin: auto;
+		}
 		
-		.playerSpan {
-			display: block;
+		#StandingsTable th {
+			padding-left: 15px;
+			padding-right: 15px;
+		}
+		
+		#StandingsTable td {
+			max-width: 200px;
+		}
+		
+		#StandingsTable td a {
+			text-decoration: none;
+			color: inherit;
 		}
 	</style>
 	
@@ -23,9 +36,9 @@
 	<script>
 		const today = datetimeToString(new Date());
 		
-		var players = {};
+		//var players = {};
 		
-		function calculateElo() {
+		/*function calculateElo() {
 			for (let i = 0; i < User.list.length; i++) {
 				players[User.list[i].id] = {
 					user: User.list[i],
@@ -46,7 +59,7 @@
 							const gamePlayer2 = game.heroscapeGamePlayers[1];
 							
 							if (gamePlayer1.player.user != null &&
-									gamePlayer2.player.user != null) {										
+									gamePlayer2.player.user != null) {
 								const user1 = gamePlayer1.player.user;
 								const user2 = gamePlayer2.player.user;
 								
@@ -68,9 +81,9 @@
 					}
 				}
 			}
-		}
+		}*/
 		
-		function displayElo() {
+		/*function displayElo() {
 			var players2 = [];
 			for (const [key, value] of Object.entries(players)) {
 				players2.push(value);
@@ -114,6 +127,45 @@
 					innerHTML: user.userName + " : ELO = " + elo
 				}));
 				*/
+			/*}
+		}*/
+		
+		function displayStandings(users) {
+			var table = document.getElementById("StandingsTable");
+			
+			var playerCount = 1;
+			for (let i = 0; i < users.length; i++) {
+				const user = users[i];
+				
+				// Some users have requested to be excluded from the list 
+				if (user.id == 137) { // Matthias
+					continue;
+				}
+				
+				var tr = createTr({});
+				table.appendChild(tr);
+				
+				tr.appendChild(createTd({innerHTML: playerCount}));
+				
+				var userTd = createTd({});
+				userTd.appendChild(createA({
+					href: "https://heroscape.org/user?userName="+user.userName,
+					target: "_blank",
+					innerHTML: user.userName}
+				));
+				tr.appendChild(userTd);
+				
+				
+				tr.appendChild(createTd({innerHTML: user.elo}));
+				tr.appendChild(createTd({innerHTML: user.W}));
+				tr.appendChild(createTd({innerHTML: user.L}));
+				tr.appendChild(createTd({innerHTML: user.WinPercent}));
+				
+				playerCount++;
+				
+				if (playerCount > 100) {
+					break;
+				}
 			}
 		}
 		
@@ -122,37 +174,31 @@
 <body><div id='content'>
 
 	<?php include(Nav); ?>
+	<?php include(DataNav); ?>
 
 	<div id='pageContent'>
-		<h1>ELO Ratings</h1>
+		<h1>Player Rankings</h1>
 		<article>
-			<div id='SearchDiv'>
-				
-			</div>	
-		
-			<div id='ResultsDiv'>Loading...</div>
+			<div id='Standings'>
+				<table id='StandingsTable'>
+					<tr>
+						<th></th>
+						<th>User</th>
+						<th>ELO</th>
+						<th>W</th>
+						<th>L</th>
+						<th>Win %</th>
+					<tr>
+				</table>
+			</div>
 
 			<script>
-				HeroscapeTournament.load(
-					{startBefore: today},
-					function (tournaments) {
-						calculateElo();
-						displayElo();
+				StandingsView.load(
+					{},
+					function (users) {
+						displayStandings(users);
 					},
-					{joins: {
-						"Player.tournamentID": {
-							"PlayerArmy.playerID": {},
-							"userID": {}
-						},
-						"Round.tournamentID": {
-							"HeroscapeGame.roundID": {
-								/*"mapID": {},*/
-								"HeroscapeGamePlayer.gameID": {
-									"playerID": {}
-								}
-							}
-						}
-					}}
+					{joins: {}}
 				);
 			</script>
 				

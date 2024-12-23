@@ -50,6 +50,13 @@ class PlayerArmy extends HS_DatabaseObject {
 	}
 
 	protected function createInitialLinks($clientDataObj) {
+		// Create 1-N Links
+		if (isset($clientDataObj->playerArmyCards)) {
+			foreach ($clientDataObj->playerArmyCards as $clientLinkObj) {
+				$clientLinkObj->playerArmy = $this;
+				$clientLinkObj->childClassName::create($clientLinkObj);
+			}
+		}
 	}
 
 	/* Public Static Functions */
@@ -115,7 +122,7 @@ class PlayerArmy extends HS_DatabaseObject {
 	}
 
 	public static function getNTo1LinkClasses() {
-		return array();
+		return array("PlayerArmyCard" => "playerArmyID");
 	}
 
 	public static function getForeignKeys() {
@@ -231,6 +238,9 @@ class PlayerArmy extends HS_DatabaseObject {
 
 	protected function deleteLinks() {
 		// N-1 Links
+		if (PlayerArmyCard::countEntries(array("PlayerArmyCard.playerArmyID" => $this->id)) > 0) {
+			return "Unable to delete Player Army because one or more Player Army Card is dependent on it.";
+		}
 		
 		// N-M Links
 		return "";
@@ -272,6 +282,21 @@ class PlayerArmy extends HS_DatabaseObject {
 				array("army", "armyNumber", "playerID"),
 				array($this->army, $this->armyNumber, $this->playerID))->
 			where(array("id" => $this->id)));
+		
+		// Update 1-N Links
+		if (isset($clientDataObj->playerArmyCards) &&
+				isset($clientDataObj->updateNto1) && $clientDataObj->updateNto1) {
+			foreach ($clientDataObj->playerArmyCards as $clientLinkObj) {
+				if (isset($clientLinkObj->id)) {
+					$linkObj = PlayerArmyCard::fromDB($clientLinkObj->id);
+					$linkObj->updateInDB($clientLinkObj);
+				} else {
+					$clientLinkObj->playerArmy = $this;
+					$clientLinkObj->childClassName::create($clientLinkObj);
+				}
+			}
+		}
+		
 		
 		return "";
 	}

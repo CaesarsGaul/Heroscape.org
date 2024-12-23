@@ -10,6 +10,7 @@ class User extends HS_DatabaseObject {
 	protected $siteAdmin; // Boolean
 	protected $verified; // Boolean
 	protected $verificationKey; // String
+	protected $elo; // Int
 
 	/* Static 'Constructors' */
 	
@@ -208,6 +209,9 @@ class User extends HS_DatabaseObject {
 			if (isset($whereData["verificationKey"])) {
 				$whereArray["{$prefix}User.verificationKey"] = $whereData["verificationKey"];
 			}
+			if (isset($whereData["elo"])) {
+				$whereArray["{$prefix}User.elo"] = $whereData["elo"];
+			}
 		}
 		
 		
@@ -245,7 +249,7 @@ class User extends HS_DatabaseObject {
 	}
 
 	public static function getColumnNames() {
-		return array("id", "userName", "email", "phoneNumber", "firstName", "lastName", "siteAdmin", "verified", "verificationKey");
+		return array("id", "userName", "email", "phoneNumber", "firstName", "lastName", "siteAdmin", "verified", "verificationKey", "elo");
 	}
 
 	public static function getActionNames() {
@@ -396,6 +400,9 @@ class User extends HS_DatabaseObject {
 			if (property_exists($clientDataObj, "verificationKey")) {
 				$this->verificationKey = $clientDataObj->verificationKey;
 			}
+			if (property_exists($clientDataObj, "elo")) {
+				$this->elo = $clientDataObj->elo;
+			}
 		}
 		
 		// Update Foreign Key Columns
@@ -404,8 +411,8 @@ class User extends HS_DatabaseObject {
 		
 		$this->dbUpdate((new MySQLBuilder())->
 			update("User",
-				array("userName", "email", "phoneNumber", "firstName", "lastName", "siteAdmin", "verified", "verificationKey"),
-				array($this->userName, $this->email, $this->phoneNumber, $this->firstName, $this->lastName, $this->siteAdmin, $this->verified, $this->verificationKey))->
+				array("userName", "email", "phoneNumber", "firstName", "lastName", "siteAdmin", "verified", "verificationKey", "elo"),
+				array($this->userName, $this->email, $this->phoneNumber, $this->firstName, $this->lastName, $this->siteAdmin, $this->verified, $this->verificationKey, $this->elo))->
 			where(array("id" => $this->id)));
 		
 		// Update 1-N Links

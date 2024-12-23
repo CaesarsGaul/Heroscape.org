@@ -1176,6 +1176,23 @@ io.on('connection', (socket) => {
 		});		
 	});
 	
+	socket.on('deletePlayerArmyCards', (objStr) => {
+		var obj = JSON.parse(objStr);
+		var playerArmyIds = obj.playerArmyIds;
+		for (let i = 0; i < playerArmyIds.length; i++) {
+			const playerArmyId = playerArmyIds[i];
+			dbConnection.query(
+					"DELETE FROM `PlayerArmyCard` WHERE `playerArmyID`=?",
+					[playerArmyId],
+					(error, results, fields) => {
+				if (error) {
+					// TODO
+					return;
+				}
+			});
+		}
+	});
+
 	socket.on('createNonUserPlayer', (objStr) => {
 		if ( ! isAdmin) {
 			return;
@@ -1998,6 +2015,7 @@ io.on('connection', (socket) => {
 			}
 			io.to("Tournament_"+currentTournament.id)
 				.emit("tournamentFinished", JSON.stringify({}));
+			_updatePlayerRankings();
 		});
 	});
 	
@@ -2233,7 +2251,157 @@ io.on('connection', (socket) => {
 	
 	
 	
+	/** Player Rankings **/
 	
+	socket.on('checkSiteAdmin', (objStr) => {
+		checkLoginAndSetAdmin(5, null);
+	});
+	
+	socket.on('updatePlayerRankings', (objStr) => {
+		if ( ! isAdmin) {
+			return;
+		}
+		_updatePlayerRankings()
+	});
+	
+	function _updatePlayerRankings() {
+		_updatePlayerELO();
+		_updatePlayerTTT();
+	}
+	
+	function _updatePlayerELO() {
+		dbConnection.query(
+				"SELECT `User`.`id`, `User`.`userName` FROM `User`;",
+				[],
+				(error, results, fields) => {
+			if (error) {
+				return;
+			} 
+			
+			var users = {};
+			for (let i = 0; i < results.length; i++) {
+				users[results[i].id] = {
+					/*user: {
+						id: results[i].id,
+						userName: results[i].userName
+					},*/
+					elo: 1600
+				};
+			}
+						
+			dbConnection.query(
+					"SELECT * FROM `Tournament` WHERE `teamSize` = 1 AND `maxNumPlayersPerGame` = 2 AND `started` = 1 AND `finished` = 1 ORDER BY `startTime` ASC;",
+					[],
+					(error, results, fields) => {
+				if (error) {
+					return;
+				} 
+				for (let i = 0; i < results.length; i++) {
+					const tournament = results[i];
+					const lastTournament = (i == results.length-1);
+					
+					dbConnection.query(
+							"SELECT * FROM `Round` WHERE `tournamentID`=?;",
+							[tournament.id],
+							(error, results, fields) => {
+						if (error) {
+							return;
+						} 
+						for (let j = 0; j < results.length; j++) {
+							const round = results[j];
+							const lastRound = (j == results.length-1);
+							
+							dbConnection.query(
+									"SELECT * FROM `Game` " +
+										"INNER JOIN `HeroscapeGame` ON `HeroscapeGame`.`gameID` = `Game`.`id` " +
+										"WHERE `roundID`=?;",
+									[round.id],
+									(error, results, fields) => {
+								if (error) {
+									return;
+								} 
+								for (let k = 0; k < results.length; k++) {
+									const game = results[k];
+									const lastGame = (k == results.length-1);
+														
+									dbConnection.query(
+											"SELECT * FROM `HeroscapeGamePlayer` " +
+												"INNER JOIN `Player` ON `Player`.`id` = `HeroscapeGamePlayer`.`playerID` " +
+												"WHERE `gameID`=?;",
+											[game.id],
+											(error, results, fields) => {
+										if (error) {
+											return;
+										} 
+										if (results.length == 2) {
+										
+											const gamePlayer1 = results[0];
+											const gamePlayer2 = results[1];
+											
+											if (gamePlayer1.userID != null && gamePlayer2.userID != null) {
+												
+												//const user1 = users[gamePlayer1.userID];
+												//const user2 = users[gamePlayer2.userID];
+												
+												const user1Elo = users[gamePlayer1.userID].elo;
+												const user2Elo = users[gamePlayer2.userID].elo;
+												
+												users[gamePlayer1.userID].elo = Elo.getNewRating(user1Elo, user2Elo, gamePlayer1.result / 2.0);
+												users[gamePlayer2.userID].elo = Elo.getNewRating(user2Elo, user1Elo, gamePlayer2.result / 2.0);
+											}
+										}
+																				
+										if (lastTournament && lastRound && lastGame) {
+											for (const userID in users) {
+												const userEntry = users[userID];
+												//const user = userEntry.user;
+												dbConnection.query(
+														"UPDATE `User` SET `elo`=? WHERE `id`=?",
+														[userEntry.elo, userID],
+														(error, results, fields) => {
+													if (error) {
+														// TODO : Handle error
+													}
+												});
+											}
+										}
+									});
+								}
+							});
+						}
+					});
+				}
+			});
+		});
+	}
+	
+	Elo = (function() {
+		function getRatingDelta(myRating, opponentRating, myGameResult) {
+			if ([0, 0.5, 1].indexOf(myGameResult) === -1) {
+				return null;
+			}
+
+			var myChanceToWin = 1 / ( 1 + Math.pow(10, (opponentRating - myRating) / 400));
+
+			const kFactor = 10; // was 32 
+			return Math.round(kFactor * (myGameResult - myChanceToWin));
+		}
+
+		function getNewRating(myRating, opponentRating, myGameResult) {
+			return myRating + getRatingDelta(myRating, opponentRating, myGameResult);
+		}
+
+		return {
+			getRatingDelta: getRatingDelta,
+			getNewRating: getNewRating
+		};
+	})();
+	
+	function _updatePlayerTTT() {
+		
+		// TODO 
+		
+	}
 	
 	
 	/** Create Round Helper Functions **/
@@ -2260,8 +2428,10 @@ io.on('connection', (socket) => {
 			var players = results;
 						
 			dbConnection.query(
-					"SELECT `Player`.`id`, `PlayerArmy`.`army`, `PlayerArmy`.`armyNumber` FROM `PlayerArmy` " +
+					"SELECT `Player`.`id`, `PlayerArmy`.`army`, `PlayerArmy`.`armyNumber`, `Card`.`name`, `PlayerArmyCard`.`quantity` FROM `PlayerArmy` " +
 						"INNER JOIN `Player` ON `Player`.`id` = `PlayerArmy`.`playerID` " +
+						"LEFT JOIN `PlayerArmyCard` ON `PlayerArmyCard`.`playerArmyID` = `PlayerArmy`.`id` " +
+						"LEFT JOIN `Card` ON `Card`.`id` = `PlayerArmyCard`.`cardID` " +  
 						"WHERE `tournamentID`=? ",
 					[tournament.id],
 					(error, results, fields) => {
@@ -2275,7 +2445,16 @@ io.on('connection', (socket) => {
 					player.armies = [];
 					for (let j = 0; j < results.length; j++ ) {
 						if (results[j].id == player.id) {
-							player.armies[results[j].armyNumber-1] = results[j].army;
+							if (results[j].army != null) {
+								player.armies[results[j].armyNumber-1] = results[j].army;
+							} else {
+								if (player.armies[results[j].armyNumber-1] == undefined) {
+									player.armies[results[j].armyNumber-1] = "";
+								} else if (player.armies[results[j].armyNumber-1].length > 0) {
+									player.armies[results[j].armyNumber-1] += ", ";
+								}
+								player.armies[results[j].armyNumber-1] += results[j].name + " x" + results[j].quantity;
+							}
 						}
 					}
 				}
@@ -2940,7 +3119,11 @@ io.on('connection', (socket) => {
 		const subject = currentTournament.name + " " + round.name + " Matchup";
 		if (players.length == 1) {
 			game.heroscapeGamePlayers[0].result = 2;
-			sendEmail(player.email, subject, "You have a bye.");
+			var body = "You have a bye.";
+			sendEmail(player.email, subject, body);
+			if (currentTournament.teamSize > 1) {
+				emailTeammates(player, subject, body);
+			}
 		} else {		
 			var body = "";
 			
@@ -2991,10 +3174,30 @@ io.on('connection', (socket) => {
 				} 
 				const tournamentLink = "https://heroscape.org/events/tournament/?Tournament="+currentTournament.id;
 				body += "<br><br><br>Tournament Link:<br><a href='"+tournamentLink+"'>"+tournamentLink+"</a>";
-				sendEmail(player.email, subject, body);		
+				sendEmail(player.email, subject, body);
+				if (currentTournament.teamSize > 1) {
+					emailTeammates(player, subject, body);
+				}
 			});		
 		}
 		_alertGamePlayers2(round, game, players, playerIdx+1, map);
+	}
+	
+	function emailTeammates(player, subject, body) {
+		dbConnection.query(
+				"SELECT `User`.`id`, `User`.`email` FROM `Player` INNER JOIN `User` ON `User`.`id` = `Player`.`userID` WHERE `teamCaptainID`=?",
+				[player.id],
+				(error, results, fields) => {
+			if (error) {
+				// TODO - Handle error
+				return;
+			}
+			for (let i = 0; i < results.length; i++) {
+				const result = results[i];
+				const email = result.email;
+				sendEmail(email, subject, body);
+			}
+		});	
 	}
 	
 	
@@ -3037,7 +3240,7 @@ io.on('connection', (socket) => {
 			return;
 		}
 		dbConnection.query(
-				"SELECT `User`.`id`, `User`.`userName` FROM `User` " +
+				"SELECT `User`.`id`, `User`.`userName`, `User`.`siteAdmin` FROM `User` " +
 					"INNER JOIN `LoginCredentials` ON `LoginCredentials`.`userID` = `User`.`id` " +
 					"WHERE (`cookie` = ?);",
 				[loginCookie],
@@ -3062,6 +3265,11 @@ io.on('connection', (socket) => {
 					break;
 				case 4:
 					checkAndSetLeagueAdmin(user, currentSeason.league, callbackFcn);
+					break;
+				case 5:
+					if (user.siteAdmin) {
+						isAdmin = true;
+					}
 					break;
 			}
 		});

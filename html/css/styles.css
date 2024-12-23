@@ -218,6 +218,7 @@ h1 {
 }
 .toggleSwitch {
 	display: inline-block;
+	position: relative;
 	width: 170px;
 	border: 1px solid black;
 	border-radius: 5px;

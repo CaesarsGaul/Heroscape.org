@@ -3088,6 +3088,716 @@ class ConventionTournamentResultsView extends DatabaseObject {
 ConventionTournamentResultsView.list = [];
 ConventionTournamentResultsView.options = [];
 
+class FigureUsageView extends DatabaseObject {
+	constructor(jsonObj) {
+		if (FigureUsageView.exists(jsonObj)) {
+			return FigureUsageView.get(jsonObj);
+		}
+		
+		super(jsonObj);
+		
+		// Table Columns
+		this.id = null; // Int
+		this.PlayerArmyCard_id = null; // Int
+		this.PlayerArmyCard_playerArmyID = null; // Int
+		this.PlayerArmyCard_cardID = null; // Int
+		this.PlayerArmyCard_quantity = null; // Int
+		this.Card_id = null; // Int
+		this.Card_name = null; // String
+		this.PlayerArmy_id = null; // Int
+		this.PlayerArmy_armyNumber = null; // Int
+		this.PlayerArmy_playerID = null; // Int
+		this.PlayerArmy_army = null; // String
+		this.Player_id = null; // Int
+		this.Player_name = null; // String
+		this.Player_userID = null; // Int
+		this.Player_tournamentID = null; // Int
+		this.Player_active = null; // Boolean
+		this.Tournament_id = null; // Int
+		this.Tournament_name = null; // String
+		this.Tournament_startTime = null; // Datetime
+		this.Tournament_endDate = null; // Date
+		this.Tournament_started = null; // Boolean
+		this.Tournament_finished = null; // Boolean
+		this.Tournament_maxNumPlayersPerGame = null; // Int
+		this.Tournament_figureSetID = null; // Int
+		this.HeroscapeTournament_tournamentID = null; // Int
+		this.HeroscapeTournament_numArmies = null; // Int
+		this.HeroscapeTournament_useDeltaPricing = null; // Boolean
+		this.HeroscapeTournament_includeVC = null; // Boolean
+		this.HeroscapeTournament_includeMarvel = null; // Boolean
+		
+		// Links
+		this.links = [];
+		
+		if (jsonObj !== undefined && jsonObj !== null) {
+			// Static Variables
+			FigureUsageView.list.push(this);
+			
+			// Instance Variables
+			
+			// Table Columns
+			this.id = jsonObj.id;
+			this.PlayerArmyCard_id = jsonObj.PlayerArmyCard_id;
+			this.PlayerArmyCard_playerArmyID = jsonObj.PlayerArmyCard_playerArmyID;
+			this.PlayerArmyCard_cardID = jsonObj.PlayerArmyCard_cardID;
+			this.PlayerArmyCard_quantity = jsonObj.PlayerArmyCard_quantity;
+			this.Card_id = jsonObj.Card_id;
+			this.Card_name = jsonObj.Card_name;
+			this.PlayerArmy_id = jsonObj.PlayerArmy_id;
+			this.PlayerArmy_armyNumber = jsonObj.PlayerArmy_armyNumber;
+			this.PlayerArmy_playerID = jsonObj.PlayerArmy_playerID;
+			this.PlayerArmy_army = jsonObj.PlayerArmy_army;
+			this.Player_id = jsonObj.Player_id;
+			this.Player_name = jsonObj.Player_name;
+			this.Player_userID = jsonObj.Player_userID;
+			this.Player_tournamentID = jsonObj.Player_tournamentID;
+			this.Player_active = jsonObj.Player_active;
+			this.Tournament_id = jsonObj.Tournament_id;
+			this.Tournament_name = jsonObj.Tournament_name;
+			this.Tournament_startTime = jsonObj.Tournament_startTime;
+			this.Tournament_endDate = jsonObj.Tournament_endDate;
+			this.Tournament_started = jsonObj.Tournament_started;
+			this.Tournament_finished = jsonObj.Tournament_finished;
+			this.Tournament_maxNumPlayersPerGame = jsonObj.Tournament_maxNumPlayersPerGame;
+			this.Tournament_figureSetID = jsonObj.Tournament_figureSetID;
+			this.HeroscapeTournament_tournamentID = jsonObj.HeroscapeTournament_tournamentID;
+			this.HeroscapeTournament_numArmies = jsonObj.HeroscapeTournament_numArmies;
+			this.HeroscapeTournament_useDeltaPricing = jsonObj.HeroscapeTournament_useDeltaPricing;
+			this.HeroscapeTournament_includeVC = jsonObj.HeroscapeTournament_includeVC;
+			this.HeroscapeTournament_includeMarvel = jsonObj.HeroscapeTournament_includeMarvel;
+			
+			// Links
+			
+			FigureUsageView.orderBy();
+		}
+	}
+
+	static getOrderBy() {
+		return [];
+	}
+
+	static label() {
+		return "Figure Usage View";
+	}
+
+	static primaryKeys() {
+		return ["id"];
+	}
+
+	static primaryKeysWithChildKeys() {
+		return ["id"];
+	}
+
+	static getRequiredFields() {
+		return ["id", "PlayerArmyCard_id", "PlayerArmyCard_playerArmyID", "PlayerArmyCard_cardID", "PlayerArmyCard_quantity", "Card_id", "Card_name", "PlayerArmy_id", "PlayerArmy_armyNumber", "PlayerArmy_playerID", "PlayerArmy_army", "Player_id", "Player_name", "Player_userID", "Player_tournamentID", "Player_active", "Tournament_id", "Tournament_name", "Tournament_startTime", "Tournament_endDate", "Tournament_started", "Tournament_finished", "Tournament_maxNumPlayersPerGame", "Tournament_figureSetID", "HeroscapeTournament_tournamentID", "HeroscapeTournament_numArmies", "HeroscapeTournament_useDeltaPricing", "HeroscapeTournament_includeVC", "HeroscapeTournament_includeMarvel"];
+	}
+
+	static getAllFields() {
+		return ["id", "PlayerArmyCard_id", "PlayerArmyCard_playerArmyID", "PlayerArmyCard_cardID", "PlayerArmyCard_quantity", "Card_id", "Card_name", "PlayerArmy_id", "PlayerArmy_armyNumber", "PlayerArmy_playerID", "PlayerArmy_army", "Player_id", "Player_name", "Player_userID", "Player_tournamentID", "Player_active", "Tournament_id", "Tournament_name", "Tournament_startTime", "Tournament_endDate", "Tournament_started", "Tournament_finished", "Tournament_maxNumPlayersPerGame", "Tournament_figureSetID", "HeroscapeTournament_tournamentID", "HeroscapeTournament_numArmies", "HeroscapeTournament_useDeltaPricing", "HeroscapeTournament_includeVC", "HeroscapeTournament_includeMarvel"];
+	}
+
+	static getNtoMLinkClasses() {
+		return {};
+	}
+
+	static isAbstract() {
+		return false;
+	}
+
+	static editableOptions() {
+		return [""];
+	}
+
+	static getClassOfColumn(columnName) {
+		if (["id", "PlayerArmyCard_id", "PlayerArmyCard_playerArmyID", "PlayerArmyCard_cardID", "PlayerArmyCard_quantity", "Card_id", "Card_name", "PlayerArmy_id", "PlayerArmy_armyNumber", "PlayerArmy_playerID", "PlayerArmy_army", "Player_id", "Player_name", "Player_userID", "Player_tournamentID", "Player_active", "Tournament_id", "Tournament_name", "Tournament_startTime", "Tournament_endDate", "Tournament_started", "Tournament_finished", "Tournament_maxNumPlayersPerGame", "Tournament_figureSetID", "HeroscapeTournament_tournamentID", "HeroscapeTournament_numArmies", "HeroscapeTournament_useDeltaPricing", "HeroscapeTournament_includeVC", "HeroscapeTournament_includeMarvel"].includes(columnName)) {
+			return FigureUsageView;
+		}
+		return null;
+	}
+
+	static getForeignTableNameByKey(columnName) {
+		switch (columnName) {
+		}
+		return null;
+	}
+
+	static getActionNames() {
+		return [];
+	}
+
+	getAction(actionName) {
+		switch (actionName) {
+			default:
+				return null;
+		}
+	}
+
+	toDisplayString() {
+		return this._TODO_;
+	}
+
+	summary() {
+		return "".substring(0, 147)+'...';
+	}
+
+	selectOption() {
+		return {id: this.id, value: this.toDisplayString(), databaseObj: this, databaseObjProperty: "_TODO_"};
+	}
+
+	selectFilters(property, filterObjects) {
+		switch (property) {
+			case "PlayerArmyCard_id":
+				return null;
+			case "PlayerArmyCard_playerArmy":
+				return null;
+			case "PlayerArmyCard_card":
+				return null;
+			case "PlayerArmyCard_quantity":
+				return null;
+			case "Card_id":
+				return null;
+			case "Card_name":
+				return null;
+			case "PlayerArmy_id":
+				return null;
+			case "PlayerArmy_armyNumber":
+				return null;
+			case "PlayerArmy_player":
+				return null;
+			case "PlayerArmy_army":
+				return null;
+			case "Player_id":
+				return null;
+			case "Player_name":
+				return null;
+			case "Player_user":
+				return null;
+			case "Player_tournament":
+				return null;
+			case "Player_active":
+				return null;
+			case "Tournament_id":
+				return null;
+			case "Tournament_name":
+				return null;
+			case "Tournament_startTime":
+				return null;
+			case "Tournament_endDate":
+				return null;
+			case "Tournament_started":
+				return null;
+			case "Tournament_finished":
+				return null;
+			case "Tournament_maxNumPlayersPerGame":
+				return null;
+			case "Tournament_figureSet":
+				return null;
+			case "HeroscapeTournament_tournament":
+				return null;
+			case "HeroscapeTournament_numArmies":
+				return null;
+			case "HeroscapeTournament_useDeltaPricing":
+				return null;
+			case "HeroscapeTournament_includeVC":
+				return null;
+			case "HeroscapeTournament_includeMarvel":
+				return null;
+			default:
+				return null;
+		}
+	}
+
+	getTooltip(propName) {
+		switch (propName) {
+			case "PlayerArmyCard_id":
+				return ""; // TODO
+			case "PlayerArmyCard_playerArmy":
+				return ""; // TODO
+			case "PlayerArmyCard_card":
+				return ""; // TODO
+			case "PlayerArmyCard_quantity":
+				return ""; // TODO
+			case "Card_id":
+				return ""; // TODO
+			case "Card_name":
+				return ""; // TODO
+			case "PlayerArmy_id":
+				return ""; // TODO
+			case "PlayerArmy_armyNumber":
+				return ""; // TODO
+			case "PlayerArmy_player":
+				return ""; // TODO
+			case "PlayerArmy_army":
+				return ""; // TODO
+			case "Player_id":
+				return ""; // TODO
+			case "Player_name":
+				return ""; // TODO
+			case "Player_user":
+				return ""; // TODO
+			case "Player_tournament":
+				return ""; // TODO
+			case "Player_active":
+				return ""; // TODO
+			case "Tournament_id":
+				return ""; // TODO
+			case "Tournament_name":
+				return ""; // TODO
+			case "Tournament_startTime":
+				return ""; // TODO
+			case "Tournament_endDate":
+				return ""; // TODO
+			case "Tournament_started":
+				return ""; // TODO
+			case "Tournament_finished":
+				return ""; // TODO
+			case "Tournament_maxNumPlayersPerGame":
+				return ""; // TODO
+			case "Tournament_figureSet":
+				return ""; // TODO
+			case "HeroscapeTournament_tournament":
+				return ""; // TODO
+			case "HeroscapeTournament_numArmies":
+				return ""; // TODO
+			case "HeroscapeTournament_useDeltaPricing":
+				return ""; // TODO
+			case "HeroscapeTournament_includeVC":
+				return ""; // TODO
+			case "HeroscapeTournament_includeMarvel":
+				return ""; // TODO
+			default:
+				return "";
+		}
+	}
+
+	dataForDisplay(forEditing, forCreateForm, filterObjects) {
+		var data = [];
+		
+		if (FigureUsageView.includeField("PlayerArmyCard_id", forEditing, forCreateForm)) {
+			var fieldData = {};
+			fieldData["propertyName"] = "PlayerArmyCard_id";
+			fieldData["elemType"] = "input";
+			fieldData["inputType"] = "number";
+			fieldData["inputNumber_step"] = "1";
+			fieldData["label"] = "Player Army Card_id";
+			if (this.PlayerArmyCard_id !== null) {
+				fieldData["value"] = this.PlayerArmyCard_id;
+			} else {
+				fieldData["inputRequired"] = true;
+			}
+			data.push(fieldData);
+		}
+		
+		if (FigureUsageView.includeField("PlayerArmyCard_playerArmy", forEditing, forCreateForm)) {
+			var fieldData = {};
+			fieldData["propertyName"] = "PlayerArmyCard_playerArmy";
+			fieldData["elemType"] = "input";
+			fieldData["inputType"] = "number";
+			fieldData["inputNumber_step"] = "1";
+			fieldData["label"] = "Player Army Card_player Army ID";
+			if (this.PlayerArmyCard_playerArmy !== null) {
+				fieldData["value"] = this.PlayerArmyCard_playerArmy;
+			} else {
+				fieldData["inputRequired"] = true;
+			}
+			data.push(fieldData);
+		}
+		
+		if (FigureUsageView.includeField("PlayerArmyCard_card", forEditing, forCreateForm)) {
+			var fieldData = {};
+			fieldData["propertyName"] = "PlayerArmyCard_card";
+			fieldData["elemType"] = "input";
+			fieldData["inputType"] = "number";
+			fieldData["inputNumber_step"] = "1";
+			fieldData["label"] = "Player Army Card_card ID";
+			if (this.PlayerArmyCard_card !== null) {
+				fieldData["value"] = this.PlayerArmyCard_card;
+			} else {
+				fieldData["inputRequired"] = true;
+			}
+			data.push(fieldData);
+		}
+		
+		if (FigureUsageView.includeField("PlayerArmyCard_quantity", forEditing, forCreateForm)) {
+			var fieldData = {};
+			fieldData["propertyName"] = "PlayerArmyCard_quantity";
+			fieldData["elemType"] = "input";
+			fieldData["inputType"] = "number";
+			fieldData["inputNumber_step"] = "1";
+			fieldData["label"] = "Player Army Card_quantity";
+			if (this.PlayerArmyCard_quantity !== null) {
+				fieldData["value"] = this.PlayerArmyCard_quantity;
+			} else {
+				fieldData["inputRequired"] = true;
+			}
+			data.push(fieldData);
+		}
+		
+		if (FigureUsageView.includeField("Card_id", forEditing, forCreateForm)) {
+			var fieldData = {};
+			fieldData["propertyName"] = "Card_id";
+			fieldData["elemType"] = "input";
+			fieldData["inputType"] = "number";
+			fieldData["inputNumber_step"] = "1";
+			fieldData["label"] = "Card_id";
+			if (this.Card_id !== null) {
+				fieldData["value"] = this.Card_id;
+			} else {
+				fieldData["inputRequired"] = true;
+			}
+			data.push(fieldData);
+		}
+		
+		if (FigureUsageView.includeField("Card_name", forEditing, forCreateForm)) {
+			var fieldData = {};
+			fieldData["propertyName"] = "Card_name";
+			fieldData["elemType"] = "input";
+			fieldData["inputType"] = "text";
+			fieldData["label"] = "Card_name";
+			if (this.Card_name !== null) {
+				fieldData["value"] = this.Card_name;
+			} else {
+				fieldData["inputRequired"] = true;
+			}
+			data.push(fieldData);
+		}
+		
+		if (FigureUsageView.includeField("PlayerArmy_id", forEditing, forCreateForm)) {
+			var fieldData = {};
+			fieldData["propertyName"] = "PlayerArmy_id";
+			fieldData["elemType"] = "input";
+			fieldData["inputType"] = "number";
+			fieldData["inputNumber_step"] = "1";
+			fieldData["label"] = "Player Army_id";
+			if (this.PlayerArmy_id !== null) {
+				fieldData["value"] = this.PlayerArmy_id;
+			} else {
+				fieldData["inputRequired"] = true;
+			}
+			data.push(fieldData);
+		}
+		
+		if (FigureUsageView.includeField("PlayerArmy_armyNumber", forEditing, forCreateForm)) {
+			var fieldData = {};
+			fieldData["propertyName"] = "PlayerArmy_armyNumber";
+			fieldData["elemType"] = "input";
+			fieldData["inputType"] = "number";
+			fieldData["inputNumber_step"] = "1";
+			fieldData["label"] = "Player Army_army Number";
+			if (this.PlayerArmy_armyNumber !== null) {
+				fieldData["value"] = this.PlayerArmy_armyNumber;
+			} else {
+				fieldData["inputRequired"] = true;
+			}
+			data.push(fieldData);
+		}
+		
+		if (FigureUsageView.includeField("PlayerArmy_player", forEditing, forCreateForm)) {
+			var fieldData = {};
+			fieldData["propertyName"] = "PlayerArmy_player";
+			fieldData["elemType"] = "input";
+			fieldData["inputType"] = "number";
+			fieldData["inputNumber_step"] = "1";
+			fieldData["label"] = "Player Army_player ID";
+			if (this.PlayerArmy_player !== null) {
+				fieldData["value"] = this.PlayerArmy_player;
+			} else {
+				fieldData["inputRequired"] = true;
+			}
+			data.push(fieldData);
+		}
+		
+		if (FigureUsageView.includeField("PlayerArmy_army", forEditing, forCreateForm)) {
+			var fieldData = {};
+			fieldData["propertyName"] = "PlayerArmy_army";
+			fieldData["elemType"] = "input";
+			fieldData["inputType"] = "text";
+			fieldData["label"] = "Player Army_army";
+			if (this.PlayerArmy_army !== null) {
+				fieldData["value"] = this.PlayerArmy_army;
+			} else {
+				fieldData["inputRequired"] = true;
+			}
+			data.push(fieldData);
+		}
+		
+		if (FigureUsageView.includeField("Player_id", forEditing, forCreateForm)) {
+			var fieldData = {};
+			fieldData["propertyName"] = "Player_id";
+			fieldData["elemType"] = "input";
+			fieldData["inputType"] = "number";
+			fieldData["inputNumber_step"] = "1";
+			fieldData["label"] = "Player_id";
+			if (this.Player_id !== null) {
+				fieldData["value"] = this.Player_id;
+			} else {
+				fieldData["inputRequired"] = true;
+			}
+			data.push(fieldData);
+		}
+		
+		if (FigureUsageView.includeField("Player_name", forEditing, forCreateForm)) {
+			var fieldData = {};
+			fieldData["propertyName"] = "Player_name";
+			fieldData["elemType"] = "input";
+			fieldData["inputType"] = "text";
+			fieldData["label"] = "Player_name";
+			if (this.Player_name !== null) {
+				fieldData["value"] = this.Player_name;
+			} else {
+				fieldData["inputRequired"] = true;
+			}
+			data.push(fieldData);
+		}
+		
+		if (FigureUsageView.includeField("Player_user", forEditing, forCreateForm)) {
+			var fieldData = {};
+			fieldData["propertyName"] = "Player_user";
+			fieldData["elemType"] = "input";
+			fieldData["inputType"] = "number";
+			fieldData["inputNumber_step"] = "1";
+			fieldData["label"] = "Player_user ID";
+			if (this.Player_user !== null) {
+				fieldData["value"] = this.Player_user;
+			} else {
+				fieldData["inputRequired"] = true;
+			}
+			data.push(fieldData);
+		}
+		
+		if (FigureUsageView.includeField("Player_tournament", forEditing, forCreateForm)) {
+			var fieldData = {};
+			fieldData["propertyName"] = "Player_tournament";
+			fieldData["elemType"] = "input";
+			fieldData["inputType"] = "number";
+			fieldData["inputNumber_step"] = "1";
+			fieldData["label"] = "Player_tournament ID";
+			if (this.Player_tournament !== null) {
+				fieldData["value"] = this.Player_tournament;
+			} else {
+				fieldData["inputRequired"] = true;
+			}
+			data.push(fieldData);
+		}
+		
+		if (FigureUsageView.includeField("Player_active", forEditing, forCreateForm)) {
+			var fieldData = {};
+			fieldData["propertyName"] = "Player_active";
+			fieldData["elemType"] = "input";
+			fieldData["inputType"] = "checkbox";
+			fieldData["label"] = "Player_active";
+			if (this.Player_active !== null) {
+				fieldData["value"] = this.Player_active;
+			} else {
+				fieldData["inputRequired"] = false;
+			}
+			data.push(fieldData);
+		}
+		
+		if (FigureUsageView.includeField("Tournament_id", forEditing, forCreateForm)) {
+			var fieldData = {};
+			fieldData["propertyName"] = "Tournament_id";
+			fieldData["elemType"] = "input";
+			fieldData["inputType"] = "number";
+			fieldData["inputNumber_step"] = "1";
+			fieldData["label"] = "Tournament_id";
+			if (this.Tournament_id !== null) {
+				fieldData["value"] = this.Tournament_id;
+			} else {
+				fieldData["inputRequired"] = true;
+			}
+			data.push(fieldData);
+		}
+		
+		if (FigureUsageView.includeField("Tournament_name", forEditing, forCreateForm)) {
+			var fieldData = {};
+			fieldData["propertyName"] = "Tournament_name";
+			fieldData["elemType"] = "input";
+			fieldData["inputType"] = "text";
+			fieldData["label"] = "Tournament_name";
+			if (this.Tournament_name !== null) {
+				fieldData["value"] = this.Tournament_name;
+			} else {
+				fieldData["inputRequired"] = true;
+			}
+			data.push(fieldData);
+		}
+		
+		if (FigureUsageView.includeField("Tournament_startTime", forEditing, forCreateForm)) {
+			var fieldData = {};
+			fieldData["propertyName"] = "Tournament_startTime";
+			fieldData["elemType"] = "input";
+			fieldData["inputType"] = "datetime-local";
+			fieldData["label"] = "Tournament_start Time";
+			if (this.Tournament_startTime !== null) {
+				fieldData["value"] = forEditing ? this.Tournament_startTime.replace(' ','T') : new Date(this.Tournament_startTime).toString();
+			} else {
+				fieldData["inputRequired"] = true;
+			}
+			data.push(fieldData);
+		}
+		
+		if (FigureUsageView.includeField("Tournament_endDate", forEditing, forCreateForm)) {
+			var fieldData = {};
+			fieldData["propertyName"] = "Tournament_endDate";
+			fieldData["elemType"] = "input";
+			fieldData["inputType"] = "date";
+			fieldData["label"] = "Tournament_end Date";
+			if (this.Tournament_endDate !== null) {
+				fieldData["value"] = this.Tournament_endDate;
+			} else {
+				fieldData["inputRequired"] = true;
+			}
+			data.push(fieldData);
+		}
+		
+		if (FigureUsageView.includeField("Tournament_started", forEditing, forCreateForm)) {
+			var fieldData = {};
+			fieldData["propertyName"] = "Tournament_started";
+			fieldData["elemType"] = "input";
+			fieldData["inputType"] = "checkbox";
+			fieldData["label"] = "Tournament_started";
+			if (this.Tournament_started !== null) {
+				fieldData["value"] = this.Tournament_started;
+			} else {
+				fieldData["inputRequired"] = false;
+			}
+			data.push(fieldData);
+		}
+		
+		if (FigureUsageView.includeField("Tournament_finished", forEditing, forCreateForm)) {
+			var fieldData = {};
+			fieldData["propertyName"] = "Tournament_finished";
+			fieldData["elemType"] = "input";
+			fieldData["inputType"] = "checkbox";
+			fieldData["label"] = "Tournament_finished";
+			if (this.Tournament_finished !== null) {
+				fieldData["value"] = this.Tournament_finished;
+			} else {
+				fieldData["inputRequired"] = false;
+			}
+			data.push(fieldData);
+		}
+		
+		if (FigureUsageView.includeField("Tournament_maxNumPlayersPerGame", forEditing, forCreateForm)) {
+			var fieldData = {};
+			fieldData["propertyName"] = "Tournament_maxNumPlayersPerGame";
+			fieldData["elemType"] = "input";
+			fieldData["inputType"] = "number";
+			fieldData["inputNumber_step"] = "1";
+			fieldData["label"] = "Tournament_max Num Players Per Game";
+			if (this.Tournament_maxNumPlayersPerGame !== null) {
+				fieldData["value"] = this.Tournament_maxNumPlayersPerGame;
+			} else {
+				fieldData["inputRequired"] = true;
+			}
+			data.push(fieldData);
+		}
+		
+		if (FigureUsageView.includeField("Tournament_figureSet", forEditing, forCreateForm)) {
+			var fieldData = {};
+			fieldData["propertyName"] = "Tournament_figureSet";
+			fieldData["elemType"] = "input";
+			fieldData["inputType"] = "number";
+			fieldData["inputNumber_step"] = "1";
+			fieldData["label"] = "Tournament_figure Set ID";
+			if (this.Tournament_figureSet !== null) {
+				fieldData["value"] = this.Tournament_figureSet;
+			} else {
+				fieldData["inputRequired"] = true;
+			}
+			data.push(fieldData);
+		}
+		
+		if (FigureUsageView.includeField("HeroscapeTournament_tournament", forEditing, forCreateForm)) {
+			var fieldData = {};
+			fieldData["propertyName"] = "HeroscapeTournament_tournament";
+			fieldData["elemType"] = "input";
+			fieldData["inputType"] = "number";
+			fieldData["inputNumber_step"] = "1";
+			fieldData["label"] = "Heroscape Tournament_tournament ID";
+			if (this.HeroscapeTournament_tournament !== null) {
+				fieldData["value"] = this.HeroscapeTournament_tournament;
+			} else {
+				fieldData["inputRequired"] = true;
+			}
+			data.push(fieldData);
+		}
+		
+		if (FigureUsageView.includeField("HeroscapeTournament_numArmies", forEditing, forCreateForm)) {
+			var fieldData = {};
+			fieldData["propertyName"] = "HeroscapeTournament_numArmies";
+			fieldData["elemType"] = "input";
+			fieldData["inputType"] = "number";
+			fieldData["inputNumber_step"] = "1";
+			fieldData["label"] = "Heroscape Tournament_num Armies";
+			if (this.HeroscapeTournament_numArmies !== null) {
+				fieldData["value"] = this.HeroscapeTournament_numArmies;
+			} else {
+				fieldData["inputRequired"] = true;
+			}
+			data.push(fieldData);
+		}
+		
+		if (FigureUsageView.includeField("HeroscapeTournament_useDeltaPricing", forEditing, forCreateForm)) {
+			var fieldData = {};
+			fieldData["propertyName"] = "HeroscapeTournament_useDeltaPricing";
+			fieldData["elemType"] = "input";
+			fieldData["inputType"] = "checkbox";
+			fieldData["label"] = "Heroscape Tournament_use Delta Pricing";
+			if (this.HeroscapeTournament_useDeltaPricing !== null) {
+				fieldData["value"] = this.HeroscapeTournament_useDeltaPricing;
+			} else {
+				fieldData["inputRequired"] = false;
+			}
+			data.push(fieldData);
+		}
+		
+		if (FigureUsageView.includeField("HeroscapeTournament_includeVC", forEditing, forCreateForm)) {
+			var fieldData = {};
+			fieldData["propertyName"] = "HeroscapeTournament_includeVC";
+			fieldData["elemType"] = "input";
+			fieldData["inputType"] = "checkbox";
+			fieldData["label"] = "Heroscape Tournament_include VC";
+			if (this.HeroscapeTournament_includeVC !== null) {
+				fieldData["value"] = this.HeroscapeTournament_includeVC;
+			} else {
+				fieldData["inputRequired"] = false;
+			}
+			data.push(fieldData);
+		}
+		
+		if (FigureUsageView.includeField("HeroscapeTournament_includeMarvel", forEditing, forCreateForm)) {
+			var fieldData = {};
+			fieldData["propertyName"] = "HeroscapeTournament_includeMarvel";
+			fieldData["elemType"] = "input";
+			fieldData["inputType"] = "checkbox";
+			fieldData["label"] = "Heroscape Tournament_include Marvel";
+			if (this.HeroscapeTournament_includeMarvel !== null) {
+				fieldData["value"] = this.HeroscapeTournament_includeMarvel;
+			} else {
+				fieldData["inputRequired"] = false;
+			}
+			data.push(fieldData);
+		}
+		
+		if (FigureUsageView.options.fieldOrder !== undefined && FigureUsageView.options.fieldOrder != null) {
+			data = DatabaseObject.reorderData(data, FigureUsageView.options.fieldOrder);
+		}
+		return data;
+	}
+
+	set(field, jsonObj) {
+		switch (field) {
+		}
+	}
+
+}
+
+FigureUsageView.list = [];
+FigureUsageView.options = [];
+
 class User extends DatabaseObject {
 	constructor(jsonObj) {
 		if (User.exists(jsonObj)) {
@@ -3106,6 +3816,7 @@ class User extends DatabaseObject {
 		this.siteAdmin = null; // Boolean
 		this.verified = null; // Boolean
 		this.verificationKey = null; // String
+		this.elo = null; // Int
 		
 		// Links
 		this.links = [{loginCredentialss: LoginCredentials, label: "Login Credentialss", nTo1Link: true, linkField: 'user'}, {admins: Admin, label: "Admins", nTo1Link: true, linkField: 'user'}, {players: Player, label: "Players", nTo1Link: true, linkField: 'user'}, {gameMaps: GameMap, label: "Game Maps", nTo1Link: true, linkField: 'broughtByUser'}, {attendees: Attendee, label: "Attendees", nTo1Link: true, linkField: 'user'}, {userPasswordResets: UserPasswordReset, label: "User Password Resets", nTo1Link: true, linkField: 'user'}, {glyphs: Glyph, label: "Glyphs", nTo1Link: true, linkField: 'author'}, {userSettingTags: UserSettingTag, label: "User Setting Tags", nTo1Link: true, linkField: 'user'}, {powerRankingLists: PowerRankingList, label: "Power Ranking Lists", nTo1Link: true, linkField: 'author'}, {userCollectionHeroscapeSets: UserCollectionHeroscapeSet, label: "User Collection Heroscape Sets", nTo1Link: true, linkField: 'user'}];
@@ -3136,6 +3847,7 @@ class User extends DatabaseObject {
 			this.siteAdmin = jsonObj.siteAdmin;
 			this.verified = jsonObj.verified;
 			this.verificationKey = jsonObj.verificationKey;
+			this.elo = jsonObj.elo;
 			
 			// Links
 			if (jsonObj.loginCredentialss != undefined && jsonObj.loginCredentialss != null) {
@@ -3404,7 +4116,7 @@ class User extends DatabaseObject {
 	}
 
 	static getAllFields() {
-		return ["id", "userName", "email", "phoneNumber", "firstName", "lastName", "siteAdmin", "verified", "verificationKey"];
+		return ["id", "userName", "email", "phoneNumber", "firstName", "lastName", "siteAdmin", "verified", "verificationKey", "elo"];
 	}
 
 	static getNtoMLinkClasses() {
@@ -3420,7 +4132,7 @@ class User extends DatabaseObject {
 	}
 
 	static getClassOfColumn(columnName) {
-		if (["id", "userName", "email", "phoneNumber", "firstName", "lastName", "siteAdmin", "verified", "verificationKey"].includes(columnName)) {
+		if (["id", "userName", "email", "phoneNumber", "firstName", "lastName", "siteAdmin", "verified", "verificationKey", "elo"].includes(columnName)) {
 			return User;
 		}
 		return null;
@@ -3528,6 +4240,8 @@ class User extends DatabaseObject {
 				return null;
 			case "verificationKey":
 				return null;
+			case "elo":
+				return null;
 			default:
 				return null;
 		}
@@ -3550,6 +4264,8 @@ class User extends DatabaseObject {
 			case "verified":
 				return ""; // TODO
 			case "verificationKey":
+				return ""; // TODO
+			case "elo":
 				return ""; // TODO
 			default:
 				return "";
@@ -3665,6 +4381,21 @@ class User extends DatabaseObject {
 			fieldData["label"] = "Verification Key";
 			if (this.verificationKey !== null) {
 				fieldData["value"] = this.verificationKey;
+			} else {
+				fieldData["inputRequired"] = false;
+			}
+			data.push(fieldData);
+		}
+		
+		if (User.includeField("elo", forEditing, forCreateForm)) {
+			var fieldData = {};
+			fieldData["propertyName"] = "elo";
+			fieldData["elemType"] = "input";
+			fieldData["inputType"] = "number";
+			fieldData["inputNumber_step"] = "1";
+			fieldData["label"] = "Elo";
+			if (this.elo !== null) {
+				fieldData["value"] = this.elo;
 			} else {
 				fieldData["inputRequired"] = false;
 			}
@@ -6276,7 +7007,8 @@ class PlayerArmy extends DatabaseObject {
 		this.player = null; // Int
 		
 		// Links
-		this.links = [];
+		this.links = [{playerArmyCards: PlayerArmyCard, label: "Player Army Cards", nTo1Link: true, linkField: 'playerArmy'}];
+		this.playerArmyCards = [];
 		
 		if (jsonObj !== undefined && jsonObj !== null) {
 			// Static Variables
@@ -6298,6 +7030,30 @@ class PlayerArmy extends DatabaseObject {
 			}
 			
 			// Links
+			if (jsonObj.playerArmyCards != undefined && jsonObj.playerArmyCards != null) {
+				for (var i = 0; i < jsonObj.playerArmyCards.length; i++) {
+					if (PlayerArmyCard.exists(jsonObj.playerArmyCards[i])){
+						const newLinkObj = PlayerArmyCard.get(jsonObj.playerArmyCards[i]);
+						var alreadyLinked = false;
+						for (let j = 0; j < this.playerArmyCards.length; j++) {
+							if (this.playerArmyCards[j].id == newLinkObj.id) {
+								alreadyLinked = true;
+								break;
+							}
+						}
+						if ( ! alreadyLinked) {
+							this.playerArmyCards.push(newLinkObj);
+						}
+					} else {
+						const newForeignObj = new PlayerArmyCard(jsonObj.playerArmyCards[i]);
+						if ( ! this.playerArmyCards.includes(newForeignObj)) {
+							this.playerArmyCards.push(newForeignObj);
+						}
+						newForeignObj.playerArmy = this;
+					}
+				}
+			}
+			PlayerArmyCard.orderBy(this.playerArmyCards);
 			
 			PlayerArmy.orderBy();
 		}
@@ -6365,8 +7121,34 @@ class PlayerArmy extends DatabaseObject {
 		}
 	}
 
+	// @DoNotUpdate
 	toDisplayString() {
-		return this._TODO_;
+		if (this.army === undefined) {
+			return null;
+		}
+		
+		// 1) Try to use PlayerArmyCard data 
+		if (this.playerArmyCards.length > 0) {
+			var armyStr = "";
+			for (let i = 0; i < this.playerArmyCards.length; i++) {
+				if (i > 0) {
+					armyStr += ", ";
+				}
+				armyStr += this.playerArmyCards[i].card.name;
+				if (this.playerArmyCards[i].card.commonality.toLowerCase() != "unique") {
+					armyStr += " x" + this.playerArmyCards[i].quantity
+				}
+			}
+			return armyStr;
+		}
+		
+		// 2) Try to use the static 'army' field
+		if (this.army !== null) {
+			return this.army;
+		}
+		
+		// 3) Punt - nothing to return (army missing or hidden by permissions)
+		return null;
 	}
 
 	summary() {
@@ -16092,9 +16874,10 @@ class Card extends DatabaseObject {
 		this.wikiLink = null; // String
 		
 		// Links
-		this.links = [{deltaUpdateCosts: DeltaUpdateCost, label: "Delta Update Costs", nTo1Link: true, linkField: 'card'}, {cardPowerRankings: CardPowerRanking, label: "Card Power Rankings", nTo1Link: true, linkField: 'card'}, {figureSetSubGroups: FigureSetSubGroup, label: "Figure Set Sub Groups"}];
+		this.links = [{deltaUpdateCosts: DeltaUpdateCost, label: "Delta Update Costs", nTo1Link: true, linkField: 'card'}, {cardPowerRankings: CardPowerRanking, label: "Card Power Rankings", nTo1Link: true, linkField: 'card'}, {playerArmyCards: PlayerArmyCard, label: "Player Army Cards", nTo1Link: true, linkField: 'card'}, {figureSetSubGroups: FigureSetSubGroup, label: "Figure Set Sub Groups"}];
 		this.deltaUpdateCosts = [];
 		this.cardPowerRankings = [];
+		this.playerArmyCards = [];
 		this.figureSetSubGroups = [];
 		
 		if (jsonObj !== undefined && jsonObj !== null) {
@@ -16236,6 +17019,30 @@ class Card extends DatabaseObject {
 				}
 			}
 			CardPowerRanking.orderBy(this.cardPowerRankings);
+			if (jsonObj.playerArmyCards != undefined && jsonObj.playerArmyCards != null) {
+				for (var i = 0; i < jsonObj.playerArmyCards.length; i++) {
+					if (PlayerArmyCard.exists(jsonObj.playerArmyCards[i])){
+						const newLinkObj = PlayerArmyCard.get(jsonObj.playerArmyCards[i]);
+						var alreadyLinked = false;
+						for (let j = 0; j < this.playerArmyCards.length; j++) {
+							if (this.playerArmyCards[j].id == newLinkObj.id) {
+								alreadyLinked = true;
+								break;
+							}
+						}
+						if ( ! alreadyLinked) {
+							this.playerArmyCards.push(newLinkObj);
+						}
+					} else {
+						const newForeignObj = new PlayerArmyCard(jsonObj.playerArmyCards[i]);
+						if ( ! this.playerArmyCards.includes(newForeignObj)) {
+							this.playerArmyCards.push(newForeignObj);
+						}
+						newForeignObj.card = this;
+					}
+				}
+			}
+			PlayerArmyCard.orderBy(this.playerArmyCards);
 			if (jsonObj.figureSetSubGroups != undefined && jsonObj.figureSetSubGroups != null) {
 				for (var i = 0; i < jsonObj.figureSetSubGroups.length; i++) {
 					if (FigureSetSubGroup.exists(jsonObj.figureSetSubGroups[i])){
@@ -20133,6 +20940,483 @@ class UserCollectionHeroscapeSet extends DatabaseObject {
 UserCollectionHeroscapeSet.list = [];
 UserCollectionHeroscapeSet.options = [];
 
+class PlayerArmyCard extends DatabaseObject {
+	constructor(jsonObj) {
+		if (PlayerArmyCard.exists(jsonObj)) {
+			return PlayerArmyCard.get(jsonObj);
+		}
+		
+		super(jsonObj);
+		
+		// Table Columns
+		this.id = null; // Int
+		this.playerArmy = null; // Int
+		this.card = null; // Int
+		this.quantity = null; // Int
+		
+		// Links
+		this.links = [];
+		
+		if (jsonObj !== undefined && jsonObj !== null) {
+			// Static Variables
+			PlayerArmyCard.list.push(this);
+			
+			// Instance Variables
+			
+			// Table Columns
+			this.id = jsonObj.id;
+			if (jsonObj.playerArmy != null) {
+				this.playerArmy = PlayerArmy.exists(jsonObj.playerArmy) ?
+					PlayerArmy.get(jsonObj.playerArmy) : new PlayerArmy(jsonObj.playerArmy);
+				if ( ! this.playerArmy.playerArmyCards.includes(this)) {
+					this.playerArmy.playerArmyCards.push(this);
+					PlayerArmy.orderBy(this.playerArmy.playerArmyCards);
+				}
+			}
+			if (jsonObj.card != null) {
+				this.card = Card.exists(jsonObj.card) ?
+					Card.get(jsonObj.card) : new Card(jsonObj.card);
+				if ( ! this.card.playerArmyCards.includes(this)) {
+					this.card.playerArmyCards.push(this);
+					Card.orderBy(this.card.playerArmyCards);
+				}
+			}
+			this.quantity = jsonObj.quantity;
+			
+			// Links
+			
+			PlayerArmyCard.orderBy();
+		}
+	}
+
+	static getOrderBy() {
+		return [];
+	}
+
+	static label() {
+		return "Player Army Card";
+	}
+
+	static primaryKeys() {
+		return ["id"];
+	}
+
+	static primaryKeysWithChildKeys() {
+		return ["id"];
+	}
+
+	static getRequiredFields() {
+		return ["id", "playerArmy", "card", "quantity"];
+	}
+
+	static getAllFields() {
+		return ["id", "playerArmy", "card", "quantity"];
+	}
+
+	static getNtoMLinkClasses() {
+		return {};
+	}
+
+	static isAbstract() {
+		return false;
+	}
+
+	static editableOptions() {
+		return [""];
+	}
+
+	static getClassOfColumn(columnName) {
+		if (["id", "playerArmyID", "cardID", "quantity"].includes(columnName)) {
+			return PlayerArmyCard;
+		}
+		return null;
+	}
+
+	static getForeignTableNameByKey(columnName) {
+		switch (columnName) {
+			case "playerArmyID":
+				return "PlayerArmy";
+			case "cardID":
+				return "Card";
+		}
+		return null;
+	}
+
+	static getActionNames() {
+		return [];
+	}
+
+	getAction(actionName) {
+		switch (actionName) {
+			default:
+				return null;
+		}
+	}
+
+	toDisplayString() {
+		return this._TODO_;
+	}
+
+	summary() {
+		return "".substring(0, 147)+'...';
+	}
+
+	selectOption() {
+		return {id: this.id, value: this.toDisplayString(), databaseObj: this, databaseObjProperty: "_TODO_"};
+	}
+
+	selectFilters(property, filterObjects) {
+		switch (property) {
+			case "playerArmy":
+				return null;
+			case "card":
+				return null;
+			case "quantity":
+				return null;
+			default:
+				return null;
+		}
+	}
+
+	getTooltip(propName) {
+		switch (propName) {
+			case "playerArmy":
+				return ""; // TODO
+			case "card":
+				return ""; // TODO
+			case "quantity":
+				return ""; // TODO
+			default:
+				return "";
+		}
+	}
+
+	dataForDisplay(forEditing, forCreateForm, filterObjects) {
+		var data = [];
+		
+		if (PlayerArmyCard.includeField("playerArmy", forEditing, forCreateForm)) {
+			var fieldData = {};
+			fieldData["propertyName"] = "playerArmy";
+			fieldData["elemType"] = "select";
+			fieldData["selectOptions"] = PlayerArmy.selectOptions(this.playerArmy, this.selectFilters("playerArmy", filterObjects));
+			fieldData["optionClass"] = "PlayerArmy";
+			fieldData["propertyForeignClass"] = PlayerArmy;
+			fieldData["label"] = "Player Army";
+			if (this.playerArmy !== undefined && this.playerArmy !== null) {
+				fieldData["value"] = this.playerArmy.toDisplayString();
+				fieldData["databaseObj"] = this.playerArmy;
+				fieldData["databaseObjProperty"] = "_TODO_";
+			} else {
+				fieldData["inputRequired"] = true;
+			}
+			data.push(fieldData);
+		}
+		
+		if (PlayerArmyCard.includeField("card", forEditing, forCreateForm)) {
+			var fieldData = {};
+			fieldData["propertyName"] = "card";
+			fieldData["elemType"] = "select";
+			fieldData["selectOptions"] = Card.selectOptions(this.card, this.selectFilters("card", filterObjects));
+			fieldData["optionClass"] = "Card";
+			fieldData["propertyForeignClass"] = Card;
+			fieldData["label"] = "Card";
+			if (this.card !== undefined && this.card !== null) {
+				fieldData["value"] = this.card.toDisplayString();
+				fieldData["databaseObj"] = this.card;
+				fieldData["databaseObjProperty"] = "_TODO_";
+			} else {
+				fieldData["inputRequired"] = true;
+			}
+			data.push(fieldData);
+		}
+		
+		if (PlayerArmyCard.includeField("quantity", forEditing, forCreateForm)) {
+			var fieldData = {};
+			fieldData["propertyName"] = "quantity";
+			fieldData["elemType"] = "input";
+			fieldData["inputType"] = "number";
+			fieldData["inputNumber_step"] = "1";
+			fieldData["label"] = "Quantity";
+			if (this.quantity !== null) {
+				fieldData["value"] = this.quantity;
+			} else {
+				fieldData["inputRequired"] = true;
+			}
+			data.push(fieldData);
+		}
+		
+		if (PlayerArmyCard.options.fieldOrder !== undefined && PlayerArmyCard.options.fieldOrder != null) {
+			data = DatabaseObject.reorderData(data, PlayerArmyCard.options.fieldOrder);
+		}
+		return data;
+	}
+
+	set(field, jsonObj) {
+		switch (field) {
+			case "playerArmy":
+				if (typeof jsonObj === "object" && jsonObj instanceof DatabaseObject) {
+					this.playerArmy = jsonObj;
+				} else if (PlayerArmy.exists(jsonObj)) {
+					this.playerArmy = PlayerArmy.get(jsonObj);
+				} else {
+					this.playerArmy = new PlayerArmy(jsonObj);
+				}
+				break;
+			case "card":
+				if (typeof jsonObj === "object" && jsonObj instanceof DatabaseObject) {
+					this.card = jsonObj;
+				} else if (Card.exists(jsonObj)) {
+					this.card = Card.get(jsonObj);
+				} else {
+					this.card = new Card(jsonObj);
+				}
+				break;
+		}
+	}
+
+}
+
+PlayerArmyCard.list = [];
+PlayerArmyCard.options = [];
+
+class StandingsView extends DatabaseObject {
+	constructor(jsonObj) {
+		if (StandingsView.exists(jsonObj)) {
+			return StandingsView.get(jsonObj);
+		}
+		
+		super(jsonObj);
+		
+		// Table Columns
+		this.id = null; // Int
+		this.userName = null; // String
+		this.elo = null; // Int
+		this.W = null; // Int
+		this.L = null; // Int
+		this.WinPercent = null; // Decimal
+		
+		// Links
+		this.links = [];
+		
+		if (jsonObj !== undefined && jsonObj !== null) {
+			// Static Variables
+			StandingsView.list.push(this);
+			
+			// Instance Variables
+			
+			// Table Columns
+			this.id = jsonObj.id;
+			this.userName = jsonObj.userName;
+			this.elo = jsonObj.elo;
+			this.W = jsonObj.W;
+			this.L = jsonObj.L;
+			this.WinPercent = jsonObj.WinPercent;
+			
+			// Links
+			
+			StandingsView.orderBy();
+		}
+	}
+
+	static getOrderBy() {
+		return [];
+	}
+
+	static label() {
+		return "Standings View";
+	}
+
+	static primaryKeys() {
+		return ["id"];
+	}
+
+	static primaryKeysWithChildKeys() {
+		return ["id"];
+	}
+
+	static getRequiredFields() {
+		return ["id", "userName", "elo", "W", "L", "WinPercent"];
+	}
+
+	static getAllFields() {
+		return ["id", "userName", "elo", "W", "L", "WinPercent"];
+	}
+
+	static getNtoMLinkClasses() {
+		return {};
+	}
+
+	static isAbstract() {
+		return false;
+	}
+
+	static editableOptions() {
+		return [""];
+	}
+
+	static getClassOfColumn(columnName) {
+		if (["id", "userName", "elo", "W", "L", "WinPercent"].includes(columnName)) {
+			return StandingsView;
+		}
+		return null;
+	}
+
+	static getForeignTableNameByKey(columnName) {
+		switch (columnName) {
+		}
+		return null;
+	}
+
+	static getActionNames() {
+		return [];
+	}
+
+	getAction(actionName) {
+		switch (actionName) {
+			default:
+				return null;
+		}
+	}
+
+	toDisplayString() {
+		return this._TODO_;
+	}
+
+	summary() {
+		return "".substring(0, 147)+'...';
+	}
+
+	selectOption() {
+		return {id: this.id, value: this.toDisplayString(), databaseObj: this, databaseObjProperty: "_TODO_"};
+	}
+
+	selectFilters(property, filterObjects) {
+		switch (property) {
+			case "userName":
+				return null;
+			case "elo":
+				return null;
+			case "W":
+				return null;
+			case "L":
+				return null;
+			case "WinPercent":
+				return null;
+			default:
+				return null;
+		}
+	}
+
+	getTooltip(propName) {
+		switch (propName) {
+			case "userName":
+				return ""; // TODO
+			case "elo":
+				return ""; // TODO
+			case "W":
+				return ""; // TODO
+			case "L":
+				return ""; // TODO
+			case "WinPercent":
+				return ""; // TODO
+			default:
+				return "";
+		}
+	}
+
+	dataForDisplay(forEditing, forCreateForm, filterObjects) {
+		var data = [];
+		
+		if (StandingsView.includeField("userName", forEditing, forCreateForm)) {
+			var fieldData = {};
+			fieldData["propertyName"] = "userName";
+			fieldData["elemType"] = "input";
+			fieldData["inputType"] = "text";
+			fieldData["label"] = "User Name";
+			if (this.userName !== null) {
+				fieldData["value"] = this.userName;
+			} else {
+				fieldData["inputRequired"] = true;
+			}
+			data.push(fieldData);
+		}
+		
+		if (StandingsView.includeField("elo", forEditing, forCreateForm)) {
+			var fieldData = {};
+			fieldData["propertyName"] = "elo";
+			fieldData["elemType"] = "input";
+			fieldData["inputType"] = "number";
+			fieldData["inputNumber_step"] = "1";
+			fieldData["label"] = "Elo";
+			if (this.elo !== null) {
+				fieldData["value"] = this.elo;
+			} else {
+				fieldData["inputRequired"] = true;
+			}
+			data.push(fieldData);
+		}
+		
+		if (StandingsView.includeField("W", forEditing, forCreateForm)) {
+			var fieldData = {};
+			fieldData["propertyName"] = "W";
+			fieldData["elemType"] = "input";
+			fieldData["inputType"] = "number";
+			fieldData["inputNumber_step"] = "1";
+			fieldData["label"] = "W";
+			if (this.W !== null) {
+				fieldData["value"] = this.W;
+			} else {
+				fieldData["inputRequired"] = true;
+			}
+			data.push(fieldData);
+		}
+		
+		if (StandingsView.includeField("L", forEditing, forCreateForm)) {
+			var fieldData = {};
+			fieldData["propertyName"] = "L";
+			fieldData["elemType"] = "input";
+			fieldData["inputType"] = "number";
+			fieldData["inputNumber_step"] = "1";
+			fieldData["label"] = "L";
+			if (this.L !== null) {
+				fieldData["value"] = this.L;
+			} else {
+				fieldData["inputRequired"] = true;
+			}
+			data.push(fieldData);
+		}
+		
+		if (StandingsView.includeField("WinPercent", forEditing, forCreateForm)) {
+			var fieldData = {};
+			fieldData["propertyName"] = "WinPercent";
+			fieldData["elemType"] = "input";
+			fieldData["inputType"] = "number";
+			fieldData["inputNumber_step"] = "any";
+			fieldData["label"] = "Win Percent";
+			if (this.WinPercent !== null) {
+				fieldData["value"] = this.WinPercent;
+			} else {
+				fieldData["inputRequired"] = true;
+			}
+			data.push(fieldData);
+		}
+		
+		if (StandingsView.options.fieldOrder !== undefined && StandingsView.options.fieldOrder != null) {
+			data = DatabaseObject.reorderData(data, StandingsView.options.fieldOrder);
+		}
+		return data;
+	}
+
+	set(field, jsonObj) {
+		switch (field) {
+		}
+	}
+
+}
+
+StandingsView.list = [];
+StandingsView.options = [];
+
 class HeroscapeTournament extends Tournament {
 	constructor(jsonObj) {
 		if (Tournament.exists(jsonObj)) {
@@ -20795,6 +22079,7 @@ GameTournament.options = [];
 databaseObjectClassMap['ConventionSeriesView'] = ConventionSeriesView;
 databaseObjectClassMap['TournamentOverviewView'] = TournamentOverviewView;
 databaseObjectClassMap['ConventionTournamentResultsView'] = ConventionTournamentResultsView;
+databaseObjectClassMap['FigureUsageView'] = FigureUsageView;
 databaseObjectClassMap['User'] = User;
 databaseObjectClassMap['LoginCredentials'] = LoginCredentials;
 databaseObjectClassMap['ConventionSeries'] = ConventionSeries;
@@ -20855,6 +22140,8 @@ databaseObjectClassMap['Personality'] = Personality;
 databaseObjectClassMap['Size'] = Size;
 databaseObjectClassMap['CardPowerRanking'] = CardPowerRanking;
 databaseObjectClassMap['UserCollectionHeroscapeSet'] = UserCollectionHeroscapeSet;
+databaseObjectClassMap['PlayerArmyCard'] = PlayerArmyCard;
+databaseObjectClassMap['StandingsView'] = StandingsView;
 databaseObjectClassMap['HeroscapeTournament'] = HeroscapeTournament;
 databaseObjectClassMap['HeroscapeGame'] = HeroscapeGame;
 databaseObjectClassMap['GameTournament'] = GameTournament;

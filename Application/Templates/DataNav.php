@@ -4,7 +4,8 @@ echo "
 	createNavBar([
 			/*{text: 'Players', url: '/data/players'},*/
 			{text: 'Delta', url: '/data/delta'},
-			{text: 'TBD', url: '/data/tbd'}
+			{text: 'Figures', url: '/data/figures'},
+			{text: 'Players', url: '/data/players'}
 		], ['setWidth',  'subNavBar']);
 	//hideNonRelevantNavItems();
 </script>

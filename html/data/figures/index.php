@@ -3,7 +3,7 @@
 <head>
 	<?php require_once("/var/www/Application/Templates/Head.php"); ?>
 	
-	<title>Delta Data</title>
+	<title>Figure Data</title>
 		
 	<!-- CSS -->
 	<link rel="stylesheet" href="/css/styles.css">
@@ -21,10 +21,9 @@
 	<?php include(DataNav); ?>
 	
 	<div id='pageContent'>
-		<h1>Delta Data</h1>
+		<h1>Figure Data</h1>
 		<article>	
-			<p><a href='/data/delta/history'>Pricing History</a></p>
-			<p><a href='/data/delta/figure-usage'>Figure Usage</a></p>
+			<p><a href='/data/figures/release-set'>Release Sets</a></p>
 		</article>
 		
 		

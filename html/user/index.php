@@ -557,7 +557,9 @@
 										"mapID": {}
 									}
 								},
-								"PlayerArmy.playerID": {}
+								"PlayerArmy.playerID": {
+									"PlayerArmyCard.playerArmyID": {}
+								}
 							},
 							"UserSettingTag.userID": {
 								"userSettingID": {

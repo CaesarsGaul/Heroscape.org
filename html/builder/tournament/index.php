@@ -144,9 +144,9 @@
 				"conventionID": {
 					"conventionSeriesID": {}
 				},
-				"Player.tournamentID": {
+				/*"Player.tournamentID": {
 					"PlayerArmy.playerID": {}
-				},
+				},*/
 				"figureSetID": {},
 				"TournamentSeasonLink.tournamentID": {
 					"seasonID": {
