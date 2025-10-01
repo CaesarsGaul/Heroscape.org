@@ -11,9 +11,15 @@ class Unit {
 		this.hexes = parseInt(row[7]);
 		this.uniqueness = row[8];
 		this.squad = row[9] == "Squad" ? true : false;
-		this.vc = row[10].toString().trim().toLowerCase() == "c3v" ||
+		
+		this.subGroup = row[10].toString().trim();
+		if (this.subGroup.toLowerCase() == "c3v" || this.subGroup.toLowerCase() == "sov") {
+			this.subGroup = "VC";
+		}
+		/*this.vc = row[10].toString().trim().toLowerCase() == "c3v" ||
 				row[10].toString().trim().toLowerCase() == "sov";
-		this.marvel = row[10].toString().trim().toLowerCase() == "marvel";
+		this.marvel = row[10].toString().trim().toLowerCase() == "marvel";*/
+		
 		this.homeworld = row[11];
 		this.species = row[12];
 		this.class = row[13];
@@ -63,7 +69,7 @@ class Unit {
 	
 	getCost() {
 		if (deltaPoints) {
-			if (vcInclusive) {
+			if (vcInclusive()) {
 				return this.cost.deltaVC;
 			} else {
 				return this.cost.delta;
@@ -73,7 +79,7 @@ class Unit {
 		}
 	}
 	
-	getPartialCost() {
+	getPartialCost(forDisplay=false) {
 		const cost = this.getCost();
 		var partialCost = null;
 		switch (this.uniqueness.toLowerCase()) {
@@ -91,7 +97,10 @@ class Unit {
 				}
 				break;
 		}
-		return Math.round(partialCost * 100) / 100;
+		const adjustment = forDisplay
+			? 100
+			: 10000;
+		return Math.round(partialCost * adjustment) / adjustment;
 	}
 	
 	getGeneral() {
@@ -145,7 +154,11 @@ class Unit {
 	}
 	
 	getBackgroundColor() {
-		switch (this.general) {
+		return Unit.getBackgroundColor(this.general);
+	}
+	
+	static getBackgroundColor(general) {
+		switch (general) {
 			case "Jandar":
 				return "#4287f5";
 			case "Ullar":
@@ -199,6 +212,7 @@ var unitsClasses = [];
 var unitsPersonalities = [];
 // .species, .class, .personality 
 
+subdomainFigureSet = null;
 function loadUnits(tournament=null) {
 	units = [];
 	unitsMap = {};
@@ -228,12 +242,14 @@ function loadUnits(tournament=null) {
 					}  
 				}
 				
+				subdomainFigureSet = currFigureSet;
+				
 				var unitDataSheetURL = "https://sheets.googleapis.com/v4/spreadsheets/"+currFigureSet.googleDocId+"/values/ArmyBuilder!A:AZ?key="+googleAPIsKey;
-				_loadUnits(unitDataSheetURL, resolve, reject);
+				_loadUnits(unitDataSheetURL, resolve, reject, ! currFigureSet.includeBase);
 				
 				if (currFigureSet.includeBase) {
 					unitDataSheetURL = "https://sheets.googleapis.com/v4/spreadsheets/"+baseFigureSet.googleDocId+"/values/ArmyBuilder!A:AZ?key="+googleAPIsKey;
-					_loadUnits(unitDataSheetURL, resolve, reject);
+					_loadUnits(unitDataSheetURL, resolve, reject, true);
 				}
 			},
 			{joins: {
@@ -243,12 +259,17 @@ function loadUnits(tournament=null) {
 	});
 }
 
-function _loadUnits(googleUrl, resolve, reject) {
+function _loadUnits(googleUrl, resolve, reject, finalCall) {
 	$.ajax({
 		url: googleUrl,
 		success: function(data) {
 			for (let i = 1; i < data.values.length; i++) {
 				var unit = new Unit(data.values[i]);
+				
+				if (unitsMap.hasOwnProperty(unit.name)) {
+					continue; // Domain-Specific Sheet is Over-riding main sheet
+				}
+				
 				units.push(unit);
 				unitsMap[unit.name] = unit;
 				
@@ -267,7 +288,7 @@ function _loadUnits(googleUrl, resolve, reject) {
 			unitsClasses.sort();
 			unitsPersonalities.sort();
 			
-			if (typeof setupPage != 'undefined') {
+			if (finalCall && typeof setupPage != 'undefined') {
 				setupPage();
 			}
 			resolve();

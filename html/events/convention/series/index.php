@@ -8,6 +8,7 @@
 	<!-- CSS -->
 	<link rel="stylesheet" href="/css/styles.css">
 	<link rel="stylesheet" href="/css/standings.css">
+	<link rel="stylesheet" href="/css/announcement.css">
 	<style>
 		
 	</style>
@@ -22,12 +23,72 @@
 	<script src="/connect/socket.io/socket.io.js"></script>
 		
 	<script>
+		socket = null;
+		
+		function createSocket() {
+			socket = io.connect("/", {path: "/connect/socket.io"});
+			
+			/*socket.on('userDropped', function(objStr) {
+				var jsonObj = JSON.parse(objStr);
+				const removedUser = jsonObj.user;
+				
+				for (let i = 0; i < currentConvention.attendees.length; i++) {
+					const attendee = currentConvention.attendees[i];
+					const user = attendee.user;
+					
+					if (user.id == removedUser.id) {
+						currentConvention.attendees.splice(i,1);
+						break;
+					}
+				}
+				displayConvention();
+			});*/
+		}
+
+		currentConventionSeries = null;
+		isAdmin = false;
+		
+		function _checkAdmin() {
+			if (loggedIn()) {
+				const userName = decodeURIComponent(getCookieValue("hs_username"));
+				for (let i = 0; i < currentConventionSeries.admins.length; i++) {
+					const adminUser = currentConventionSeries.admins[i].user;
+					if (adminUser.userName == userName) {
+						isAdmin = true;
+						return;
+					}
+				}
+			}
+		}
+		
+		function _emitAnnouncement(announcement) {
+			socket.emit("conventionSeriesAnnouncement",
+				JSON.stringify({
+					conventionSeries: {
+						id: currentConventionSeries.id,
+						name: currentConventionSeries.name
+					},
+					announcement: announcement
+				})
+			);
+		}
+		
 		function displayConventionSeries(conventionSeries) {
+			currentConventionSeries = conventionSeries;
+			
 			var parentElem = document.getElementById("h1");
 			parentElem.innerHTML = conventionSeries.name;
 			
+			_checkAdmin();
+			
+			createSocket();
+			socket.emit("loadConventionSeries", JSON.stringify({conventionSeries: {id: currentConventionSeries.id}}));
+			
+			if (isAdmin) {
+				_displayAnnouncementSection();
+			}
+			
 			parentElem = document.getElementById("Conventions");
-			var admins = [];
 			var tournaments = [];
 			for (let i = 0; i < conventionSeries.conventions.length; i++) {
 				const convention = conventionSeries.conventions[i];
@@ -44,18 +105,17 @@
 				
 				parentElem.appendChild(conventionDiv);
 				
-				for (let j = 0; j < convention.admins.length; j++) {
-					if ( ! admins.includes(convention.admins[j].user.userName)) {
-						admins.push(convention.admins[j].user.userName);
-					}
-				}
-				
 				tournaments = tournaments.concat(convention.tournaments);
 			}
 			
 			displayStandings(tournaments, document.getElementById("Standings"));
 			
 			parentElem = document.getElementById("Admins");
+			var admins = [];
+			for (let i = 0; i < conventionSeries.admins.length; i++) {
+				const admin = conventionSeries.admins[i];
+				admins.push(admin.user.userName);
+			}
 			admins.sort();
 			for (let i = 0; i < admins.length; i++) {
 				const admin = admins[i];
@@ -64,7 +124,6 @@
 				}));
 			}
 		}
-		
 		
 	</script>
 </head>
@@ -75,15 +134,19 @@
 	
 	<div id='pageContent'>		
 		<article>	
-			<h1 id='h1'></h1>
+			<h1 id='h1'>Loading...</h1>
+			<div id='Info'></div> <!-- TODO -->
 			<div id='Conventions'>
 				<h2>Conventions</h2>
 			</div>
-			<div id='Standings'>
-				<h2>Standings</h2>
-			</div>
-			<div id='Admins'>
-				<h2>Admins</h2>
+			<div id='Announcement'></div> <!-- TODO -->
+			<div id='DisplayConventionSeries'>
+				<div id='Standings'>
+					<h2>Standings</h2>
+				</div>
+				<div id='Admins'>
+					<h2>Admins</h2>
+				</div>
 			</div>
 			
 			<script>
@@ -105,10 +168,13 @@
 						},
 						{joins: {
 							"Convention.conventionSeriesID": {
-								"Admin.conventionID": {
+								/*"Admin.conventionID": {
 									"userID": {}
-								}	
+								}	*/
 							},
+							"Admin.conventionSeriesID": {
+								"userID": {}
+							}
 					}});
 				} else {
 					document.getElementById("Convention").appendChild(

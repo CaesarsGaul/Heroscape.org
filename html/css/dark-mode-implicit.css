@@ -370,7 +370,11 @@ img#logoImg {
     color: var(--goldBright);
   }
   img#centerLogoImg {
-    background: var(--lightText);
+    /*background: var(--lightText) !important;*/
+    content:url("/images/autoloadIcon_white.png");
+  }
+  img.downArrowImg {
+	  content:url("/images/downArrow_white.png");
   }
   img#centerLogoImg .toggleSwitch .slider {
     background-color: var(--darkBorder);
@@ -405,3 +409,29 @@ img#logoImg {
     color: var(--mdRed) !important;
   }
 }/*# sourceMappingURL=main.css.map */
+
+
+/*Google Maps Styles*/
+
+.gm-style-iw a {
+    color: black !important;
+}
+.gm-style-mtc-bbw .gm-style-mtc>button,
+button.gm-control-active.gm-fullscreen-control,
+button.gm-control-active,
+button.gm-svpc,
+.gmnoprint button {
+    background: var(--goldBright) !important;
+}
+button.gm-ui-hover-effect {
+    width: 36px !important;
+    height: 36px !important;
+}
+.gm-style-iw-chr span {
+    width: 18px !important;
+    height: 18px !important;
+    margin: 9px !important;
+}
+.gm-style-iw-d {
+   padding: 0 10px 10px 10px !important;
+}

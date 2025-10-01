@@ -33,11 +33,14 @@ class CardPower extends HS_DatabaseObject {
 		
 		
 		
+		if ( ! isset($clientDataObj->card->id)) {
+			$clientDataObj->card = Card::create($clientDataObj->card);
+		}
 		
 		$id = $dbObj->dbInsert((new MySQLBuilder())->
 			insert("CardPower",
 				array("cardID", "order", "name", "description"),
-				array($clientDataObj->cardID,
+				array($clientDataObj->card->id,
 					self::countEntries(parent::orderWhereArrayFromClientDataObj($clientDataObj)),
 					$clientDataObj->name,
 					$clientDataObj->description)));
@@ -69,8 +72,12 @@ class CardPower extends HS_DatabaseObject {
 			$whereArray["{$prefix}CardPower.id"] = $whereData["id"];
 		}
 		else {
-			if (isset($whereData["cardID"])) {
-				$whereArray["{$prefix}CardPower.cardID"] = $whereData["cardID"];
+			if (array_key_exists("card", $whereData)) {
+				if (isset($whereData["card"]->id)) {
+					$whereArray["{$prefix}CardPower.cardID"] = $whereData["card"]->id;
+				} else if ($whereData["card"] == null) {
+					$whereArray["{$prefix}CardPower.cardID"] = null;
+				}
 			}
 			if (isset($whereData["name"])) {
 				$whereArray["{$prefix}CardPower.name"] = $whereData["name"];
@@ -80,6 +87,9 @@ class CardPower extends HS_DatabaseObject {
 			}
 		}
 		
+		if (isset($whereData["card"])) {
+			$whereArray = array_merge($whereArray, Card::createWhereArray($whereData["card"], "{$prefix}CardPower_cardID_"));
+		}
 		
 		
 		return $whereArray;
@@ -111,7 +121,7 @@ class CardPower extends HS_DatabaseObject {
 	}
 
 	public static function getForeignKeys() {
-		return array();
+		return array("cardID" => "Card");
 	}
 
 	public static function getColumnNames() {
@@ -207,8 +217,9 @@ class CardPower extends HS_DatabaseObject {
 		}
 		
 		if ($clientDataObj != null) {
-			if (isset($clientDataObj->cardID)) {
-				$this->cardID = $clientDataObj->cardID;
+			if (isset($clientDataObj->card, $clientDataObj->card->id) &&
+					$clientDataObj->card->id > 0) {
+					$this->cardID = $clientDataObj->card->id;
 			}
 			if (isset($clientDataObj->order)) {
 				$this->order = $clientDataObj->order;
@@ -223,6 +234,9 @@ class CardPower extends HS_DatabaseObject {
 		
 		// Update Foreign Key Columns
 		if ( ! isset($clientDataObj->updateDepth) || $clientDataObj->updateDepth > 0) {
+			if (isset($clientDataObj->card) && ( ! isset($clientDataObj->updateClasses) || (in_array("Card", $clientDataObj->updateClasses))) && in_array("card", $clientDataObj->fieldsToUpdate) && ! isset($this->cardIDJustCreated)) {
+				(Card::fromDB($this->cardID))->updateInDB($clientDataObj->card);
+			}
 		}
 		
 		$this->dbUpdate((new MySQLBuilder())->
@@ -259,6 +273,13 @@ class CardPower extends HS_DatabaseObject {
 
 	/* Getters */
 	
+	public function getCard() {
+		if ( ! property_exists($this, "card")) {
+			$this->card = Card::fromDB($this->cardID);
+		}
+		return $this->card;
+	}
+
 	/* 'Constructor' only for DB Connection */
 	protected static function dbConnection($subdomain = null) {
 		return new self($subdomain);

@@ -186,7 +186,20 @@ article {
 	#Figures {
 		/*height: calc(100vh - 35px);*/
 		height: calc(100vh - 270px);
+		
+		/*overflow-y: scroll !important;
+		-webkit-overflow-scrolling: touch;*/
+		
+		/*-ms-overflow-style: none;*/
+		/* IE and Edge */
+		/*scrollbar-width: none;
+		max-width: 100vw !important;
+		overflow: hidden !important;
+		overflow-y: auto !important;*/
 	}
+	/*#Figures ::-webkit-scrollbar {
+		display: none;
+	}*/
 	#FiguresPartialCardScoring {
 		height: calc(100vh - 370px);
 	}
@@ -565,8 +578,12 @@ input:checked + .slider:before {
 	/*margin-right: 50px;*/
 }
 
-#armyListCopy {
+#CopyArmyButton {
 	right: 90px;
+}
+
+#CopyUrlButton {
+	left: 50px;
 }
 
 #viewArmyBtn {
@@ -612,4 +629,37 @@ input:checked + .slider:before {
 
 .createOhsLink {
 	display: inline-block;
+}
+
+
+
+.questionMarkParent {
+	position: relative;
+}
+.questionMark {
+	border: 1px solid black;
+	border-radius: 26px;
+	font-size: 10px;
+	width: 15px;
+	height: 15px;
+	display: inline-block;
+	margin-left: 2px;
+	background-color: yellow;
+	text-decoration: none;
+	vertical-align: top;
+	font-weight: bold;
+	text-align: center;
+}
+.questionMarkHoverDescription {
+	display: none;
+    position: absolute;
+    top: 20px;
+    border: 1px solid black;
+    border-radius: 5px;
+    background-color: yellow;
+    color: black;
+    z-index: 1000;
+}
+.questionMark:hover + .questionMarkHoverDescription {
+	display: block;
 }

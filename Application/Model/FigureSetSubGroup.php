@@ -4,6 +4,10 @@ class FigureSetSubGroup extends HS_DatabaseObject {
 	protected $id; // Int
 	protected $name; // String
 	protected $figureSetID; // Int
+	protected $tier; // Int
+	protected $order; // Int
+	protected $selectedByDefault; // Boolean
+	protected $powerRankingListID; // Int
 
 	/* Static 'Constructors' */
 	
@@ -41,38 +45,46 @@ class FigureSetSubGroup extends HS_DatabaseObject {
 		if ( ! isset($clientDataObj->figureSet->id)) {
 			$clientDataObj->figureSet = FigureSet::create($clientDataObj->figureSet);
 		}
+		if (isset($clientDataObj->powerRankingList) &&
+				! isset($clientDataObj->powerRankingList->id)) {
+			$clientDataObj->powerRankingList = PowerRankingList::create($clientDataObj->powerRankingList);
+		}
 		
 		$id = $dbObj->dbInsert((new MySQLBuilder())->
 			insert("FigureSetSubGroup",
-				array("name", "figureSetID"),
+				array("name", "figureSetID", "tier", "order", "selectedByDefault", "powerRankingListID"),
 				array($clientDataObj->name,
-					$clientDataObj->figureSet->id)));
+					$clientDataObj->figureSet->id,
+					$clientDataObj->tier,
+					self::countEntries(parent::orderWhereArrayFromClientDataObj($clientDataObj)),
+					isset($clientDataObj->selectedByDefault) && $clientDataObj-> selectedByDefault ? true : false,
+					isset($clientDataObj->powerRankingList) 
+						? $clientDataObj->powerRankingList->id
+						: null)));
 		
 		$dbObj = self::fromDB($id);
 		
-		if (isset($clientDataObj->cards)) {
-			foreach ($clientDataObj->cards as $tempClientDataObj) {
-				CardFigureSetSubGroupLink::create(array(
-					"figureSetSubGroup" => $dbObj,
-					"card" => Card::fromDB($tempClientDataObj->id)));
-			}
-		}
-		if (isset($clientDataObj->powerRankingLists)) {
-			foreach ($clientDataObj->powerRankingLists as $tempClientDataObj) {
-				PowerRankingListFigureSetSubGroupLink::create(array(
-					"figureSetSubGroup" => $dbObj,
-					"powerRankingList" => PowerRankingList::fromDB($tempClientDataObj->id)));
-			}
-		}
 		$dbObj->createInitialLinks($clientDataObj);
 		return $dbObj;
 	}
 
 	protected function createInitialLinks($clientDataObj) {
 		// Create 1-N Links
+		if (isset($clientDataObj->cards)) {
+			foreach ($clientDataObj->cards as $clientLinkObj) {
+				$clientLinkObj->figureSetSubGroup = $this;
+				$clientLinkObj->childClassName::create($clientLinkObj);
+			}
+		}
 		if (isset($clientDataObj->releaseSets)) {
 			foreach ($clientDataObj->releaseSets as $clientLinkObj) {
 				$clientLinkObj->figureSubSetGroup = $this;
+				$clientLinkObj->childClassName::create($clientLinkObj);
+			}
+		}
+		if (isset($clientDataObj->tournamentIncludesFigureSetSubGroups)) {
+			foreach ($clientDataObj->tournamentIncludesFigureSetSubGroups as $clientLinkObj) {
+				$clientLinkObj->figureSetSubGroup = $this;
 				$clientLinkObj->childClassName::create($clientLinkObj);
 			}
 		}
@@ -106,25 +118,38 @@ class FigureSetSubGroup extends HS_DatabaseObject {
 					$whereArray["{$prefix}FigureSetSubGroup.figureSetID"] = null;
 				}
 			}
+			if (isset($whereData["tier"])) {
+				$whereArray["{$prefix}FigureSetSubGroup.tier"] = $whereData["tier"];
+			}
+			if (isset($whereData["selectedByDefault"])) {
+				$whereArray["{$prefix}FigureSetSubGroup.selectedByDefault"] = $whereData["selectedByDefault"];
+			}
+			if (array_key_exists("powerRankingList", $whereData)) {
+				if (isset($whereData["powerRankingList"]->id)) {
+					$whereArray["{$prefix}FigureSetSubGroup.powerRankingListID"] = $whereData["powerRankingList"]->id;
+				} else if ($whereData["powerRankingList"] == null) {
+					$whereArray["{$prefix}FigureSetSubGroup.powerRankingListID"] = null;
+				}
+			}
 		}
 		
 		if (isset($whereData["figureSet"])) {
 			$whereArray = array_merge($whereArray, FigureSet::createWhereArray($whereData["figureSet"], "{$prefix}FigureSetSubGroup_figureSetID_"));
 		}
+		if (isset($whereData["powerRankingList"])) {
+			$whereArray = array_merge($whereArray, PowerRankingList::createWhereArray($whereData["powerRankingList"], "{$prefix}FigureSetSubGroup_powerRankingListID_"));
+		}
 		
-		if (isset($whereData["id"])) {
-			$whereArray = array_merge($whereArray, Card::createWhereArray($whereData["id"], "{$prefix}FigureSetSubGroup_id_CardFigureSetSubGroupLink_cardID_"));
-		}
-		if (isset($whereData["id"])) {
-			$whereArray = array_merge($whereArray, PowerRankingList::createWhereArray($whereData["id"], "{$prefix}FigureSetSubGroup_id_PowerRankingListFigureSetSubGroupLink_powerRankingListID_"));
-		}
 		
 		return $whereArray;
 	}
 
+	// @DoNotUpdate
 	public static function getOrderBy() {
-	// TODO: fill in this array with column(s) to order results by like this: array("FigureSetSubGroup.name" => "ASC")
-		return array();
+		return array(
+			"LENGTH(FigureSetSubGroup.tier)" => "ASC", "FigureSetSubGroup.tier" => "ASC", 
+			"LENGTH(FigureSetSubGroup.order)" => "ASC", "FigureSetSubGroup.order" => "ASC"
+		);
 	}
 
 	public static function getPrimaryKey() {
@@ -132,27 +157,27 @@ class FigureSetSubGroup extends HS_DatabaseObject {
 	}
 
 	public static function getNToMLinkClasses() {
-		return array("CardFigureSetSubGroupLink" => "figureSetSubGroupID", "PowerRankingListFigureSetSubGroupLink" => "figureSetSubGroupID");
+		return array();
 	}
 
 	public static function getNToMLinkClassesWithType() {
-		return array("CardFigureSetSubGroupLink" => "Card", "PowerRankingListFigureSetSubGroupLink" => "PowerRankingList");
+		return array();
 	}
 
 	public static function getNToMLinkClassesWithJSVariableName() {
-		return array("CardFigureSetSubGroupLink" => "cards", "PowerRankingListFigureSetSubGroupLink" => "powerRankingLists");
+		return array();
 	}
 
 	public static function getNTo1LinkClasses() {
-		return array("ReleaseSet" => "figureSubSetGroupID");
+		return array("Card" => "figureSetSubGroupID", "ReleaseSet" => "figureSubSetGroupID", "TournamentIncludesFigureSetSubGroup" => "figureSetSubGroupID");
 	}
 
 	public static function getForeignKeys() {
-		return array("figureSetID" => "FigureSet");
+		return array("figureSetID" => "FigureSet", "powerRankingListID" => "PowerRankingList");
 	}
 
 	public static function getColumnNames() {
-		return array("id", "name", "figureSetID");
+		return array("id", "name", "figureSetID", "tier", "order", "selectedByDefault", "powerRankingListID");
 	}
 
 	public static function getActionNames() {
@@ -220,15 +245,24 @@ class FigureSetSubGroup extends HS_DatabaseObject {
 		}*/
 	}
 
+	public static function columnsForOrderGroup() {
+		// TODO: Fill in the array below
+		return array();
+	}
+
 	protected function deleteLinks() {
 		// N-1 Links
+		if (Card::countEntries(array("Card.figureSetSubGroupID" => $this->id)) > 0) {
+			return "Unable to delete Figure Set Sub Group because one or more Card is dependent on it.";
+		}
 		if (ReleaseSet::countEntries(array("ReleaseSet.figureSubSetGroupID" => $this->id)) > 0) {
 			return "Unable to delete Figure Set Sub Group because one or more Release Set is dependent on it.";
 		}
+		if (TournamentIncludesFigureSetSubGroup::countEntries(array("TournamentIncludesFigureSetSubGroup.figureSetSubGroupID" => $this->id)) > 0) {
+			return "Unable to delete Figure Set Sub Group because one or more Tournament Includes Figure Set Sub Group is dependent on it.";
+		}
 		
 		// N-M Links
-		CardFigureSetSubGroupLink::deleteEntries(CardFigureSetSubGroupLink::fetch(array("figureSetSubGroup" => $this)));
-		PowerRankingListFigureSetSubGroupLink::deleteEntries(PowerRankingListFigureSetSubGroupLink::fetch(array("figureSetSubGroup" => $this)));
 		return "";
 	}
 
@@ -251,6 +285,27 @@ class FigureSetSubGroup extends HS_DatabaseObject {
 					$clientDataObj->figureSet->id > 0) {
 					$this->figureSetID = $clientDataObj->figureSet->id;
 			}
+			if (isset($clientDataObj->tier)) {
+				$this->tier = $clientDataObj->tier;
+			}
+			if (isset($clientDataObj->order)) {
+				$this->order = $clientDataObj->order;
+			}
+			if (isset($clientDataObj->selectedByDefault)) {
+				$this->selectedByDefault = $clientDataObj->selectedByDefault;
+			}
+			if (property_exists($clientDataObj, "powerRankingList")) {
+				if (isset($clientDataObj->powerRankingList)) {
+					if (isset($clientDataObj->powerRankingList->id) && $clientDataObj->powerRankingList->id > 0) {
+						$this->powerRankingListID = $clientDataObj->powerRankingList->id;
+					} else {
+						$this->powerRankingListID = (PowerRankingList::create($clientDataObj->powerRankingList))->id;
+						$this->powerRankingListIDJustCreated = true;
+					}
+				} else {
+					$this->powerRankingListID = null;
+				}
+			}
 		}
 		
 		// Update Foreign Key Columns
@@ -258,57 +313,30 @@ class FigureSetSubGroup extends HS_DatabaseObject {
 			if (isset($clientDataObj->figureSet) && ( ! isset($clientDataObj->updateClasses) || (in_array("FigureSet", $clientDataObj->updateClasses))) && in_array("figureSet", $clientDataObj->fieldsToUpdate) && ! isset($this->figureSetIDJustCreated)) {
 				(FigureSet::fromDB($this->figureSetID))->updateInDB($clientDataObj->figureSet);
 			}
+			if (isset($clientDataObj->powerRankingList) && ( ! isset($clientDataObj->updateClasses) || (in_array("PowerRankingList", $clientDataObj->updateClasses))) && in_array("powerRankingList", $clientDataObj->fieldsToUpdate) && ! isset($this->powerRankingListIDJustCreated)) {
+				(PowerRankingList::fromDB($this->powerRankingListID))->updateInDB($clientDataObj->powerRankingList);
+			}
 		}
 		
 		$this->dbUpdate((new MySQLBuilder())->
 			update("FigureSetSubGroup",
-				array("name", "figureSetID"),
-				array($this->name, $this->figureSetID))->
+				array("name", "figureSetID", "tier", "order", "selectedByDefault", "powerRankingListID"),
+				array($this->name, $this->figureSetID, $this->tier, $this->order, $this->selectedByDefault, $this->powerRankingListID))->
 			where(array("id" => $this->id)));
 		
-		if ((isset($clientDataObj->updateNtoMLinks) || (isset($clientDataObj->joins, $clientDataObj->joins->{'CardFigureSetSubGroupLink.figureSetSubGroupID'}))) && in_array("cards", $clientDataObj->linksToUpdate)) {
-			$links = CardFigureSetSubGroupLink::fetch(array("figureSetSubGroup" => $this));
-			$oldObjs = array();
-			foreach ($links as $link) {
-				$oldObjs[] = $link->getCard();
-			}
-			$newObjs = array();
-			foreach ($clientDataObj->cards as $clientLinkObj) {
-				if (is_object($clientLinkObj) && isset($clientLinkObj->id) && $clientLinkObj->id > 0) {
-					$newObjs[] = Card::fromDB($clientLinkObj->id);
-				}
-			}
-			subtractOverlap($newObjs, $oldObjs, array("id"));
-			foreach ($newObjs as $newObj) {
-				CardFigureSetSubGroupLink::create(array("card" => $newObj, "figureSetSubGroup" => $this));
-			}
-			foreach ($oldObjs as $oldObj) {
-				(CardFigureSetSubGroupLink::fromDB(array("card" => $oldObj, "figureSetSubGroup" => $this)))->deleteInDB();
-			}
-		}
-		
-		if ((isset($clientDataObj->updateNtoMLinks) || (isset($clientDataObj->joins, $clientDataObj->joins->{'PowerRankingListFigureSetSubGroupLink.figureSetSubGroupID'}))) && in_array("powerRankingLists", $clientDataObj->linksToUpdate)) {
-			$links = PowerRankingListFigureSetSubGroupLink::fetch(array("figureSetSubGroup" => $this));
-			$oldObjs = array();
-			foreach ($links as $link) {
-				$oldObjs[] = $link->getPowerRankingList();
-			}
-			$newObjs = array();
-			foreach ($clientDataObj->powerRankingLists as $clientLinkObj) {
-				if (is_object($clientLinkObj) && isset($clientLinkObj->id) && $clientLinkObj->id > 0) {
-					$newObjs[] = PowerRankingList::fromDB($clientLinkObj->id);
-				}
-			}
-			subtractOverlap($newObjs, $oldObjs, array("id"));
-			foreach ($newObjs as $newObj) {
-				PowerRankingListFigureSetSubGroupLink::create(array("powerRankingList" => $newObj, "figureSetSubGroup" => $this));
-			}
-			foreach ($oldObjs as $oldObj) {
-				(PowerRankingListFigureSetSubGroupLink::fromDB(array("powerRankingList" => $oldObj, "figureSetSubGroup" => $this)))->deleteInDB();
-			}
-		}
-		
 		// Update 1-N Links
+		if (isset($clientDataObj->cards) &&
+				isset($clientDataObj->updateNto1) && $clientDataObj->updateNto1) {
+			foreach ($clientDataObj->cards as $clientLinkObj) {
+				if (isset($clientLinkObj->id)) {
+					$linkObj = Card::fromDB($clientLinkObj->id);
+					$linkObj->updateInDB($clientLinkObj);
+				} else {
+					$clientLinkObj->figureSetSubGroup = $this;
+					$clientLinkObj->childClassName::create($clientLinkObj);
+				}
+			}
+		}
 		if (isset($clientDataObj->releaseSets) &&
 				isset($clientDataObj->updateNto1) && $clientDataObj->updateNto1) {
 			foreach ($clientDataObj->releaseSets as $clientLinkObj) {
@@ -317,6 +345,18 @@ class FigureSetSubGroup extends HS_DatabaseObject {
 					$linkObj->updateInDB($clientLinkObj);
 				} else {
 					$clientLinkObj->figureSubSetGroup = $this;
+					$clientLinkObj->childClassName::create($clientLinkObj);
+				}
+			}
+		}
+		if (isset($clientDataObj->tournamentIncludesFigureSetSubGroups) &&
+				isset($clientDataObj->updateNto1) && $clientDataObj->updateNto1) {
+			foreach ($clientDataObj->tournamentIncludesFigureSetSubGroups as $clientLinkObj) {
+				if (isset($clientLinkObj->id)) {
+					$linkObj = TournamentIncludesFigureSetSubGroup::fromDB($clientLinkObj->id);
+					$linkObj->updateInDB($clientLinkObj);
+				} else {
+					$clientLinkObj->figureSetSubGroup = $this;
 					$clientLinkObj->childClassName::create($clientLinkObj);
 				}
 			}
@@ -344,6 +384,8 @@ class FigureSetSubGroup extends HS_DatabaseObject {
 			delete("FigureSetSubGroup")->
 			where(array("id" => $this->id)));
 		
+		self::cleanOrder($this->orderWhereArray());
+		
 		return "";
 	}
 
@@ -354,6 +396,16 @@ class FigureSetSubGroup extends HS_DatabaseObject {
 			$this->figureSet = FigureSet::fromDB($this->figureSetID);
 		}
 		return $this->figureSet;
+	}
+
+	public function getPowerRankingList() {
+		if ($this->powerRankingListID != null) {
+			if ( ! property_exists($this, "powerRankingList")) {
+				$this->powerRankingList = PowerRankingList::fromDB($this->powerRankingListID);
+			}
+			return $this->powerRankingList;
+		}
+		return null;
 	}
 
 	/* 'Constructor' only for DB Connection */

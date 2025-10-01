@@ -8,6 +8,7 @@ class HeroscapeMap extends HS_DatabaseObject {
 	protected $imageUrl; // String
 	protected $numberOfPlayers; // Int
 	protected $ohsGdocId; // String
+	protected $hexoscapeUrl; // String
 
 	/* Static 'Constructors' */
 	
@@ -45,13 +46,14 @@ class HeroscapeMap extends HS_DatabaseObject {
 		
 		$id = $dbObj->dbInsert((new MySQLBuilder())->
 			insert("HeroscapeMap",
-				array("name", "authorName", "buildInstructionsUrl", "imageUrl", "numberOfPlayers", "ohsGdocId"),
+				array("name", "authorName", "buildInstructionsUrl", "imageUrl", "numberOfPlayers", "ohsGdocId", "hexoscapeUrl"),
 				array($clientDataObj->name,
 					$clientDataObj->authorName,
 					$clientDataObj->buildInstructionsUrl,
 					$clientDataObj->imageUrl,
 					$clientDataObj->numberOfPlayers,
-					$clientDataObj->ohsGdocId)));
+					$clientDataObj->ohsGdocId,
+					$clientDataObj->hexoscapeUrl)));
 		
 		$dbObj = self::fromDB($id);
 		
@@ -130,6 +132,9 @@ class HeroscapeMap extends HS_DatabaseObject {
 			if (isset($whereData["ohsGdocId"])) {
 				$whereArray["{$prefix}HeroscapeMap.ohsGdocId"] = $whereData["ohsGdocId"];
 			}
+			if (isset($whereData["hexoscapeUrl"])) {
+				$whereArray["{$prefix}HeroscapeMap.hexoscapeUrl"] = $whereData["hexoscapeUrl"];
+			}
 		}
 		
 		
@@ -170,7 +175,7 @@ class HeroscapeMap extends HS_DatabaseObject {
 	}
 
 	public static function getColumnNames() {
-		return array("id", "name", "authorName", "buildInstructionsUrl", "imageUrl", "numberOfPlayers", "ohsGdocId");
+		return array("id", "name", "authorName", "buildInstructionsUrl", "imageUrl", "numberOfPlayers", "ohsGdocId", "hexoscapeUrl");
 	}
 
 	public static function getActionNames() {
@@ -198,6 +203,9 @@ class HeroscapeMap extends HS_DatabaseObject {
 		if (LoginCredentials::userLoggedIn()) {
 			$user = LoginCredentials::getLoggedInUser();
 			if ($user->isSiteAdmin()) {
+				return true;
+			}
+			if ($user->mapEditor) {
 				return true;
 			}
 			if (/*$user->verified && */$user->userName == $this->authorName) {
@@ -306,6 +314,9 @@ class HeroscapeMap extends HS_DatabaseObject {
 			if (property_exists($clientDataObj, "ohsGdocId")) {
 				$this->ohsGdocId = $clientDataObj->ohsGdocId;
 			}
+			if (property_exists($clientDataObj, "hexoscapeUrl")) {
+				$this->hexoscapeUrl = $clientDataObj->hexoscapeUrl;
+			}
 		}
 		
 		// Update Foreign Key Columns
@@ -314,8 +325,8 @@ class HeroscapeMap extends HS_DatabaseObject {
 		
 		$this->dbUpdate((new MySQLBuilder())->
 			update("HeroscapeMap",
-				array("name", "authorName", "buildInstructionsUrl", "imageUrl", "numberOfPlayers", "ohsGdocId"),
-				array($this->name, $this->authorName, $this->buildInstructionsUrl, $this->imageUrl, $this->numberOfPlayers, $this->ohsGdocId))->
+				array("name", "authorName", "buildInstructionsUrl", "imageUrl", "numberOfPlayers", "ohsGdocId", "hexoscapeUrl"),
+				array($this->name, $this->authorName, $this->buildInstructionsUrl, $this->imageUrl, $this->numberOfPlayers, $this->ohsGdocId, $this->hexoscapeUrl))->
 			where(array("id" => $this->id)));
 		
 		if ((isset($clientDataObj->updateNtoMLinks) || (isset($clientDataObj->joins, $clientDataObj->joins->{'HeroscapeMapTagLink.mapID'}))) && in_array("tags", $clientDataObj->linksToUpdate)) {

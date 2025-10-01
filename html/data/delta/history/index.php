@@ -8,6 +8,7 @@
 	<!-- CSS -->
 	<link rel="stylesheet" href="/css/styles.css">
 	<link rel="stylesheet" href="/css/about.css">
+	<link rel="stylesheet" href="/css/builder.css">
 	<style>
 		#pageContent {
 			max-width: 1500px
@@ -59,6 +60,7 @@
 	<!-- Internal Files -->
 	<script src="https://www.gstatic.com/charts/loader.js"></script>
 	<script src="/js/scripts.js"></script>
+	<script src="/js/deltaPriceGraph.js"></script>
 	<script>
 		google.charts.load('current', {packages: ['corechart', 'line']});
 		//google.charts.setOnLoadCallback(drawChart);
@@ -69,7 +71,12 @@
 			
 			for (let i = 0; i < Card.list.length; i++) {
 				const card = Card.list[i];
-				if ( ! vcInclusive && card.figureSetSubGroups[0].name == "Valhalla Customs (VC)") {
+				if (card.figureSet.id != 1) {
+					continue;
+				}
+				
+				if ( ! document.getElementById(card.figureSetSubGroup.name + "_checkbox").checked) {
+				//if ( ! vcInclusive && card.figureSetSubGroups[0].name == "Valhalla Customs (VC)") {
 					continue;
 				}
 				
@@ -96,107 +103,15 @@
 		}
 		
 		function _toggleCheckbox() {
-			drawGraph();
+			drawDeltaPriceGraph();
 		}
 		
-		var vcInclusive = false;
-		function drawGraph() {
-			var parentElement = document.getElementById("Graph");
-			parentElement.innerHTML = "";
-			
-			var data = new google.visualization.DataTable();
-			
-			var selectedCheckboxes = $('.cardInput:checkbox:checked');
-			
-			data.addColumn('string', 'X');
-			for (let i = 0; i < selectedCheckboxes.length; i++) {
-				const card = $(selectedCheckboxes[i]).data("card");
-				data.addColumn('number', card.name);
-			}
-			if (selectedCheckboxes.length == 0) {
-				data.addColumn('number', 'Placeholder');
-			}
-			
-			// Add Printed Cost to Graph ? 
-			
-			var dataRows = [];
-			
-			if (selectedCheckboxes.length > 0) {
-				var firstRow = ["Printed"];
-				for (let i = 0; i < selectedCheckboxes.length; i++) {
-					const card = $(selectedCheckboxes[i]).data("card");
-					firstRow.push(card.points);
-				}
-				dataRows.push(firstRow);
-			}
-			
-			
-			
-			DeltaUpdate.list.sort(function(a,b) {
-				if (a.date < b.date) {
-					return -1;
-				}
-				if (a.date > b.date) {
-					return 1;
-				}
-				return 0;
-			});
-			for (let i = 0; i < DeltaUpdate.list.length; i++) {
-				const deltaUpdate = DeltaUpdate.list[i];
-
-				var dataRow = [deltaUpdate.date.substr(0, 7)];
-				for (let i = 0; i < selectedCheckboxes.length; i++) {
-					const card = $(selectedCheckboxes[i]).data("card");
-					dataRow.push(findCost(card, deltaUpdate));
-				}
-				if (selectedCheckboxes.length == 0) {
-					dataRow.push(0);
-				}
-				dataRows.push(dataRow);
-			}
-			data.addRows(dataRows);
-
-			var options = {
-				hAxis: {
-					title: 'Date'
-				},
-				vAxis: {
-					title: 'Cost'
-				},
-				series: {
-					1: {}
-				},
-				/*width: ,*/
-				height: 500
-			};
-
-			var chart = new google.visualization.LineChart(parentElement);
-			chart.draw(data, options);
-		}
+		//var vcInclusive = false;
 		
-		function findCost(card, deltaUpdate) {
-			var cost = null;
-			for (let i = 0; i < DeltaUpdate.list.length; i++) {
-				const dUpdate = DeltaUpdate.list[i];
-				for (let j = 0; j < dUpdate.deltaUpdateCosts.length; j++) {
-					const deltaUpdateCost = dUpdate.deltaUpdateCosts[j];
-					if (deltaUpdateCost.card.id == card.id) {
-						var newCost = vcInclusive
-							? deltaUpdateCost.vcPoints
-							: deltaUpdateCost.points;
-						if (newCost != null) {
-							cost = newCost;
-						}
-					}
-				}
-				if (dUpdate.id == deltaUpdate.id) {
-					break;
-				}
-			}
-			return cost;
-		}
 		
-		function switchClassicVc(refThis) {
+		
+		
+		/*function switchClassicVc(refThis) {
 			vcInclusive = refThis.checked;
 			if (vcInclusive) {
 				document.getElementById("classicToggle").classList.remove("toggleSwitchSelected");
@@ -206,8 +121,8 @@
 				document.getElementById("vcToggle").classList.remove("toggleSwitchSelected");
 			}
 			writeFigureList();
-			drawGraph();
-		}
+			drawDeltaPriceGraph();
+		}*/
 	</script>
 </head>
 <body><div id='content'>
@@ -219,22 +134,47 @@
 		<h1>Delta Pricing History</h1>
 		<article>						
 			<div id='LeftColumn'>
-				<div id='VcToggle'>
-					<span class="toggleSwitch"><!-- Classic / VC -->
-						<span id="classicToggle" class="toggleSwitchString toggleSwitchSelected">Classic</span>
-						<label class="switch"> 
-							<input id="vcCheckbox" type="checkbox" onchange="switchClassicVc(this)">
-							<span class="slider round"></span>
-						</label>
-						<span id="vcToggle" class="toggleSwitchString">VC</span>
-					</span>
-				</div>
-				
+				<div id='Tier1SubGroups' class='row1Group tierSubGroup'></div>
+				<div id='Tier2SubGroups' class='row1Group tierSubGroup'></div>
+				<script>
+					FigureSetSubGroup.load(
+						{/*figureSet: */},
+						function (figureSetSubGroups) {
+							var tier1Group = document.getElementById('Tier1SubGroups');
+							var tier2Group = document.getElementById('Tier2SubGroups');
+							for (let i = 0; i < figureSetSubGroups.length; i++) {
+								const subGroup = figureSetSubGroups[i];
+								var subGroupDiv = createDiv({
+									class: "figureSetSubGroup"
+								});
+								if (subGroup.tier == 1) {
+									tier1Group.appendChild(subGroupDiv);
+								} else {
+									tier2Group.appendChild(subGroupDiv);
+								}
+								var labelElem = createLabel({});
+								subGroupDiv.appendChild(labelElem);
+								var inputElem = createInput({
+									type: "checkbox",
+									id: subGroup.name + "_checkbox",
+									onchange: "writeFigureList()"
+								});
+								if (subGroup.selectedByDefault) {
+									inputElem.checked = true;
+								}
+								labelElem.appendChild(inputElem);
+								labelElem.appendChild(createText(subGroup.name));
+							}
+						}, 
+						{joins: {}}
+					);
+				</script>
+						
 				<div id='FigureList'></div>
 			</div>
 			
 			<div id='RightColumn'>
-				<div id='Graph'>Loading...</div>
+				<div id='DeltaPriceGraph'>Loading...</div>
 			</div>
 			
 		</article>
@@ -247,10 +187,10 @@
 				function (cards) {
 					
 					// TODO 
-					
+					console.log(cards);
 					writeFigureList();
 					
-					drawGraph();
+					drawDeltaPriceGraph();
 					
 				},
 				{joins: {
@@ -261,17 +201,19 @@
 					"sizeID": {},
 					"releaseSetID": {},
 					"CardPower.cardID": {},
-					"CardFigureSetSubGroupLink.cardID": {
+					/*"CardFigureSetSubGroupLink.cardID": {
 						"figureSetSubGroupID": {
 							"figureSetID": {}
 						}
-					},
+					},*/
 					"CardPowerRanking.cardID": {
 						"powerRankingListID": {}
 					},
 					"DeltaUpdateCost.cardID": {
 						"deltaUpdateID": {}
-					}
+					},
+					"figureSetID": {},
+					"figureSetSubGroupID": {}
 				}}
 			);
 		</script>

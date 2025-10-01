@@ -549,6 +549,7 @@ io.on('connection', (socket) => {
 	var isAdmin = false;
 	var currentTournament = null;
 	var currentConvention = null;
+	var currentConventionSeries = null;
 	var currentSeason = null;
 	var currentLeague = null;
 	var loginCookie = null;
@@ -660,8 +661,6 @@ io.on('connection', (socket) => {
 		
 	});
 	
-	
-	
 	/** Convention Entry Points **/	
 	
 	socket.on('loadConvention', (objStr) => {
@@ -712,7 +711,7 @@ io.on('connection', (socket) => {
 							socket.emit("signupConventionError", JSON.stringify({}));
 							return;
 						}
-						if (convention.maxAttendees != null && convention.maxAttendees <= results.length) {
+						if (convention.hardPlayerCap != null && convention.hardPlayerCap <= results.length) {
 							socket.emit("conventionFull", JSON.stringify({}));
 							return;
 						} 
@@ -845,6 +844,44 @@ io.on('connection', (socket) => {
 				}
 				sendAnnouncement(announcement, convention.name, emails);
 			});		
+		}
+	});
+	
+	/** Convention Series Entry Points **/
+	
+	socket.on('loadConventionSeries', (objStr) => {
+		var obj = JSON.parse(objStr);
+		currentConventionSeries = obj.conventionSeries;
+		checkLoginAndSetAdmin(5, function() {
+			socket.join("ConventionSeries_"+currentConventionSeries.id);			
+		});
+	});
+	
+	socket.on('conventionSeriesAnnouncement', (objStr) => {
+		var obj = JSON.parse(objStr);
+		const conventionSeries = obj.conventionSeries;
+		const announcement = obj.announcement;
+		if (isAdmin && currentConventionSeries != null && 
+				conventionSeries !== undefined && conventionSeries !== null &&
+				conventionSeries.id !== undefined && conventionSeries.id !== null &&
+				currentConventionSeries.id == conventionSeries.id) {
+			dbConnection.query(
+					"SELECT DISTINCT(`User`.`email`) FROM `Convention` " +
+						"INNER JOIN `Attendee` ON `Attendee`.`conventionID` = `Convention`.`id` " +
+						"INNER JOIN `User` ON `User`.`id` = `Attendee`.`userID` " +
+						"WHERE `Convention`.`conventionSeriesID`=?",
+					[currentConvention.id],
+					(error, results, fields) => {
+				if (error) {
+					socket.emit("announcementError", JSON.stringify({}));
+					return;
+				}			
+				var emails = [];
+				for (let i = 0; i < results.length; i++) {
+					emails.push(results[i].email);
+				}
+				sendAnnouncement(announcement, conventionSeries.name, emails);
+			});
 		}
 	});
 	
@@ -1143,10 +1180,12 @@ io.on('connection', (socket) => {
 				(error, results, fields) => {
 			if (error) {
 				// TODO 
+				logDatabaseError(error, 'submitArmy : Select from Tournament ' + obj.tournament.id + ' ' + obj.player.id);
 				return;
 			} 
 			if (results.length != 1) {
 				// TODO 
+				logDatabaseError(error, 'submitArmy : Select from Tournament ' + obj.tournament.id + ' ' + obj.player.id);
 				return;
 			} 		
 			const sheetId = results[0].sheetId;
@@ -1172,6 +1211,9 @@ io.on('connection', (socket) => {
 					values.push(obj.player.armies[i]);
 				}			
 				updateSheetArmy(sheetId, values);
+				
+				// TODO - submit armies here (remove existing armies first) 
+				
 			});
 		});		
 	});
@@ -1416,9 +1458,15 @@ io.on('connection', (socket) => {
 						// Swiss Case (Normal/Default)
 						var numMapsNeeded = null;
 						if (maxPlayersPerMatchup == 2) {
-							numMapsNeeded = players.length % 2 == 0
+							const playerCount = tournament.teamSize == 1
+								? players.length
+								: Math.ceil(players.length / tournament.teamSize);
+							numMapsNeeded = playerCount % 2 == 0
+								? playerCount / 2
+								: (playerCount - 1) / 2;
+							/*numMapsNeeded = players.length % 2 == 0
 								? players.length / 2
-								: (players.length - 1) / 2;
+								: (players.length - 1) / 2;*/
 						} else {
 							numMapsNeeded = Math.ceil(players.length / maxPlayersPerMatchup);
 						}
@@ -2254,7 +2302,7 @@ io.on('connection', (socket) => {
 	/** Player Rankings **/
 	
 	socket.on('checkSiteAdmin', (objStr) => {
-		checkLoginAndSetAdmin(5, null);
+		checkLoginAndSetAdmin(6, null);
 	});
 	
 	socket.on('updatePlayerRankings', (objStr) => {
@@ -3267,6 +3315,9 @@ io.on('connection', (socket) => {
 					checkAndSetLeagueAdmin(user, currentSeason.league, callbackFcn);
 					break;
 				case 5:
+					checkAndSetConventionSeriesAdmin(user, currentConventionSeries, callbackFcn);					
+					break;
+				case 6:
 					if (user.siteAdmin) {
 						isAdmin = true;
 					}
@@ -3326,6 +3377,21 @@ io.on('connection', (socket) => {
 		dbConnection.query(
 				"SELECT * FROM `Admin` WHERE (`userID` = ? AND `conventionID` = ?);",
 				[user.id, convention.id],
+				(error, results, fields) => {
+			if ( ! error) {
+				if (results.length > 0) {
+					isAdmin = true;
+					socket.emit("loadAdmin", JSON.stringify({}));
+				}
+				callbackFcn();
+			}
+		});
+	}
+	
+	function checkAndSetConventionSeriesAdmin(user, conventionSeries, callbackFcn) {
+		dbConnection.query(
+				"SELECT * FROM `Admin` WHERE (`userID` = ? AND `conventionSeriesID` = ?);",
+				[user.id, conventionSeries.id],
 				(error, results, fields) => {
 			if ( ! error) {
 				if (results.length > 0) {
@@ -3463,6 +3529,13 @@ io.on('connection', (socket) => {
 		});
 	}
 	
+	function logDatabaseError(error, description) {
+		logToFile(error);
+		sendEmail(
+			"chrisperkins.cp@gmail.com", 
+			"Heroscape.org Database Error", 
+			description + "<br><br>" + error);
+	}
 });
 
 function logToFile(msg) {
@@ -3471,6 +3544,8 @@ function logToFile(msg) {
 	logFile.write(msg + "\n\n");
 	logFile.end();
 }
+
+
 
 http.listen(port, function () {
 	// Do nothing

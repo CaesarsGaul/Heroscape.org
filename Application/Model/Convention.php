@@ -7,8 +7,11 @@ class Convention extends HS_DatabaseObject {
 	protected $startDate; // Date
 	protected $endDate; // Date
 	protected $address; // String
+	protected $latitude; // Decimal
+	protected $longitude; // Decimal
 	protected $conventionSeriesID; // Int
-	protected $maxAttendees; // Int
+	protected $hardPlayerCap; // Int
+	protected $softPlayerCap; // Int
 	protected $signupKey; // String
 
 	/* Static 'Constructors' */
@@ -52,14 +55,14 @@ class Convention extends HS_DatabaseObject {
 		
 		$id = $dbObj->dbInsert((new MySQLBuilder())->
 			insert("Convention",
-				array("name", "startDate", "endDate", "conventionSeriesID", "maxAttendees"),
+				array("name", "startDate", "endDate", "conventionSeriesID", "hardPlayerCap"),
 				array($clientDataObj->name,
 					$clientDataObj->startDate,
 					$clientDataObj->endDate,
 					isset($clientDataObj->conventionSeries) 
 						? $clientDataObj->conventionSeries->id
 						: null,
-					$clientDataObj->maxAttendees)));
+					$clientDataObj->hardPlayerCap)));
 		
 		$dbObj = self::fromDB($id);
 		
@@ -164,8 +167,11 @@ class Convention extends HS_DatabaseObject {
 					$whereArray["{$prefix}Convention.conventionSeriesID"] = null;
 				}
 			}
-			if (isset($whereData["maxAttendees"])) {
-				$whereArray["{$prefix}Convention.maxAttendees"] = $whereData["maxAttendees"];
+			if (isset($whereData["hardPlayerCap"])) {
+				$whereArray["{$prefix}Convention.hardPlayerCap"] = $whereData["hardPlayerCap"];
+			}
+			if (isset($whereData["softPlayerCap"])) {
+				$whereArray["{$prefix}Convention.softPlayerCap"] = $whereData["softPlayerCap"];
 			}
 		}
 		
@@ -207,7 +213,7 @@ class Convention extends HS_DatabaseObject {
 	}
 
 	public static function getColumnNames() {
-		return array("id", "name", "description", "startDate", "endDate", "address", "conventionSeriesID", "maxAttendees", "signupKey");
+		return array("id", "name", "description", "startDate", "endDate", "address", "latitude", "longitude", "conventionSeriesID", "hardPlayerCap", "softPlayerCap", "signupKey");
 	}
 
 	public static function getActionNames() {
@@ -335,6 +341,12 @@ class Convention extends HS_DatabaseObject {
 			if (property_exists($clientDataObj, "address")) {
 				$this->address = $clientDataObj->address;
 			}
+			if (property_exists($clientDataObj, "latitude")) {
+				$this->latitude = $clientDataObj->latitude;
+			}
+			if (property_exists($clientDataObj, "longitude")) {
+				$this->longitude = $clientDataObj->longitude;
+			}
 			if (property_exists($clientDataObj, "conventionSeries")) {
 				if (isset($clientDataObj->conventionSeries)) {
 					if (isset($clientDataObj->conventionSeries->id) && $clientDataObj->conventionSeries->id > 0) {
@@ -347,8 +359,11 @@ class Convention extends HS_DatabaseObject {
 					$this->conventionSeriesID = null;
 				}
 			}
-			if (property_exists($clientDataObj, "maxAttendees")) {
-				$this->maxAttendees = $clientDataObj->maxAttendees;
+			if (property_exists($clientDataObj, "hardPlayerCap")) {
+				$this->hardPlayerCap = $clientDataObj->hardPlayerCap;
+			}
+			if (property_exists($clientDataObj, "softPlayerCap")) {
+				$this->softPlayerCap = $clientDataObj->softPlayerCap;
 			}
 			if (property_exists($clientDataObj, "signupKey")) {
 				$this->signupKey = $clientDataObj->signupKey;
@@ -364,8 +379,8 @@ class Convention extends HS_DatabaseObject {
 		
 		$this->dbUpdate((new MySQLBuilder())->
 			update("Convention",
-				array("name", "description", "startDate", "endDate", "address", "conventionSeriesID", "maxAttendees", "signupKey"),
-				array($this->name, $this->description, $this->startDate, $this->endDate, $this->address, $this->conventionSeriesID, $this->maxAttendees, $this->signupKey))->
+				array("name", "description", "startDate", "endDate", "address", "latitude", "longitude", "conventionSeriesID", "hardPlayerCap", "softPlayerCap", "signupKey"),
+				array($this->name, $this->description, $this->startDate, $this->endDate, $this->address, $this->latitude, $this->longitude, $this->conventionSeriesID, $this->hardPlayerCap, $this->softPlayerCap, $this->signupKey))->
 			where(array("id" => $this->id)));
 		
 		// Update 1-N Links

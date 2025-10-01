@@ -50,19 +50,18 @@ class PowerRankingList extends HS_DatabaseObject {
 		
 		$dbObj = self::fromDB($id);
 		
-		if (isset($clientDataObj->figureSetSubGroups)) {
-			foreach ($clientDataObj->figureSetSubGroups as $tempClientDataObj) {
-				PowerRankingListFigureSetSubGroupLink::create(array(
-					"powerRankingList" => $dbObj,
-					"figureSetSubGroup" => FigureSetSubGroup::fromDB($tempClientDataObj->id)));
-			}
-		}
 		$dbObj->createInitialLinks($clientDataObj);
 		return $dbObj;
 	}
 
 	protected function createInitialLinks($clientDataObj) {
 		// Create 1-N Links
+		if (isset($clientDataObj->figureSetSubGroups)) {
+			foreach ($clientDataObj->figureSetSubGroups as $clientLinkObj) {
+				$clientLinkObj->powerRankingList = $this;
+				$clientLinkObj->childClassName::create($clientLinkObj);
+			}
+		}
 		if (isset($clientDataObj->cardPowerRankings)) {
 			foreach ($clientDataObj->cardPowerRankings as $clientLinkObj) {
 				$clientLinkObj->powerRankingList = $this;
@@ -105,9 +104,6 @@ class PowerRankingList extends HS_DatabaseObject {
 			$whereArray = array_merge($whereArray, User::createWhereArray($whereData["author"], "{$prefix}PowerRankingList_authorID_"));
 		}
 		
-		if (isset($whereData["id"])) {
-			$whereArray = array_merge($whereArray, FigureSetSubGroup::createWhereArray($whereData["id"], "{$prefix}PowerRankingList_id_PowerRankingListFigureSetSubGroupLink_figureSetSubGroupID_"));
-		}
 		
 		return $whereArray;
 	}
@@ -122,19 +118,19 @@ class PowerRankingList extends HS_DatabaseObject {
 	}
 
 	public static function getNToMLinkClasses() {
-		return array("PowerRankingListFigureSetSubGroupLink" => "powerRankingListID");
+		return array();
 	}
 
 	public static function getNToMLinkClassesWithType() {
-		return array("PowerRankingListFigureSetSubGroupLink" => "FigureSetSubGroup");
+		return array();
 	}
 
 	public static function getNToMLinkClassesWithJSVariableName() {
-		return array("PowerRankingListFigureSetSubGroupLink" => "figureSetSubGroups");
+		return array();
 	}
 
 	public static function getNTo1LinkClasses() {
-		return array("CardPowerRanking" => "powerRankingListID");
+		return array("FigureSetSubGroup" => "powerRankingListID", "CardPowerRanking" => "powerRankingListID");
 	}
 
 	public static function getForeignKeys() {
@@ -212,12 +208,14 @@ class PowerRankingList extends HS_DatabaseObject {
 
 	protected function deleteLinks() {
 		// N-1 Links
+		if (FigureSetSubGroup::countEntries(array("FigureSetSubGroup.powerRankingListID" => $this->id)) > 0) {
+			return "Unable to delete Power Ranking List because one or more Figure Set Sub Group is dependent on it.";
+		}
 		if (CardPowerRanking::countEntries(array("CardPowerRanking.powerRankingListID" => $this->id)) > 0) {
 			return "Unable to delete Power Ranking List because one or more Card Power Ranking is dependent on it.";
 		}
 		
 		// N-M Links
-		PowerRankingListFigureSetSubGroupLink::deleteEntries(PowerRankingListFigureSetSubGroupLink::fetch(array("powerRankingList" => $this)));
 		return "";
 	}
 
@@ -255,28 +253,19 @@ class PowerRankingList extends HS_DatabaseObject {
 				array($this->name, $this->authorID))->
 			where(array("id" => $this->id)));
 		
-		if ((isset($clientDataObj->updateNtoMLinks) || (isset($clientDataObj->joins, $clientDataObj->joins->{'PowerRankingListFigureSetSubGroupLink.powerRankingListID'}))) && in_array("figureSetSubGroups", $clientDataObj->linksToUpdate)) {
-			$links = PowerRankingListFigureSetSubGroupLink::fetch(array("powerRankingList" => $this));
-			$oldObjs = array();
-			foreach ($links as $link) {
-				$oldObjs[] = $link->getFigureSetSubGroup();
-			}
-			$newObjs = array();
+		// Update 1-N Links
+		if (isset($clientDataObj->figureSetSubGroups) &&
+				isset($clientDataObj->updateNto1) && $clientDataObj->updateNto1) {
 			foreach ($clientDataObj->figureSetSubGroups as $clientLinkObj) {
-				if (is_object($clientLinkObj) && isset($clientLinkObj->id) && $clientLinkObj->id > 0) {
-					$newObjs[] = FigureSetSubGroup::fromDB($clientLinkObj->id);
+				if (isset($clientLinkObj->id)) {
+					$linkObj = FigureSetSubGroup::fromDB($clientLinkObj->id);
+					$linkObj->updateInDB($clientLinkObj);
+				} else {
+					$clientLinkObj->powerRankingList = $this;
+					$clientLinkObj->childClassName::create($clientLinkObj);
 				}
 			}
-			subtractOverlap($newObjs, $oldObjs, array("id"));
-			foreach ($newObjs as $newObj) {
-				PowerRankingListFigureSetSubGroupLink::create(array("figureSetSubGroup" => $newObj, "powerRankingList" => $this));
-			}
-			foreach ($oldObjs as $oldObj) {
-				(PowerRankingListFigureSetSubGroupLink::fromDB(array("figureSetSubGroup" => $oldObj, "powerRankingList" => $this)))->deleteInDB();
-			}
 		}
-		
-		// Update 1-N Links
 		if (isset($clientDataObj->cardPowerRankings) &&
 				isset($clientDataObj->updateNto1) && $clientDataObj->updateNto1) {
 			foreach ($clientDataObj->cardPowerRankings as $clientLinkObj) {

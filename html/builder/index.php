@@ -78,18 +78,43 @@
 				sortOption2 = sort2Param;
 			}
 			
+			var unitsParam = url.searchParams.get("units");
+			if (unitsParam !== undefined && unitsParam !== null && unitsParam != "null") {
+				unitsParam = unitsParam.split(";");
+				console.log(unitsParam);
+				for (let i = 0; i < unitsParam.length; i++) {
+					var unitName = unitsParam[i];
+					if (unitName.length == 0) {
+						continue;
+					}
+					var quantity = 1;
+					if (unitName.includes("_")) {
+						const unitNameParts = unitName.split("_");
+						unitName = unitNameParts[0];
+						quantity = parseInt(unitNameParts[1]);
+					}
+					if (unitsMap[unitName] === undefined) {
+						continue;
+					}
+					for (let j = 0; j < quantity; j++) {
+						army.addUnit(unitsMap[unitName]);
+					}
+				}
+				updateArmyDisplay();
+			}
+			
 			redrawPage();
 		}
 		
 		var army = new Army();
 		
-		var vcInclusive = false;
-		var marvelInclusive = true; // TODO : consider having a toggle for this 
+		//var vcInclusive = false;
+		//var marvelInclusive = true; // TODO : consider having a toggle for this 
 		var deltaPoints = false;
 		var banList = null;
 		var restrictedList = null;
 		
-		function switchClassicVc(refThis) {
+		/*function switchClassicVc(refThis) {
 			vcInclusive = refThis.checked;
 			if (vcInclusive) {
 				document.getElementById("classicToggle").classList.remove("toggleSwitchSelected");
@@ -99,8 +124,8 @@
 				document.getElementById("vcToggle").classList.remove("toggleSwitchSelected");
 			}
 			redrawPage();
-			updateURL();
-		}
+			//updateURL();
+		}*/
 		
 		function switchClassicDelta(refThis) {
 			deltaPoints = refThis.checked;
@@ -112,7 +137,7 @@
 				document.getElementById("deltaToggle").classList.remove("toggleSwitchSelected");
 			}
 			redrawPage();
-			updateURL();
+			//updateURL();
 		}
 		
 		function updateURL() {
@@ -120,15 +145,28 @@
 				return;
 			}
 			const deltaStr = deltaPoints ? "true" : "false";
-			const vcStr = vcInclusive ? "true" : "false";
+			//const vcStr = vcInclusive ? "true" : "false";
+			
+			var units = "";
+			for (var figureName in army.units) {
+				if (army.units.hasOwnProperty(figureName)) {
+					const quantity = army.units[figureName];
+					units += figureName + "_" + quantity;
+					units += ";"
+				}
+			}
+			
 			var newurl = window.location.origin + 
 				window.location.pathname + 
 				"?" + 
 					'delta='+deltaStr+
-					'&vc='+vcStr+
+					/*'&vc='+vcStr+*/
 					'&search='+searchText+
 					'&sort1='+sortOption1+
-					'&sort2='+sortOption2;
+					'&sort2='+sortOption2+
+					'&units='+units;
+					
+			
 			
 			window.history.pushState({path:newurl},'',newurl);
 		}
@@ -156,6 +194,7 @@
 					_toggleActiveUnit(newUnitIdx);
 				}
 			}
+			updateURL();
 		}
 		
 		addEventListener('resize', (event) => {
@@ -194,35 +233,68 @@
 	<div id='ArmyStatsDivMobile'></div>
 	
 	<div id='ToggleSwitches'>
-		<span class='toggleSwitch'><!-- Classic / VC -->
-			<span id='classicToggle' class='toggleSwitchString toggleSwitchSelected'>Classic</span>
-			<label class="switch"> 
-				<input id='vcCheckbox' type="checkbox" onchange="switchClassicVc(this)" >
-				<span class="slider round"></span>
-			</label>
-			<span id='vcToggle' class='toggleSwitchString'>VC</span>
-			<a class="tagInfo" href="/about/builder/#Settings" target="_blank">?</a>
-			<span class="tagHoverDescription">Exclude or Include Valhalla Customs Units.</span>
-		</span>
+		<div id='Tier1SubGroups' class='row1Group tierSubGroup'></div>
+		<div id='Tier2SubGroups' class='row1Group tierSubGroup'></div>
+		<script>
+			FigureSetSubGroup.load(
+				{/*figureSet: */},
+				function (figureSetSubGroups) {
+					var tier1Group = document.getElementById('Tier1SubGroups');
+					var tier2Group = document.getElementById('Tier2SubGroups');
+					for (let i = 0; i < figureSetSubGroups.length; i++) {
+						const subGroup = figureSetSubGroups[i];
+						var subGroupDiv = createDiv({
+							class: "figureSetSubGroup"
+						});
+						if (subGroup.tier == 1) {
+							tier1Group.appendChild(subGroupDiv);
+						} else {
+							tier2Group.appendChild(subGroupDiv);
+						}
+						var labelElem = createLabel({});
+						subGroupDiv.appendChild(labelElem);
+						var inputElem = createInput({
+							type: "checkbox",
+							id: subGroup.name + "_checkbox",
+							onchange: "redrawPage()"
+						});
+						const cookieValue = getCookieValue("hs_setting_Default_Builder_Display_-_"+subGroup.name.replaceAll(" ", "_"));
+						if (cookieValue != null) {
+							if (cookieValue == "1") {
+								inputElem.checked = true;
+							}
+						} else if (subGroup.selectedByDefault) {
+							inputElem.checked = true;
+						}
+						labelElem.appendChild(inputElem);
+						labelElem.appendChild(createText(subGroup.name));
+					}
+				}, 
+				{joins: {}}
+			);
+		</script>
 		
-		<img class='logoImg' id='centerLogoImg' src='/images/autoloadIcon.png' />
-		
-		<span class='toggleSwitch'><!-- Standard / Delta -->
-			<span id='standardToggle' class='toggleSwitchString toggleSwitchSelected'>Standard</span>
-			<label class="switch">
-				<input id='deltaCheckbox' type="checkbox" onchange="switchClassicDelta(this)" >
-				<span class="slider round"></span>
-			</label>
-			<span id='deltaToggle' class='toggleSwitchString'>Delta</span>
-			<a class="tagInfo" href="/todo#todo" target="_blank">?</a>
-			<span class="tagHoverDescription">Switch between standard or delta pricing. Note that some units have a different delta price for VC-inclusive events.</span>
-		</span>
-		<span>
-			<label>
-				Keep x0s
-				<input id='armyMinCheckbox' type='checkbox' onclick='changeArmyMin()' />
-			</label>
-		</span>
+		<div class='row1Group'>
+			<span class='toggleSwitch row1Column'><!-- Standard / Delta -->
+				<span id='standardToggle' class='toggleSwitchString toggleSwitchSelected'>Standard</span>
+				<label class="switch">
+					<input id='deltaCheckbox' type="checkbox" onchange="switchClassicDelta(this)" >
+					<span class="slider round"></span>
+				</label>
+				<span id='deltaToggle' class='toggleSwitchString'>Delta</span>
+				<a class="tagInfo" href="/todo#todo" target="_blank">?</a>
+				<span class="tagHoverDescription">Switch between standard or delta pricing. Note that some units have a different delta price for VC-inclusive events.</span>
+			</span>
+			
+			<span class='row1Column'>
+				<img class='logoImg' id='centerLogoImg' src='/images/autoloadIcon.png' />
+				
+				<label id='keepX0'>
+					Keep x0s
+					<input id='armyMinCheckbox' type='checkbox' onclick='changeArmyMin()' />
+				</label>
+			</span>
+		</div>
 	</div>
 	
 	<script>
@@ -306,11 +378,14 @@
 	</div>
 	
 	<div id='FilterDiv'>
-		<h2 onclick='_toggleFilters()'>Filters</h2>
+		<h2 onclick='_toggleFilters()'>
+			Filters &darr;	
+		</h2>
+		
 		
 		<div id='FiltersDiv'>
 			<p>Select a filter to remove any figure(s) that do not match the criteria.</p>
-			<div id='FiltersDivGroup1'>
+			<div class='filtersDivGroup1'>
 				<label class='filterLabel'>
 					<input type='checkbox' class='filterCheckbox' onclick='_updateFilters(this)' id='filter_common' />
 					Common
@@ -328,19 +403,50 @@
 					Hero
 				</label>
 			</div>
-			<div class='filtersDivGroup'>
+			<p>Select the fields for your search text.</p>
+			<div class='filtersDivGroup1'>
+				<label class='filterLabel'>
+					<input type='checkbox' class='filterCheckbox' onclick='_search()' id='filter_search_name' checked />
+					Name
+				</label>
+				<label class='filterLabel'>
+					<input type='checkbox' class='filterCheckbox' onclick='_search()' id='filter_search_nickname' checked />
+					Nickname
+				</label>
+				<label class='filterLabel'>
+					<input type='checkbox' class='filterCheckbox' onclick='_search()' id='filter_search_species' checked />
+					Species
+				</label>
+				<label class='filterLabel'>
+					<input type='checkbox' class='filterCheckbox' onclick='_search()' id='filter_search_class' checked />
+					Class
+				</label>
+				<label class='filterLabel'>
+					<input type='checkbox' class='filterCheckbox' onclick='_search()' id='filter_search_personality' checked />
+					Personality
+				</label>
+				<label class='filterLabel'>
+					<input type='checkbox' class='filterCheckbox' onclick='_search()' id='filter_search_powerNames' checked />
+					Power Names
+				</label>
+				<label class='filterLabel'>
+					<input type='checkbox' class='filterCheckbox' onclick='_search()' id='filter_search_powerText' checked />
+					Power Text
+				</label>
+			</div>
+			<div class='filtersDivGroup2'>
 				<h3 onclick="_toggleFiltersSpecies()">Species</h3>
 				<div id='SpeciesFiltersDiv'>
 					<select id='SpeciesFiltersSelect' class='filtersMultiSelect' onchange='_updateFilters(this)' multiple></select>
 				</div>
 			</div>
-			<div class='filtersDivGroup'>
+			<div class='filtersDivGroup2'>
 				<h3 onclick="_toggleFiltersClass()">Class</h3>
 				<div id='ClassFiltersDiv'>
 					<select id='ClassFiltersSelect' class='filtersMultiSelect' onchange='_updateFilters(this)' multiple></select>
 				</div>
 			</div>
-			<div class='filtersDivGroup'>
+			<div class='filtersDivGroup2'>
 				<h3 onclick="_toggleFiltersPersonality()">Personality</h3>
 				<div id='PersonalityFiltersDiv'>
 					<select id='PersonalityFiltersSelect' class='filtersMultiSelect' onchange='_updateFilters(this)' multiple></select>
@@ -364,7 +470,8 @@
 						No figures selected. Choose a figure from the box to add it to your army.
 					</div>
 					<!--<button id='viewArmyBtn' class='armyBtn' onclick='_viewArmy()'>TBD</button>-->
-					<button id='armyListCopy' class='armyBtn' onclick='_copyArmy()'>Copy</button>
+					<button id='CopyUrlButton' class='armyBtn' onclick='_copyUrl()'>Copy URL</button>
+					<button id='CopyArmyButton' class='armyBtn' onclick='_copyArmy()'>Copy Army</button>
 					<button id='armyListX' class='armyBtn' onclick='_clearArmy()'>X</button>
 					<div class='armyStatsGroup'>
 						<div id='armyPoints' class='armyStatsValue'>

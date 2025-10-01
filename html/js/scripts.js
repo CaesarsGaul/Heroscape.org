@@ -107,3 +107,17 @@ function displayTournament(tournament, divId, options=[]) {
 	
 	div.appendChild(link);					
 }
+
+function vcInclusive() {
+	if (typeof tournament == "object") { // Tournament Builder or Army Submission
+		for (let j = 0; j < tournament.tournamentIncludesFigureSetSubGroups.length; j++) {
+			const subGroupLink = tournament.tournamentIncludesFigureSetSubGroups[j];
+			if (subGroupLink.figureSetSubGroup.name == "VC" && subGroupLink.include) {
+				return true;
+			}
+		}
+		return false;
+	} else { // Main Builder or PCS Page
+		return document.getElementById("VC_checkbox").checked;
+	}
+}

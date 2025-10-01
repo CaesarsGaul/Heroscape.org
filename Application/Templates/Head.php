@@ -5,6 +5,15 @@ ini_set('display_errors', 1);
 
 require_once("/var/www/Application/Templates/HeadConstantsAndFunctions.php");
 
+$subdomain = explode('.', $_SERVER['HTTP_HOST'])[0];
+$figureSet = null;
+if ($subdomain != "heroscape") { // $subdomain == "heroscape" = base domain, anything else = subdomain 
+	$figureSet = FigureSet::fromDB_sDomain($subdomain);
+	if ( ! $figureSet->public) {
+		echo "<meta name='robots' content='noindex, nofollow'>\n";
+	}
+}
+
 echo "
 <meta name='viewport' content='width=device-width, initial-scale=1'>
 <meta charset='UTF-8'>

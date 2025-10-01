@@ -7,8 +7,9 @@ class User extends HS_DatabaseObject {
 	protected $phoneNumber; // String
 	protected $firstName; // String
 	protected $lastName; // String
-	protected $siteAdmin; // Boolean
 	protected $verified; // Boolean
+	protected $mapEditor; // Boolean
+	protected $siteAdmin; // Boolean
 	protected $verificationKey; // String
 	protected $elo; // Int
 
@@ -200,11 +201,14 @@ class User extends HS_DatabaseObject {
 			if (isset($whereData["lastName"])) {
 				$whereArray["{$prefix}User.lastName"] = $whereData["lastName"];
 			}
-			if (isset($whereData["siteAdmin"])) {
-				$whereArray["{$prefix}User.siteAdmin"] = $whereData["siteAdmin"];
-			}
 			if (isset($whereData["verified"])) {
 				$whereArray["{$prefix}User.verified"] = $whereData["verified"];
+			}
+			if (isset($whereData["mapEditor"])) {
+				$whereArray["{$prefix}User.mapEditor"] = $whereData["mapEditor"];
+			}
+			if (isset($whereData["siteAdmin"])) {
+				$whereArray["{$prefix}User.siteAdmin"] = $whereData["siteAdmin"];
 			}
 			if (isset($whereData["verificationKey"])) {
 				$whereArray["{$prefix}User.verificationKey"] = $whereData["verificationKey"];
@@ -249,7 +253,7 @@ class User extends HS_DatabaseObject {
 	}
 
 	public static function getColumnNames() {
-		return array("id", "userName", "email", "phoneNumber", "firstName", "lastName", "siteAdmin", "verified", "verificationKey", "elo");
+		return array("id", "userName", "email", "phoneNumber", "firstName", "lastName", "verified", "mapEditor", "siteAdmin", "verificationKey", "elo");
 	}
 
 	public static function getActionNames() {
@@ -391,11 +395,14 @@ class User extends HS_DatabaseObject {
 			if (property_exists($clientDataObj, "lastName")) {
 				$this->lastName = $clientDataObj->lastName;
 			}
-			if (isset($clientDataObj->siteAdmin)) {
-				$this->siteAdmin = $clientDataObj->siteAdmin;
-			}
 			if (isset($clientDataObj->verified)) {
 				$this->verified = $clientDataObj->verified;
+			}
+			if (isset($clientDataObj->mapEditor)) {
+				$this->mapEditor = $clientDataObj->mapEditor;
+			}
+			if (isset($clientDataObj->siteAdmin)) {
+				$this->siteAdmin = $clientDataObj->siteAdmin;
 			}
 			if (property_exists($clientDataObj, "verificationKey")) {
 				$this->verificationKey = $clientDataObj->verificationKey;
@@ -411,8 +418,8 @@ class User extends HS_DatabaseObject {
 		
 		$this->dbUpdate((new MySQLBuilder())->
 			update("User",
-				array("userName", "email", "phoneNumber", "firstName", "lastName", "siteAdmin", "verified", "verificationKey", "elo"),
-				array($this->userName, $this->email, $this->phoneNumber, $this->firstName, $this->lastName, $this->siteAdmin, $this->verified, $this->verificationKey, $this->elo))->
+				array("userName", "email", "phoneNumber", "firstName", "lastName", "verified", "mapEditor", "siteAdmin", "verificationKey", "elo"),
+				array($this->userName, $this->email, $this->phoneNumber, $this->firstName, $this->lastName, $this->verified, $this->mapEditor, $this->siteAdmin, $this->verificationKey, $this->elo))->
 			where(array("id" => $this->id)));
 		
 		// Update 1-N Links

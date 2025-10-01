@@ -134,6 +134,13 @@ function _writeTournamentFieldData(parentElem, tournament) {
 	});
 	parentElem.appendChild(fieldDataP);
 	
+	if (tournament.maxNumPlayersPerGame > 2) {
+		fieldDataP.appendChild(createSpan({
+			class: "maxElem",
+			innerHTML: "Multiplayer (" + tournament.maxNumPlayersPerGame + ")"
+		}));
+	}
+	
 	if (tournament.roundLengthMinutes != null) {
 		fieldDataP.appendChild(createSpan({
 			class: "maxElem",

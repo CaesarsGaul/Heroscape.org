@@ -101,6 +101,15 @@
 			margin-bottom: 0;
 			text-align: left;
 		}
+		
+		h3 a {
+			text-decoration: none;
+			color: inherit;
+		}
+		
+		h3 a:visited {
+			color: inherit;
+		}
 	</style>
 	
 	<!-- Internal Files -->
@@ -180,7 +189,7 @@
 				<div class='section'>
 					<h3>Current</h3>
 					<div id='currentTournaments'></div>
-					<script>
+					<script>					
 						HeroscapeTournament.load(
 							{startBefore: today,
 								endAfter: today.substr(0, today.indexOf(' '))
@@ -319,9 +328,16 @@
 							var rightColumnDiv = createDiv({class: 'highlightMapInfo'});
 							parentElem.appendChild(rightColumnDiv);
 							
-							rightColumnDiv.appendChild(createH3({
+							var h3Elem = createH3({
+								
+								class: "mapName"
+							});
+							h3Elem.appendChild(createA({
 								innerHTML: map.name,
-								class: "mapName"}));
+								href: "/map/view/?HeroscapeMap="+map.id,
+								target: "_blank"
+							}));
+							rightColumnDiv.appendChild(h3Elem);
 							if (map.authorName != null) {
 								var authorP = createP({innerHTML: "By ", id: "mapUserName"});
 								rightColumnDiv.appendChild(authorP);
@@ -360,10 +376,7 @@
 									tagsP.innerHTML += map.tags[i].tag;
 								}
 							}
-							if (map.ohsGdocId != null) {
-								//var ohsDiv = createDiv({});
-								//rightColumnDiv.appendChild(ohsDiv);
-								
+							if (map.ohsGdocId != null) {								
 								rightColumnDiv.appendChild(createA({
 									innerHTML: "Create OHS Game",
 									id: "createOhsLink",

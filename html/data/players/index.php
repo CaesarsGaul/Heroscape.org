@@ -7,6 +7,7 @@
 	
 	<!-- CSS -->
 	<!--<link rel="stylesheet" type="text/css" href="/css/TODO.css">-->
+	<link rel="stylesheet" type="text/css" href="/css/sortableTable.js">
 	<style>
 		#StandingsTable {
 			margin: auto;
@@ -33,6 +34,7 @@
 	<script src="/js/Army.js"></script>
 	<script src='/js/armyBuilder.js'></script>
 	<script src='/js/elo.js/elo.js'></script>
+	<script src='/js/sortableTable.js'></script>
 	<script>
 		const today = datetimeToString(new Date());
 		
@@ -133,6 +135,11 @@
 		function displayStandings(users) {
 			var table = document.getElementById("StandingsTable");
 			
+			_sortableTableData = {};
+			
+			var headers = ["User", "ELO", "W", "L", "Win %"];
+			var data = [];
+			
 			var playerCount = 1;
 			for (let i = 0; i < users.length; i++) {
 				const user = users[i];
@@ -142,7 +149,10 @@
 					continue;
 				}
 				
-				var tr = createTr({});
+				var name = "<a href='https://heroscape.org/user?userName="+user.userName+"' target='_blank'>"+user.userName+"</a>";
+				data.push([name, user.elo, user.W, user.L, user.WinPercent]);
+				
+				/*var tr = createTr({});
 				table.appendChild(tr);
 				
 				tr.appendChild(createTd({innerHTML: playerCount}));
@@ -159,7 +169,7 @@
 				tr.appendChild(createTd({innerHTML: user.elo}));
 				tr.appendChild(createTd({innerHTML: user.W}));
 				tr.appendChild(createTd({innerHTML: user.L}));
-				tr.appendChild(createTd({innerHTML: user.WinPercent}));
+				tr.appendChild(createTd({innerHTML: user.WinPercent}));*/
 				
 				playerCount++;
 				
@@ -167,6 +177,8 @@
 					break;
 				}
 			}
+			
+			createSortableTable("StandingsTable", headers, data);
 		}
 		
 	</script>

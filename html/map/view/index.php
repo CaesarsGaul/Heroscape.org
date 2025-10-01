@@ -62,7 +62,7 @@
 	<script src="/connect/socket.io/socket.io.js"></script>
 	
 	<script>
-		HeroscapeMap.options.fieldsToInclude = ["name", "authorName", "buildInstructionsUrl", "imageUrl", "numberOfPlayers", "ohsGdocId"];
+		HeroscapeMap.options.fieldsToInclude = ["name", "authorName", "buildInstructionsUrl", "imageUrl", "numberOfPlayers", "ohsGdocId", "hexoscapeUrl"];
 		HeroscapeMap.options.linksToInclude = ["heroscapeMapSets", "tags", "heroscapeMapPreviousVersions"];
 		HeroscapeMap.options.labelsToIgnore = ["name"];
 		
@@ -166,14 +166,20 @@
 				if (map.ohsGdocId != null) {
 					var ohsDiv = createDiv({});
 					parentElem.appendChild(ohsDiv);
-					/*ohsDiv.appendChild(createSpan({
-						class: "ohsIcon",
-						innerHTML: "OHS"
-					}));*/
 					ohsDiv.appendChild(createA({
 						innerHTML: "Create OHS Game",
 						class: "createOhsLink",
 						href: "/ohs?HeroscapeMap="+map.id+"&create=y",
+						target: "_blank"}));
+				}
+				
+				if (map.hexoscapeUrl != null) {
+					var hexoscapeDiv = createDiv({});
+					parentElem.appendChild(hexoscapeDiv);
+					hexoscapeDiv.appendChild(createA({
+						innerHTML: "Hexoscape Map Builder",
+						/*class: "createOhsLink",*/
+						href: map.hexoscapeUrl,
 						target: "_blank"}));
 				}
 				

@@ -1,9 +1,6 @@
-
 var builder = window.location.href.includes("builder");
 var partialScoring = window.location.href.includes("scoring");
 var tournamentSignup = window.location.href.includes("tournament");
-//var c3g = window.location.origin.includes("c3g");
-//var aoa = window.location.origin.includes("aoa");
 
 var armyMin = 1;
 
@@ -49,10 +46,10 @@ function displayUnits() {
 	if (builder || tournamentSignup) {
 		var parentElem = document.getElementById('Figures');
 		tableElem = createTable({id: "unitTable"});
-		//if (parentElem !== undefined && parentElem !== null) {
+		if (parentElem !== undefined && parentElem !== null) {
 			parentElem.innerHTML = "";
 			parentElem.appendChild(tableElem);
-		//}
+		}
 		
 		var headerRowElem = createTr({class: "unitTableHeaderRow"});
 		tableElem.appendChild(headerRowElem);
@@ -81,14 +78,25 @@ function displayUnits() {
 	for (let i = 0; i < units.length; i++) {
 		const unit = units[i];
 		
-		// figureSet.includeVC
-		
-		//if (! c3g /*&& ! aoa*/) { 
-			if ((unit.vc && ! vcInclusive) || 
-					(unit.marvel && ! marvelInclusive) /*||*/
-					/*(banList !== undefined && banList !== null && banList.split(";").includes(unit.name)) ||*/
-					/*(restrictedList !== null && army.includesRestrictedUnit() && ! army.containsUnit(unit))*/) {
-				if (builder || tournamentSignup) {
+		if (typeof tournament == "object") { // Tournament Builder or Army Submission
+			var tourneyAllows = false;
+			for (let j = 0; j < tournament.tournamentIncludesFigureSetSubGroups.length; j++) {
+				const subGroupLink = tournament.tournamentIncludesFigureSetSubGroups[j];
+				if (subGroupLink.figureSetSubGroup.name == unit.subGroup && subGroupLink.include) {
+					tourneyAllows = true;
+					break;
+				}
+			}
+			if ( ! tourneyAllows) {
+				if (army.containsUnit(unit)) {
+					army.removeUnit(unit, true);
+				}
+				continue;
+			}
+		} else { // Main Builder or PCS Page
+			var checkboxElem = document.getElementById(unit.subGroup + "_checkbox");
+			if (checkboxElem != null && ! checkboxElem.checked) {
+				if (builder) {
 					if (army.containsUnit(unit)) {
 						army.removeUnit(unit, true);
 					}
@@ -103,18 +111,19 @@ function displayUnits() {
 				}
 				continue;
 			}
-			if (tournamentSignup) {
-				if (tournament.allowedPointOverlap == 0) {
-					// TODO : this only works for a ZERO point overlap currently 
-					for (let j = 0; j < armies.length; j++) {
-						if (armies[j].containsUnit(unit)) {
-							continue;
-						}
+		}
+		
+		if (tournamentSignup) {
+			if (tournament.allowedPointOverlap == 0) {
+				// TODO : this only works for a ZERO point overlap currently 
+				for (let j = 0; j < armies.length; j++) {
+					if (armies[j].containsUnit(unit)) {
+						continue;
 					}
 				}
 			}
-		//}
-		
+		}
+				
 		if (typeof tournament !== 'undefined') {
 			var ineligibleUnit = false;
 			for (let j = 0; j < tournament.tournamentFormatTags.length; j++) {
@@ -142,9 +151,17 @@ function displayUnits() {
 						// Do Nothing
 						break;
 					case "Ban List":
-						if (tag.data.split(";").includes(unit.name)) {
-							ineligibleUnit = true;
+						const banListFigures = tag.data.split(";");
+						for (var figureName of tag.data.split(";")) {
+							figureName = figureName.trim();
+							if (figureName.toLowerCase() == unit.name.toLowerCase()) {
+								ineligibleUnit = true;
+								break;
+							}
 						}
+						/*if (tag.data.split(";").includes(unit.name)) {
+							ineligibleUnit = true;
+						}*/
 						break;
 					case "Commons Only":
 						if (unit.uniqueness.toLowerCase() != "common") {
@@ -170,7 +187,7 @@ function displayUnits() {
 						}
 						break;
 					case "X(+/-) & Under":
-						var powerRank = vcInclusive 
+						var powerRank = vcInclusive()
 							? unit.powerRankings.Dok
 							: unit.powerRankings.OEAO;
 						if (powerRank !== undefined) {
@@ -264,8 +281,35 @@ function displayUnits() {
 		}
 		
 		
-		if (searchText != null && searchText.length > 0) {
-			if ( ! unit.name.toLowerCase().includes(searchText.toLowerCase()) && 
+		if (searchText != null && searchText.length > 0) {			
+			if (unit.name.toLowerCase().includes(searchText.toLowerCase()) && ((document.getElementById("filter_search_name") == null) || document.getElementById("filter_search_name").checked)) {
+				// Do Nothing
+			} else if ((unit.nickname !== undefined && unit.nickname !== null && unit.nickname.toLowerCase().includes(searchText.toLowerCase())) && ((document.getElementById("filter_search_nickname") == null) || document.getElementById("filter_search_nickname").checked)) { // nickname
+				// Do Nothing
+			} else if (unit.species.toLowerCase().includes(searchText.toLowerCase()) && ((document.getElementById("filter_search_species") == null) || document.getElementById("filter_search_species").checked)) {
+				// Do Nothing
+			} else if (unit.class.toLowerCase().includes(searchText.toLowerCase()) && ((document.getElementById("filter_search_class") == null) || document.getElementById("filter_search_class").checked)) {
+				// Do Nothing
+			} else if (unit.personality.toLowerCase().includes(searchText.toLowerCase()) && ((document.getElementById("filter_search_personality") == null) || document.getElementById("filter_search_personality").checked)) {
+				// Do Nothing
+			} else {
+				var powerContains = false;
+				for (let j = 0; j < unit.powers.length; j++) {
+					const power = unit.powers[j];
+					if (power.name.toLowerCase().includes(searchText.toLowerCase()) && ((document.getElementById("filter_search_powerNames") == null) || document.getElementById("filter_search_powerNames").checked)) {
+						powerContains = true;
+						break;
+					} else if (power.text.toLowerCase().includes(searchText.toLowerCase()) && ((document.getElementById("filter_search_powerText") == null) || document.getElementById("filter_search_powerText").checked)) {
+						powerContains = true;
+						break;
+					}
+				}
+				if ( ! powerContains) {
+					continue;
+				}
+			}
+			
+			/*if ( ! unit.name.toLowerCase().includes(searchText.toLowerCase()) && 
 					! unit.species.toLowerCase().includes(searchText.toLowerCase()) &&
 					! unit.class.toLowerCase().includes(searchText.toLowerCase()) &&
 					! unit.personality.toLowerCase().includes(searchText.toLowerCase()) && 
@@ -282,7 +326,7 @@ function displayUnits() {
 				if ( ! powerContains) {
 					continue;
 				}
-			}
+			}*/
 		}
 		
 		var sortHeaderRow = createTr({class: "labelRow"});
@@ -425,7 +469,7 @@ function displayUnits() {
 				}
 				break;
 			case "powerRanking":
-				var powerRankingValue = vcInclusive 
+				var powerRankingValue = vcInclusive()
 						? unit.powerRankings.Dok
 						: unit.powerRankings.OEAO;
 				if (powerRankingValue == undefined) {
@@ -442,7 +486,7 @@ function displayUnits() {
 				}
 				break;
 			case "deltaUpdateDate":
-				if (vcInclusive) {
+				if (vcInclusive()) {
 					const newVal = unit.deltaVcChangeDate.length > 0
 						? unit.deltaVcChangeDate
 						: "[Unknown]";
@@ -486,7 +530,7 @@ function displayUnits() {
 		
 		if (partialScoring) {
 			rowElem.appendChild(createTd({class: "unitDivName", innerHTML: unit.name}));
-			rowElem.appendChild(createTd({class: "unitDataCell", innerHTML: unit.getPartialCost()}));
+			rowElem.appendChild(createTd({class: "unitDataCell", innerHTML: unit.getPartialCost(true)}));
 		}
 		
 		$(rowElem).data("unit", unit);
@@ -650,7 +694,7 @@ function _createRightArrow(parentCellElem, unit, numIncluded, caseNum, rowIdx, i
 					}
 					break;
 				case "Max X Copies - Heroes":
-					if (army.containsUnit(unit) && ! unit.squad && unit.uniqueness.toLowerCase() == "common") {
+					if (army.containsUnit(unit) && ! unit.squad && (unit.uniqueness.toLowerCase() == "common" || unit.uniqueness.toLowerCase() == "uncommon")) {
 						const numInArmy = army.units[unit.name];
 						if (numInArmy >= tag.data) {
 							arrowNoClick = true;
@@ -798,6 +842,11 @@ function updateArmyDisplay(partial=false, partialNum=null) {
 					break;
 				}
 			}
+			
+			var unitDisplayCost = unit.getCost();
+			if (partial) {
+				unitDisplayCost = unit.getPartialCost();
+			}
 				
 			if (pattern.test(unitStr)) {
 				const numIncluded = unitStr.substr(unitStr.lastIndexOf(" x")+2).trim();
@@ -814,7 +863,7 @@ function updateArmyDisplay(partial=false, partialNum=null) {
 					innerHTML: unitStr,
 					onclick: "_toggleActiveUnit(" + unitNum + ")"
 				}));
-				unitRowDiv.appendChild(createSpan({innerHTML: " "+unit.getCost() * numIncluded, class: "armyDisplayCost"}));
+				unitRowDiv.appendChild(createSpan({innerHTML: " "+(unitDisplayCost * numIncluded), class: "armyDisplayCost"}));
 				_createRightArrow(unitRowDiv, unit, numIncluded, caseNum, rowIdx, "top_");
 			} else {
 				const numIncluded = 1;
@@ -831,7 +880,7 @@ function updateArmyDisplay(partial=false, partialNum=null) {
 					innerHTML: unitStr,
 					onclick: "_toggleActiveUnit(" + unitNum + ")"
 				}));
-				unitRowDiv.appendChild(createSpan({innerHTML: " "+unit.getCost() * numIncluded, class: "armyDisplayCost"}));
+				unitRowDiv.appendChild(createSpan({innerHTML: " "+(unitDisplayCost * numIncluded), class: "armyDisplayCost"}));
 			}
 		}
 	}
@@ -854,6 +903,10 @@ function updateArmyDisplay(partial=false, partialNum=null) {
 	document.getElementById(prefix+"Points").innerHTML = armyPoints;
 	document.getElementById(prefix+"Figures").innerHTML = armyVar.getFigures(partial);
 	document.getElementById(prefix+"Hexes").innerHTML = armyVar.getHexes(partial);
+	
+	if (typeof updateURL == 'function') {
+		updateURL();
+	}
 	
 	adjustBodyTopMargin();
 }
@@ -912,7 +965,7 @@ function _displayActiveUnit(unitIdx) {
 	}
 	document.getElementById("DeltaUpdate").innerHTML = "";
 	if (deltaPoints) {
-		if (vcInclusive) {
+		if (vcInclusive()) {
 			if (unit.deltaVcChangeDate.length > 0) {
 				document.getElementById("DeltaUpdate").innerHTML = 
 					"Delta Points Last Updated: " + unit.deltaVcChangeDate;
@@ -937,7 +990,7 @@ function _displayActiveUnit(unitIdx) {
 			innerHTML: power.text}));
 	}
 
-	if ( ! c3g /*&& ! aoa*/) {
+	//if ( ! c3g /*&& ! aoa*/) {
 		var powerRankingsDiv = document.getElementById("UnitPowerRankings");
 		powerRankingsDiv.innerHTML = "";
 		if ( ! deltaPoints) {
@@ -957,7 +1010,7 @@ function _displayActiveUnit(unitIdx) {
 				}
 			}
 		}
-	}
+	//}
 }
 
 function _displayUnit(unit, unitDiv) {
@@ -1124,7 +1177,9 @@ function _clearArmy(armyNum) {
 
 var searchText = null;
 function _search(refThis) {
-	searchText = refThis.value;
+	if (refThis !== undefined && refThis !== null) {
+		searchText = refThis.value;
+	}
 	redrawPage();
 	if (typeof updateURL !== 'undefined') {
 		updateURL();
@@ -1476,10 +1531,10 @@ function _compareUnitsOnce(a, b, sortOption) {
 			}
 			break;
 		case "powerRanking":
-			var aVal = vcInclusive 
+			var aVal = vcInclusive()
 				? a.powerRankings.Dok
 				: a.powerRankings.OEAO;
-			var bVal = vcInclusive
+			var bVal = vcInclusive()
 				? b.powerRankings.Dok
 				: b.powerRankings.OEAO;
 			if (aVal == undefined) {
@@ -1509,7 +1564,7 @@ function _compareUnitsOnce(a, b, sortOption) {
 			}
 			break;
 		case "deltaUpdateDate":
-			if (vcInclusive) {
+			if (vcInclusive()) {
 				if (a.deltaVcChangeDate == b.deltaVcChangeDate) {
 					return 0;
 				}
@@ -1541,15 +1596,64 @@ function _compareUnitsOnce(a, b, sortOption) {
 	return 0;
 }
 
-function _copyArmy() {
-	var armyText = army.toString(false, false, true).replaceAll("<br>", "\n");
-	armyText += "\n" + army.getPoints() + " Points, " + 
-		army.getFigures() + " Figures, " + 
-		army.getHexes() + " Hexes";
-	armyText += "\nSettings: " + 
-		(vcInclusive ? "VC" : "Classic") + ", " + 
-		(deltaPoints ? "Delta Points " : "Standard Points");
+function _copyArmy(lineDelimeter="\n") {
+	var armyText = "";
+	
+	if (typeof tournament == "object" && lineDelimeter != "_") {
+		armyText += tournament.fullDisplayName() + lineDelimeter;
+	}
+	
+	armyText += army.toString(false, false, true).replaceAll("<br>", lineDelimeter);
+	armyText += lineDelimeter + army.getPoints() + " Points, " + 
+		army.getFigures() + " Figures";
+	
+	if (typeof tournament == "object" && tournament.figureLimit != null && army.getFigures() > tournament.figureLimit) {
+		armyText += " (Drop " + (army.getFigures() - tournament.figureLimit) + ")";
+	}
+	
+	armyText += ", " + army.getHexes() + " Hexes";
+	
+	if (typeof tournament == "object" && tournament.hexLimit != null && army.getHexes() > tournament.hexLimit) {
+		armyText += " (Drop " + (army.getHexes() - tournament.hexLimit) + ")";
+	}
+		
+	var standardPointsStr = "Standard Points";
+	switch (subdomainFigureSet.name) {
+		case "Renegade Points":
+			standardPointsStr = "Renegade Points";
+			break;
+	}
+		
+	armyText += lineDelimeter+"Settings: " + 
+		(vcInclusive() ? "VC" : "Classic") + ", " + 
+		(deltaPoints ? "Delta Points " : standardPointsStr);
+	
+	switch (subdomainFigureSet.name) {
+		case "Renegade Contemporary":
+			armyText += ", " + "Renegade Contemporary";
+			break;
+	}
+	
 	copyTextToClipboard(armyText);
+}
+
+function _copyUrl() {
+	var urlText = window.location.href;
+	/*if (urlText.includes("?")) {
+		urlText += "&";
+	} else {
+		urlText += "?";
+	}
+	urlText += "units=";
+	
+	for (var figureName in army.units) {
+		if (army.units.hasOwnProperty(figureName)) {
+			const quantity = army.units[figureName];
+			urlText += figureName + "_" + quantity;
+			urlText += ";"
+		}
+	}*/
+	copyTextToClipboard(urlText);
 }
 
 function copyTextToClipboard(text) {
@@ -1564,8 +1668,3 @@ function copyTextToClipboard(text) {
 function _viewArmy() {
 	window.open("/builder/view?army="+encodeURI(JSON.stringify(army)), '_blank').focus();
 }
-
-
-
-
-

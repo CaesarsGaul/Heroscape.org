@@ -38,13 +38,14 @@
 	margin-bottom: 0;
 }
 .filterLabel {
+	display: inline-block;
 	margin-left: 10px;
 	margin-right: 10px;
 }
-#FiltersDivGroup1 {
+.filtersDivGroup1 {
 	display: block;
 }
-.filtersDivGroup {
+.filtersDivGroup2 {
 	display: inline-block;
 	width: 30%;
 	vertical-align: top;
@@ -53,3 +54,42 @@
 	height: 100px;
 }
 
+.row1Group {
+	display: inline-block;
+}
+.row1Group:not(:first-child) {
+	margin-left: 10px;
+}
+.row1Group:not(:last-child) {
+	margin-right: 10px;
+}
+.tierSubGroup {
+	text-align: left;
+	vertical-align: top;
+}
+.figureSetSubGroup {
+	
+}
+.figureSetSubGroup checkbox {
+	
+}
+.figureSetSubGroup label {
+	
+}
+.row1Column {
+	display: block;
+}
+.row1Column:not(:first-child) {
+	margin-top: 10px;
+}
+#keepX0 {
+	vertical-align: top;
+	line-height: 30px; 
+	margin-left: 20px;
+}
+
+.downArrowImg {
+	height: 32px;
+	line-height: 32px;
+	vertical-align: top;
+}

@@ -20,6 +20,15 @@
 		#TournamentDiv {
 			text-align: center;
 		}
+		
+		.hidden {
+			display: none;
+		}
+		
+		#ohsArmyListCopy {
+			top: 5px;
+			left: 0px;
+		}
 	</style>
 
 	<!-- Internal Files -->
@@ -37,8 +46,8 @@
 		}
 		var setupPageCalled = false;
 		
-		var vcInclusive = null;
-		var marvelInclusive = null;
+		//var vcInclusive = null;
+		//var marvelInclusive = null;
 		var deltaPoints = null;
 		var banList = null;
 		var restrictedList = null;
@@ -49,8 +58,8 @@
 			if (tournament == null) {
 				return;
 			}
-			vcInclusive = tournament.includeVC;
-			marvelInclusive = tournament.includeMarvel;
+			//vcInclusive = tournament.includeVC;
+			//marvelInclusive = tournament.includeMarvel;
 			deltaPoints = tournament.useDeltaPricing;
 			banList = tournament.banList;
 			restrictedList = tournament.restrictedList;
@@ -66,6 +75,12 @@
 			}
 			
 			writeTournamentInfo(tournament, false, false);
+			
+			if (tournament.name.startsWith("OHS ")) {
+				document.getElementById("ohsArmyListCopy").style.display = "inline-block";
+			} else {
+				document.getElementById("ohsArmyListCopy").style.display = "none";
+			}
 			
 			displayUnits();
 			displayFilters();
@@ -155,6 +170,9 @@
 				},
 				"TournamentFormatTag.tournamentID": {
 					"formatID": {}
+				},
+				"TournamentIncludesFigureSetSubGroup.tournamentID": {
+					"figureSetSubGroupID": {}
 				}
 			}}, 
 			{
@@ -172,6 +190,10 @@
 			function (tournaments) {
 				// Do Nothing 
 		});
+		
+		function _copyArmyOHS() {
+			_copyArmy("_");
+		}
 	</script>
 	
 	<div id='ArmyStatsDivMobile'></div>
@@ -255,7 +277,7 @@
 		
 		<div id='FiltersDiv'>
 			<p>Select a filter to remove any figure(s) that do not match the criteria.</p>
-			<div id='FiltersDivGroup1'>
+			<div class='filtersDivGroup1'>
 				<label class='filterLabel'>
 					<input type='checkbox' class='filterCheckbox' onclick='_updateFilters(this)' id='filter_common' />
 					Common
@@ -273,19 +295,50 @@
 					Hero
 				</label>
 			</div>
-			<div class='filtersDivGroup'>
+			<p>Select the fields for your search text.</p>
+			<div class='filtersDivGroup1'>
+				<label class='filterLabel'>
+					<input type='checkbox' class='filterCheckbox' onclick='_search()' id='filter_search_name' checked />
+					Name
+				</label>
+				<label class='filterLabel'>
+					<input type='checkbox' class='filterCheckbox' onclick='_search()' id='filter_search_nickname' checked />
+					Nickname
+				</label>
+				<label class='filterLabel'>
+					<input type='checkbox' class='filterCheckbox' onclick='_search()' id='filter_search_species' checked />
+					Species
+				</label>
+				<label class='filterLabel'>
+					<input type='checkbox' class='filterCheckbox' onclick='_search()' id='filter_search_class' checked />
+					Class
+				</label>
+				<label class='filterLabel'>
+					<input type='checkbox' class='filterCheckbox' onclick='_search()' id='filter_search_personality' checked />
+					Personality
+				</label>
+				<label class='filterLabel'>
+					<input type='checkbox' class='filterCheckbox' onclick='_search()' id='filter_search_powerNames' checked />
+					Power Names
+				</label>
+				<label class='filterLabel'>
+					<input type='checkbox' class='filterCheckbox' onclick='_search()' id='filter_search_powerText' checked />
+					Power Text
+				</label>
+			</div>
+			<div class='filtersDivGroup2'>
 				<h3 onclick="_toggleFiltersSpecies()">Species</h3>
 				<div id='SpeciesFiltersDiv'>
 					<select id='SpeciesFiltersSelect' class='filtersMultiSelect' onchange='_updateFilters(this)' multiple></select>
 				</div>
 			</div>
-			<div class='filtersDivGroup'>
+			<div class='filtersDivGroup2'>
 				<h3 onclick="_toggleFiltersClass()">Class</h3>
 				<div id='ClassFiltersDiv'>
 					<select id='ClassFiltersSelect' class='filtersMultiSelect' onchange='_updateFilters(this)' multiple></select>
 				</div>
 			</div>
-			<div class='filtersDivGroup'>
+			<div class='filtersDivGroup2'>
 				<h3 onclick="_toggleFiltersPersonality()">Personality</h3>
 				<div id='PersonalityFiltersDiv'>
 					<select id='PersonalityFiltersSelect' class='filtersMultiSelect' onchange='_updateFilters(this)' multiple></select>
@@ -309,6 +362,7 @@
 						No figures selected. Choose a figure from the box to add it to your army.
 					</div>
 					<button id='armyListCopy' class='armyBtn' onclick='_copyArmy()'>Copy</button>
+					<button id='ohsArmyListCopy' class='armyBtn hidden' onclick='_copyArmyOHS()'>OHS Copy</button>
 					<button id='armyListX' class='armyBtn' onclick='_clearArmy()'>X</button>
 					<div class='armyStatsGroup'>
 						<div id='armyPoints' class='armyStatsValue'>

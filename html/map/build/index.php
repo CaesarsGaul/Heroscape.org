@@ -400,6 +400,9 @@
 								// Do Nothing
 								break;
 						}
+						if (terrainPiece.terrainType.height > 1) {
+							continue;
+						}
 						_writeHexHeight(doc, terrainPiece, l, _getPdfImageXloc(x), _getPdfImageYloc(x,y));
 						
 						if (terrainPiece.terrainSize.size == 2 || terrainPiece.terrainSize.size == 3 || terrainPiece.terrainSize.size == 7) {

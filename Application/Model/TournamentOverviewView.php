@@ -44,7 +44,8 @@ class TournamentOverviewView extends HS_DatabaseObject {
 	protected $Convention_endDate; // Date
 	protected $Convention_address; // String
 	protected $Convention_conventionSeriesID; // Int
-	protected $Convention_maxAttendees; // Int
+	protected $Convention_hardPlayerCap; // Int
+	protected $Convention_softPlayerCap; // Int
 	protected $ConventionSeries_id; // Int
 	protected $ConventionSeries_name; // Int
 
@@ -250,8 +251,11 @@ class TournamentOverviewView extends HS_DatabaseObject {
 			if (isset($whereData["Convention_conventionSeriesID"])) {
 				$whereArray["{$prefix}TournamentOverviewView.Convention_conventionSeriesID"] = $whereData["Convention_conventionSeriesID"];
 			}
-			if (isset($whereData["Convention_maxAttendees"])) {
-				$whereArray["{$prefix}TournamentOverviewView.Convention_maxAttendees"] = $whereData["Convention_maxAttendees"];
+			if (isset($whereData["Convention_hardPlayerCap"])) {
+				$whereArray["{$prefix}TournamentOverviewView.Convention_hardPlayerCap"] = $whereData["Convention_hardPlayerCap"];
+			}
+			if (isset($whereData["Convention_softPlayerCap"])) {
+				$whereArray["{$prefix}TournamentOverviewView.Convention_softPlayerCap"] = $whereData["Convention_softPlayerCap"];
 			}
 			if (isset($whereData["ConventionSeries_id"])) {
 				$whereArray["{$prefix}TournamentOverviewView.ConventionSeries_id"] = $whereData["ConventionSeries_id"];
@@ -296,7 +300,7 @@ class TournamentOverviewView extends HS_DatabaseObject {
 	}
 
 	public static function getColumnNames() {
-		return array("id", "HeroscapeTournament_tournamentID", "HeroscapeTournament_numArmies", "HeroscapeTournament_allowedPointOverlap", "HeroscapeTournament_pointLimit", "HeroscapeTournament_hexLimit", "HeroscapeTournament_figureLimit", "HeroscapeTournament_useDeltaPricing", "HeroscapeTournament_includeVC", "HeroscapeTournament_includeMarvel", "Tournament_id", "Tournament_name", "Tournament_description", "Tournament_conventionID", "Tournament_startTime", "Tournament_endDate", "Tournament_address", "Tournament_started", "Tournament_finished", "Tournament_online", "Tournament_maxEntries", "Tournament_teamSize", "Tournament_maxNumPlayersPerGame", "Tournament_numLossesToBeEliminated", "Tournament_pairAfterEliminated", "Tournament_roundLengthMinutes", "Tournament_ignoreInStandings", "Season_id", "Season_name", "Season_leagueID", "Season_start", "Season_end", "Season_description", "League_id", "League_name", "League_description", "Convention_id", "Convention_name", "Convention_description", "Convention_startDate", "Convention_endDate", "Convention_address", "Convention_conventionSeriesID", "Convention_maxAttendees", "ConventionSeries_id", "ConventionSeries_name");
+		return array("id", "HeroscapeTournament_tournamentID", "HeroscapeTournament_numArmies", "HeroscapeTournament_allowedPointOverlap", "HeroscapeTournament_pointLimit", "HeroscapeTournament_hexLimit", "HeroscapeTournament_figureLimit", "HeroscapeTournament_useDeltaPricing", "HeroscapeTournament_includeVC", "HeroscapeTournament_includeMarvel", "Tournament_id", "Tournament_name", "Tournament_description", "Tournament_conventionID", "Tournament_startTime", "Tournament_endDate", "Tournament_address", "Tournament_started", "Tournament_finished", "Tournament_online", "Tournament_maxEntries", "Tournament_teamSize", "Tournament_maxNumPlayersPerGame", "Tournament_numLossesToBeEliminated", "Tournament_pairAfterEliminated", "Tournament_roundLengthMinutes", "Tournament_ignoreInStandings", "Season_id", "Season_name", "Season_leagueID", "Season_start", "Season_end", "Season_description", "League_id", "League_name", "League_description", "Convention_id", "Convention_name", "Convention_description", "Convention_startDate", "Convention_endDate", "Convention_address", "Convention_conventionSeriesID", "Convention_hardPlayerCap", "Convention_softPlayerCap", "ConventionSeries_id", "ConventionSeries_name");
 	}
 
 	public static function getActionNames() {

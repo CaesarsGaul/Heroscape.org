@@ -3,7 +3,7 @@
 <head>
 	<?php require_once("/var/www/Application/Templates/Head.php"); ?>
 	
-	<title>Terms & Conditions | Accreditation Aid</title>
+	<title>Terms & Conditions | Heroscape.org</title>
 	
 	<!-- CSS -->
 	<link rel="stylesheet" type="text/css" href="/css/legal.css" />
@@ -53,6 +53,9 @@
 		<h2>Privacy Policy</h2>
 		<p>
 			We will never sell your contact information, nor allow any other user to view your data.  We rely on AWS Security to protect your data, but should an exposure occur, the users agree to hold CG WebTech, LLC completely blameless, and agree not to sue for damages.
+		</p>
+		<p>
+			Any data you submit is accessible by site admins. Current site admins: Chris Perkins, Dok, Dysole.
 		</p>
 
 		<h2>Cookies Policy</h2>

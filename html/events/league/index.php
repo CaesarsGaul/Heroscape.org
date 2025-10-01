@@ -139,11 +139,12 @@
 			
 		}
 		
+		var league;
 		function displayLeagues(leagues) {
 			var parentElem = document.getElementById("Leagues");
 			
 			for (let i = 0; i < leagues.length; i++) {
-				const league = leagues[i];
+				const l = leagues[i];
 				
 				var leagueDiv = createDiv({
 					class: "leagueLink hasBorder"
@@ -151,8 +152,8 @@
 				parentElem.appendChild(leagueDiv);
 				
 				leagueDiv.appendChild(createA({
-					href: "/events/league/?League="+league.id,
-					innerHTML: league.name
+					href: "/events/league/?League="+l.id,
+					innerHTML: l.name
 				}));
 			}
 		}
@@ -207,6 +208,7 @@
 								null,
 								null,
 								{includeLabel: false});*/
+							league = leagues[0];
 							displayLeague(leagues[0]);
 						},
 						{joins: {

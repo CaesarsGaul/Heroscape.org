@@ -90,12 +90,12 @@ button[type=submit]:hover,
   color: var(--goldBright) !important;
 }
 
-.tagInfo {
+.tagInfo, .questionMark {
   background-color: var(--goldBright) !important;
   color: black !important;
 }
 
-.tagHoverDescription {
+.tagHoverDescription, .questionMarkHoverDescription {
   padding: 5px 10px;
   background-color: var(--goldBright) !important;
   border-color: var(--goldBright) !important;
@@ -191,7 +191,11 @@ div#tournamentBuilderDiv a {
 }
 
 img#centerLogoImg {
-  background: var(--lightText) !important;
+  /*background: var(--lightText) !important;*/
+  content:url("/images/autoloadIcon_white.png");
+}
+img.downArrowImg {
+	content:url("/images/downArrow_white.png");
 }
 img#centerLogoImg .toggleSwitch .slider {
   background-color: var(--darkBorder) !important;

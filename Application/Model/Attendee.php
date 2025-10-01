@@ -170,11 +170,11 @@ class Attendee extends HS_DatabaseObject {
 		if (isset($implicitObjects->convention) && 
 				isset($implicitObjects->convention->id)) {
 			$convention = Convention::fromDB($implicitObjects->convention->id);
-			if ($convention->maxAttendees != null) {
+			if ($convention->hardPlayerCap != null) {
 				$numCurrentAttendees = Attendee::countEntries(
 					array("Attendee.conventionID" => 
 						$implicitObjects->convention->id));
-				if ($numCurrentAttendees >= $convention->maxAttendees) {
+				if ($numCurrentAttendees >= $convention->hardPlayerCap) {
 					return false;
 				}
 			}

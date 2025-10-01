@@ -57,6 +57,12 @@ class ConventionSeries extends HS_DatabaseObject {
 				$clientLinkObj->childClassName::create($clientLinkObj);
 			}
 		}
+		if (isset($clientDataObj->admins)) {
+			foreach ($clientDataObj->admins as $clientLinkObj) {
+				$clientLinkObj->conventionSeries = $this;
+				$clientLinkObj->childClassName::create($clientLinkObj);
+			}
+		}
 	}
 
 	/* Public Static Functions */
@@ -109,7 +115,7 @@ class ConventionSeries extends HS_DatabaseObject {
 	}
 
 	public static function getNTo1LinkClasses() {
-		return array("Convention" => "conventionSeriesID");
+		return array("Convention" => "conventionSeriesID", "Admin" => "conventionSeriesID");
 	}
 
 	public static function getForeignKeys() {
@@ -189,6 +195,9 @@ class ConventionSeries extends HS_DatabaseObject {
 		if (Convention::countEntries(array("Convention.conventionSeriesID" => $this->id)) > 0) {
 			return "Unable to delete Convention Series because one or more Convention is dependent on it.";
 		}
+		if (Admin::countEntries(array("Admin.conventionSeriesID" => $this->id)) > 0) {
+			return "Unable to delete Convention Series because one or more Admin is dependent on it.";
+		}
 		
 		// N-M Links
 		return "";
@@ -230,6 +239,18 @@ class ConventionSeries extends HS_DatabaseObject {
 			foreach ($clientDataObj->conventions as $clientLinkObj) {
 				if (isset($clientLinkObj->id)) {
 					$linkObj = Convention::fromDB($clientLinkObj->id);
+					$linkObj->updateInDB($clientLinkObj);
+				} else {
+					$clientLinkObj->conventionSeries = $this;
+					$clientLinkObj->childClassName::create($clientLinkObj);
+				}
+			}
+		}
+		if (isset($clientDataObj->admins) &&
+				isset($clientDataObj->updateNto1) && $clientDataObj->updateNto1) {
+			foreach ($clientDataObj->admins as $clientLinkObj) {
+				if (isset($clientLinkObj->id)) {
+					$linkObj = Admin::fromDB($clientLinkObj->id);
 					$linkObj->updateInDB($clientLinkObj);
 				} else {
 					$clientLinkObj->conventionSeries = $this;

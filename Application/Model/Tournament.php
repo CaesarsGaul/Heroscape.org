@@ -8,6 +8,8 @@ abstract class Tournament extends HS_DatabaseObject {
 	protected $startTime; // Datetime
 	protected $endDate; // Date
 	protected $address; // String
+	protected $latitude; // Decimal
+	protected $longitude; // Decimal
 	protected $started; // Boolean
 	protected $finished; // Boolean
 	protected $allowSignupAfter; // Datetime
@@ -76,7 +78,7 @@ abstract class Tournament extends HS_DatabaseObject {
 		
 		$id = $dbObj->dbInsert((new MySQLBuilder())->
 			insert("Tournament",
-				array("name", "description", "conventionID", "startTime", "endDate", "address",
+				array("name", "description", "conventionID", "startTime", "endDate", "address", "latitude", "longitude",
 					"allowSignupAfter", "allowArmySubmissionAfter", "allowLateSignup", "online", "maxEntries", 
 					"teamSize", "maxNumPlayersPerGame", "numLossesToBeEliminated", "pairAfterEliminated", "roundLengthMinutes",
 					"sheetId", "figureSetID"),
@@ -88,6 +90,8 @@ abstract class Tournament extends HS_DatabaseObject {
 					$clientDataObj->startTime,
 					$clientDataObj->endDate,
 					$clientDataObj->address,
+					$clientDataObj->latitude,
+					$clientDataObj->longitude,
 					$clientDataObj->allowSignupAfter,
 					$clientDataObj->allowArmySubmissionAfter,
 					$clientDataObj->allowLateSignup,
@@ -115,7 +119,6 @@ abstract class Tournament extends HS_DatabaseObject {
 		$adminObj->user = LoginCredentials::getLoggedInUser();
 		$adminObj->tournament = $dbObj;
 		Admin::create($adminObj);
-		
 		// Abstract, no need to return
 	}
 
@@ -147,6 +150,12 @@ abstract class Tournament extends HS_DatabaseObject {
 		}
 		if (isset($clientDataObj->tournamentFormatTags)) {
 			foreach ($clientDataObj->tournamentFormatTags as $clientLinkObj) {
+				$clientLinkObj->tournament = $this;
+				$clientLinkObj->childClassName::create($clientLinkObj);
+			}
+		}
+		if (isset($clientDataObj->tournamentIncludesFigureSetSubGroups)) {
+			foreach ($clientDataObj->tournamentIncludesFigureSetSubGroups as $clientLinkObj) {
 				$clientLinkObj->tournament = $this;
 				$clientLinkObj->childClassName::create($clientLinkObj);
 			}
@@ -257,7 +266,7 @@ abstract class Tournament extends HS_DatabaseObject {
 	}
 
 	public static function getNTo1LinkClasses() {
-		return array("Admin" => "tournamentID", "Player" => "tournamentID", "Round" => "tournamentID", "GameMap" => "tournamentID", "TournamentFormatTag" => "tournamentID");
+		return array("Admin" => "tournamentID", "Player" => "tournamentID", "Round" => "tournamentID", "GameMap" => "tournamentID", "TournamentFormatTag" => "tournamentID", "TournamentIncludesFigureSetSubGroup" => "tournamentID");
 	}
 
 	public static function getForeignKeys() {
@@ -269,7 +278,7 @@ abstract class Tournament extends HS_DatabaseObject {
 	}
 
 	public static function getColumnNames() {
-		return array("id", "name", "description", "conventionID", "startTime", "endDate", "address", "started", "finished", "allowSignupAfter", "allowArmySubmissionAfter", "allowLateSignup", "online", "maxEntries", "teamSize", "maxNumPlayersPerGame", "numLossesToBeEliminated", "pairAfterEliminated", "roundLengthMinutes", "bracketID", "ignoreInStandings", "figureSetID", "sheetId");
+		return array("id", "name", "description", "conventionID", "startTime", "endDate", "address", "latitude", "longitude", "started", "finished", "allowSignupAfter", "allowArmySubmissionAfter", "allowLateSignup", "online", "maxEntries", "teamSize", "maxNumPlayersPerGame", "numLossesToBeEliminated", "pairAfterEliminated", "roundLengthMinutes", "bracketID", "ignoreInStandings", "figureSetID", "sheetId");
 	}
 
 	public static function getActionNames() {
@@ -380,6 +389,9 @@ abstract class Tournament extends HS_DatabaseObject {
 		if (TournamentFormatTag::countEntries(array("TournamentFormatTag.tournamentID" => $this->id)) > 0) {
 			return "Unable to delete Tournament because one or more Tournament Format Tag is dependent on it.";
 		}
+		if (TournamentIncludesFigureSetSubGroup::countEntries(array("TournamentIncludesFigureSetSubGroup.tournamentID" => $this->id)) > 0) {
+			return "Unable to delete Tournament because one or more Tournament Includes Figure Set Sub Group is dependent on it.";
+		}
 		
 		// N-M Links
 		TournamentSeasonLink::deleteEntries(TournamentSeasonLink::fetch(array("tournament" => $this)));
@@ -482,8 +494,8 @@ abstract class Tournament extends HS_DatabaseObject {
 		
 		$this->dbUpdate((new MySQLBuilder())->
 			update("Tournament",
-				array("name", "description", /*"conventionID",*/ "startTime", "endDate", "allowSignupAfter", "allowArmySubmissionAfter", "allowLateSignup", "online", "maxEntries", /*"teamSize", "maxNumPlayersPerGame",*/ "numLossesToBeEliminated", "pairAfterEliminated", "roundLengthMinutes"/*, "bracketID", "sheetId"*/),
-				array($this->name, $this->description, /*$this->conventionID,*/ $this->startTime, $this->endDate, $this->allowSignupAfter, $this->allowArmySubmissionAfter, $this->allowLateSignup, $this->online, $this->maxEntries, /*$this->teamSize, $this->maxNumPlayersPerGame,*/ $this->numLossesToBeEliminated, $this->pairAfterEliminated, $this->roundLengthMinutes/*, $this->bracketID, $this->sheetId*/))->
+				array("name", "description", /*"conventionID",*/ "startTime", "endDate", "allowSignupAfter", "allowArmySubmissionAfter", "allowLateSignup", "online", "maxEntries", /*"teamSize", "maxNumPlayersPerGame",*/ "numLossesToBeEliminated", "pairAfterEliminated", "roundLengthMinutes"/*, "bracketID", "sheetId"*/, "address"),
+				array($this->name, $this->description, /*$this->conventionID,*/ $this->startTime, $this->endDate, $this->allowSignupAfter, $this->allowArmySubmissionAfter, $this->allowLateSignup, $this->online, $this->maxEntries, /*$this->teamSize, $this->maxNumPlayersPerGame,*/ $this->numLossesToBeEliminated, $this->pairAfterEliminated, $this->roundLengthMinutes/*, $this->bracketID, $this->sheetId*/, $this->address))->
 			where(array("id" => $this->id)));
 		
 		/*if ((isset($clientDataObj->updateNtoMLinks) || (isset($clientDataObj->joins, $clientDataObj->joins->{'TournamentSeasonLink.tournamentID'}))) && in_array("seasons", $clientDataObj->linksToUpdate)) {

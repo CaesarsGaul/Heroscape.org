@@ -38,8 +38,8 @@
 		}
 		var setupPageCalled = false;
 		
-		var vcInclusive = null;
-		var marvelInclusive = null;
+		//var vcInclusive = null;
+		//var marvelInclusive = null;
 		var deltaPoints = null;
 		var banList = null;
 		var restrictedList = null;
@@ -57,8 +57,8 @@
 				document.getElementById("HeroscapeTournamentDiv").style.display 
 					= "Block";
 
-				vcInclusive = tournament.includeVC;
-				marvelInclusive = tournament.includeMarvel;
+				//vcInclusive = tournament.includeVC;
+				//marvelInclusive = tournament.includeMarvel;
 				deltaPoints = tournament.useDeltaPricing;
 				banList = tournament.banList;
 				restrictedList = tournament.restrictedList;
@@ -126,7 +126,8 @@
 							player.playerArmys[i].armyNumber = armyNumber;
 							
 							var army = player.playerArmys[i];
-							if (getSubdomain() == '') {
+							if ((getSubdomain() == '' && tournament.figureSet.name.toLowerCase() == "base") || 
+									(tournament.figureSet.name.toLowerCase() == "scapecon")) {
 								
 								//for (let k = 0; k < army.playerArmyCards.length; k++) {
 									//army.playerArmyCards[k]._serverDelete();
@@ -148,7 +149,8 @@
 						} else {
 							var army = new PlayerArmy();
 							
-							if (getSubdomain() == '') {
+							if ((getSubdomain() == '' && tournament.figureSet.name.toLowerCase() == "base") || 
+									(tournament.figureSet.name.toLowerCase() == "scapecon")) {
 								army.playerArmyCards = [];
 								for (const [name, quantity] of Object.entries(armies[i].units)) {
 									var playerArmyCard = new PlayerArmyCard();
@@ -176,8 +178,8 @@
 					player.playerArmys.push(army);
 					armyStrs.push(armyStr);
 				} 
-			
-				player._serverUpdate();
+				
+				player._serverUpdate(); // TODO - delete this and do it via node .js  (requires sending more data to the below emit() call)
 				socket.emit("submitArmy", JSON.stringify({
 					tournament: {id: tournament.id},
 					player: {
@@ -192,10 +194,22 @@
 		}
 		
 		function _findCard(cardName) {
+			// TODO - first check cards of just the subdomain
+			/*for (let i = 0; i < tournament.figureSet.cards.length; i++) {
+				if (tournament.figureSet.cards[i].name == cardName) {
+					return tournament.figureSet.cards[i];
+				}
+			}*/
+			// Then check cards of the base subdomain 
+				// TODO 
+			
+			// Old Method 
 			for (let i = 0; i < Card.list.length; i++) {
 				if (Card.list[i].name == cardName) {
 					return Card.list[i];
 				}
+				
+				// Card.list[i].figureSet.id == ??
 			}
 			return null;
 		}
@@ -336,45 +350,77 @@
 			</div>
 		</div>
 		
-		<div id='FilterDiv'>
-		<h2 onclick='_toggleFilters()'>Filters</h2>
-		
-		<div id='FiltersDiv'>
-			<p>Select a filter to remove any figure(s) that do not match the criteria.</p>
-			<div id='FiltersDivGroup1'>
-				<label class='filterLabel'>
-					<input type='checkbox' class='filterCheckbox' onclick='_updateFilters(this)' id='filter_common' />
-					Common
-				</label>
-				<label class='filterLabel'>
-					<input type='checkbox' class='filterCheckbox' onclick='_updateFilters(this)' id='filter_unique' />
-					Unique
-				</label>
-				<label class='filterLabel'>
-					<input type='checkbox' class='filterCheckbox' onclick='_updateFilters(this)' id='filter_squad' />
-					Squad
-				</label>
-				<label class='filterLabel'>
-					<input type='checkbox' class='filterCheckbox' onclick='_updateFilters(this)' id='filter_hero' />
-					Hero
-				</label>
-			</div>
-			<div class='filtersDivGroup'>
-				<h3 onclick="_toggleFiltersSpecies()">Species</h3>
-				<div id='SpeciesFiltersDiv'>
-					<select id='SpeciesFiltersSelect' class='filtersMultiSelect' onchange='_updateFilters(this)' multiple></select>
+		<div id='FilterDiv'>			
+			<h2 onclick='_toggleFilters()'>Filters</h2>
+			
+			<div id='FiltersDiv'>
+				<p>Select a filter to remove any figure(s) that do not match the criteria.</p>
+				<div class='filtersDivGroup1'>
+					<label class='filterLabel'>
+						<input type='checkbox' class='filterCheckbox' onclick='_updateFilters(this)' id='filter_common' />
+						Common
+					</label>
+					<label class='filterLabel'>
+						<input type='checkbox' class='filterCheckbox' onclick='_updateFilters(this)' id='filter_unique' />
+						Unique
+					</label>
+					<label class='filterLabel'>
+						<input type='checkbox' class='filterCheckbox' onclick='_updateFilters(this)' id='filter_squad' />
+						Squad
+					</label>
+					<label class='filterLabel'>
+						<input type='checkbox' class='filterCheckbox' onclick='_updateFilters(this)' id='filter_hero' />
+						Hero
+					</label>
 				</div>
-			</div>
-			<div class='filtersDivGroup'>
-				<h3 onclick="_toggleFiltersClass()">Class</h3>
-				<div id='ClassFiltersDiv'>
-					<select id='ClassFiltersSelect' class='filtersMultiSelect' onchange='_updateFilters(this)' multiple></select>
+				<p>Select the fields for your search text.</p>
+				<div class='filtersDivGroup1'>
+					<label class='filterLabel'>
+						<input type='checkbox' class='filterCheckbox' onclick='_search()' id='filter_search_name' checked />
+						Name
+					</label>
+					<label class='filterLabel'>
+						<input type='checkbox' class='filterCheckbox' onclick='_search()' id='filter_search_nickname' checked />
+						Nickname
+					</label>
+					<label class='filterLabel'>
+						<input type='checkbox' class='filterCheckbox' onclick='_search()' id='filter_search_species' checked />
+						Species
+					</label>
+					<label class='filterLabel'>
+						<input type='checkbox' class='filterCheckbox' onclick='_search()' id='filter_search_class' checked />
+						Class
+					</label>
+					<label class='filterLabel'>
+						<input type='checkbox' class='filterCheckbox' onclick='_search()' id='filter_search_personality' checked />
+						Personality
+					</label>
+					<label class='filterLabel'>
+						<input type='checkbox' class='filterCheckbox' onclick='_search()' id='filter_search_powerNames' checked />
+						Power Names
+					</label>
+					<label class='filterLabel'>
+						<input type='checkbox' class='filterCheckbox' onclick='_search()' id='filter_search_powerText' checked />
+						Power Text
+					</label>
 				</div>
-			</div>
-			<div class='filtersDivGroup'>
-				<h3 onclick="_toggleFiltersPersonality()">Personality</h3>
-				<div id='PersonalityFiltersDiv'>
-					<select id='PersonalityFiltersSelect' class='filtersMultiSelect' onchange='_updateFilters(this)' multiple></select>
+				<div class='filtersDivGroup2'>
+					<h3 onclick="_toggleFiltersSpecies()">Species</h3>
+					<div id='SpeciesFiltersDiv'>
+						<select id='SpeciesFiltersSelect' class='filtersMultiSelect' onchange='_updateFilters(this)' multiple></select>
+					</div>
+				</div>
+				<div class='filtersDivGroup2'>
+					<h3 onclick="_toggleFiltersClass()">Class</h3>
+					<div id='ClassFiltersDiv'>
+						<select id='ClassFiltersSelect' class='filtersMultiSelect' onchange='_updateFilters(this)' multiple></select>
+					</div>
+				</div>
+				<div class='filtersDivGroup2'>
+					<h3 onclick="_toggleFiltersPersonality()">Personality</h3>
+					<div id='PersonalityFiltersDiv'>
+						<select id='PersonalityFiltersSelect' class='filtersMultiSelect' onchange='_updateFilters(this)' multiple></select>
+					</div>
 				</div>
 			</div>
 		</div>
@@ -479,7 +525,9 @@
 				function (cards) {
 					
 				},
-				{joins: {}}
+				{joins: {
+					"figureSetID": {} // NEW LINE 
+				}}
 			);
 			
 			if (tournamentID != null) {
@@ -504,6 +552,9 @@
 						"figureSetID": {},
 						"TournamentFormatTag.tournamentID": {
 							"formatID": {}
+						},
+						"TournamentIncludesFigureSetSubGroup.tournamentID": {
+							"figureSetSubGroupID": {}
 						}
 				}});
 			} else {

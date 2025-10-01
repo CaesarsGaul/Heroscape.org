@@ -982,6 +982,9 @@ class HexGrid {
 				// Do Nothing
 				break;
 		}
+		if (terrainPiece.terrainType.height > 1) {
+			return;
+		}
 				
 		for (let l = level+1; l < this.map.levels.length; l++) {
 			const higherLevel = this.map.levels[l];

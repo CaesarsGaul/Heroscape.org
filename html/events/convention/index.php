@@ -8,6 +8,7 @@
 	<!-- CSS -->
 	<link rel="stylesheet" href="/css/styles.css">
 	<link rel="stylesheet" href="/css/standings.css">
+	<link rel="stylesheet" href="/css/announcement.css">
 	<style>
 		article {
 			text-align: left;
@@ -41,22 +42,6 @@
 			text-align: center;
 		}
 		
-		#Announcement {
-			display: block;
-			text-align: center;
-		}
-		
-		#Announcement textarea {
-			display: block;
-			margin: auto;
-			width: 300px;
-			height: 50px;
-		}
-		
-		#Announcement button {
-			display: inline-block;
-		}
-		
 		.tournamentLink {
 			/*color: inherit;*/
 			color: blue;
@@ -70,6 +55,10 @@
 		.tournamentLink:before {
 			color: black;
 			 content: " • ";
+		}
+		
+		#SoftCapDiv {
+			border-top: 1px solid red;
 		}
 	</style>
 
@@ -190,7 +179,6 @@
 		function _checkAdmin() {
 			if (loggedIn()) {
 				const userName = decodeURIComponent(getCookieValue("hs_username"));
-				//const userName = getCookieValue("hs_username").replaceAll("%20", " ").replaceAll("%2C", ",");
 				for (let i = 0; i < currentConvention.admins.length; i++) {
 					const adminUser = currentConvention.admins[i].user;
 					if (adminUser.userName == userName) {
@@ -237,8 +225,10 @@
 			attendeesDiv.innerHTML = "";
 			attendeesDiv.appendChild(createH2({innerHTML: "Attendees"}));
 			
-			if (currentConvention.maxAttendees != null) {
-				attendeesDiv.appendChild(createP({innerHTML: "Max " + currentConvention.maxAttendees + " Attendees"}))
+			if (currentConvention.hardPlayerCap != null) {
+				attendeesDiv.appendChild(createP({innerHTML: "Max " + currentConvention.hardPlayerCap + " Attendees"}))
+			} else if (currentConvention.softPlayerCap != null) {
+				attendeesDiv.appendChild(createP({innerHTML: "Max " + currentConvention.softPlayerCap + " Attendees (Plus Waitlist)"}))
 			}
 			
 			if (loggedIn()) {
@@ -275,9 +265,21 @@
 				}
 			}
 			for (let i = 0; i < currentConvention.attendees.length; i++) {
+				var listNum = (i+1);
+				if (currentConvention.softPlayerCap != null && i >= currentConvention.softPlayerCap) {
+					if (i == currentConvention.softPlayerCap) {
+						var softCapDiv = createDiv({
+							id: "SoftCapDiv"
+						});
+						attendeesDiv.appendChild(softCapDiv);
+						softCapDiv.appendChild(createH3({innerHTML: "Waitlist"}))
+					}
+					listNum = i - currentConvention.softPlayerCap + 1;
+				}
+				
 				const attendee = currentConvention.attendees[i];
 				const user = attendee.user;
-				var attendeeP = createP({innerHTML: (i+1)+". "+user.userName});
+				var attendeeP = createP({innerHTML: listNum+". "+user.userName});
 				attendeesDiv.appendChild(attendeeP);
 				if (isAdmin) {
 					attendeeP.appendChild(createButton({

@@ -21,6 +21,13 @@
 			margin-bottom: 0;
 			margin-left: 20px;
 		}
+		.releaseSet p a {
+			color: inherit !important;
+			text-decoration: none;
+		}
+		.releaseSet p a:visited {
+			color: inherit !important;
+		}
 		
 		
 	</style>
@@ -57,8 +64,11 @@
 				
 				for (let j = 0; j < releaseSet.cards.length; j++) {
 					const card = releaseSet.cards[j];
-					setDiv.appendChild(createP({
-						innerHTML: card.name
+					var pElem = createP({})
+					setDiv.appendChild(pElem);
+					pElem.appendChild(createA({
+						innerHTML: card.name,
+						href: "/data/figures/card?name="+card.name
 					}));
 				}
 			}

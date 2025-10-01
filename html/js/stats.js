@@ -13,7 +13,7 @@ async function mhi(tournament, callbackFcn) {
 	const mT = tournament.pointLimit * tournament.numArmies; // # Points in Format
 	
 	deltaPoints = tournament.useDeltaPricing;
-	vcInclusive = tournament.includeVC;
+	//vcInclusive = tournament.includeVC;
 	
 	var asyncTasks = [];
 	for (let i = 0; i < tournament.players.length; i++) {

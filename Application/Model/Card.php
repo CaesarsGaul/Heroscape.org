@@ -3,6 +3,7 @@
 class Card extends HS_DatabaseObject {
 	protected $id; // Int
 	protected $figureSetID; // Int
+	protected $figureSetSubGroupID; // Int
 	protected $name; // String
 	protected $generalID; // Int
 	protected $homeworldID; // Int
@@ -57,6 +58,9 @@ class Card extends HS_DatabaseObject {
 		if ( ! isset($clientDataObj->figureSet->id)) {
 			$clientDataObj->figureSet = FigureSet::create($clientDataObj->figureSet);
 		}
+		if ( ! isset($clientDataObj->figureSetSubGroup->id)) {
+			$clientDataObj->figureSetSubGroup = FigureSetSubGroup::create($clientDataObj->figureSetSubGroup);
+		}
 		if ( ! isset($clientDataObj->general->id)) {
 			$clientDataObj->general = General::create($clientDataObj->general);
 		}
@@ -81,8 +85,9 @@ class Card extends HS_DatabaseObject {
 		
 		$id = $dbObj->dbInsert((new MySQLBuilder())->
 			insert("Card",
-				array("figureSetID", "name", "generalID", "homeworldID", "speciesID", "commonality", "hero", "figureCount", "hexCount", "classID", "personalityID", "sizeID", "height", "life", "move", "range", "attack", "defense", "points", "pointsDeltaClassic", "pointsDeltaVc", "releaseSetID", "imageLink", "heroscapersBookLink", "wikiLink"),
+				array("figureSetID", "figureSetSubGroupID", "name", "generalID", "homeworldID", "speciesID", "commonality", "hero", "figureCount", "hexCount", "classID", "personalityID", "sizeID", "height", "life", "move", "range", "attack", "defense", "points", "pointsDeltaClassic", "pointsDeltaVc", "releaseSetID", "imageLink", "heroscapersBookLink", "wikiLink"),
 				array($clientDataObj->figureSet->id,
+					$clientDataObj->figureSetSubGroup->id,
 					$clientDataObj->name,
 					$clientDataObj->general->id,
 					$clientDataObj->homeworld->id,
@@ -110,19 +115,18 @@ class Card extends HS_DatabaseObject {
 		
 		$dbObj = self::fromDB($id);
 		
-		if (isset($clientDataObj->figureSetSubGroups)) {
-			foreach ($clientDataObj->figureSetSubGroups as $tempClientDataObj) {
-				CardFigureSetSubGroupLink::create(array(
-					"card" => $dbObj,
-					"figureSetSubGroup" => FigureSetSubGroup::fromDB($tempClientDataObj->id)));
-			}
-		}
 		$dbObj->createInitialLinks($clientDataObj);
 		return $dbObj;
 	}
 
 	protected function createInitialLinks($clientDataObj) {
 		// Create 1-N Links
+		if (isset($clientDataObj->cardPowers)) {
+			foreach ($clientDataObj->cardPowers as $clientLinkObj) {
+				$clientLinkObj->card = $this;
+				$clientLinkObj->childClassName::create($clientLinkObj);
+			}
+		}
 		if (isset($clientDataObj->deltaUpdateCosts)) {
 			foreach ($clientDataObj->deltaUpdateCosts as $clientLinkObj) {
 				$clientLinkObj->card = $this;
@@ -166,6 +170,13 @@ class Card extends HS_DatabaseObject {
 					$whereArray["{$prefix}Card.figureSetID"] = $whereData["figureSet"]->id;
 				} else if ($whereData["figureSet"] == null) {
 					$whereArray["{$prefix}Card.figureSetID"] = null;
+				}
+			}
+			if (array_key_exists("figureSetSubGroup", $whereData)) {
+				if (isset($whereData["figureSetSubGroup"]->id)) {
+					$whereArray["{$prefix}Card.figureSetSubGroupID"] = $whereData["figureSetSubGroup"]->id;
+				} else if ($whereData["figureSetSubGroup"] == null) {
+					$whereArray["{$prefix}Card.figureSetSubGroupID"] = null;
 				}
 			}
 			if (isset($whereData["name"])) {
@@ -273,6 +284,9 @@ class Card extends HS_DatabaseObject {
 		if (isset($whereData["figureSet"])) {
 			$whereArray = array_merge($whereArray, FigureSet::createWhereArray($whereData["figureSet"], "{$prefix}Card_figureSetID_"));
 		}
+		if (isset($whereData["figureSetSubGroup"])) {
+			$whereArray = array_merge($whereArray, FigureSetSubGroup::createWhereArray($whereData["figureSetSubGroup"], "{$prefix}Card_figureSetSubGroupID_"));
+		}
 		if (isset($whereData["general"])) {
 			$whereArray = array_merge($whereArray, General::createWhereArray($whereData["general"], "{$prefix}Card_generalID_"));
 		}
@@ -295,9 +309,6 @@ class Card extends HS_DatabaseObject {
 			$whereArray = array_merge($whereArray, ReleaseSet::createWhereArray($whereData["releaseSet"], "{$prefix}Card_releaseSetID_"));
 		}
 		
-		if (isset($whereData["id"])) {
-			$whereArray = array_merge($whereArray, FigureSetSubGroup::createWhereArray($whereData["id"], "{$prefix}Card_id_CardFigureSetSubGroupLink_figureSetSubGroupID_"));
-		}
 		
 		return $whereArray;
 	}
@@ -312,27 +323,27 @@ class Card extends HS_DatabaseObject {
 	}
 
 	public static function getNToMLinkClasses() {
-		return array("CardFigureSetSubGroupLink" => "cardID");
+		return array();
 	}
 
 	public static function getNToMLinkClassesWithType() {
-		return array("CardFigureSetSubGroupLink" => "FigureSetSubGroup");
+		return array();
 	}
 
 	public static function getNToMLinkClassesWithJSVariableName() {
-		return array("CardFigureSetSubGroupLink" => "figureSetSubGroups");
+		return array();
 	}
 
 	public static function getNTo1LinkClasses() {
-		return array("DeltaUpdateCost" => "cardID", "CardPowerRanking" => "cardID", "PlayerArmyCard" => "cardID");
+		return array("CardPower" => "cardID", "DeltaUpdateCost" => "cardID", "CardPowerRanking" => "cardID", "PlayerArmyCard" => "cardID");
 	}
 
 	public static function getForeignKeys() {
-		return array("figureSetID" => "FigureSet", "generalID" => "General", "homeworldID" => "Homeworld", "speciesID" => "Species", "classID" => "CardClass", "personalityID" => "Personality", "sizeID" => "Size", "releaseSetID" => "ReleaseSet");
+		return array("figureSetID" => "FigureSet", "figureSetSubGroupID" => "FigureSetSubGroup", "generalID" => "General", "homeworldID" => "Homeworld", "speciesID" => "Species", "classID" => "CardClass", "personalityID" => "Personality", "sizeID" => "Size", "releaseSetID" => "ReleaseSet");
 	}
 
 	public static function getColumnNames() {
-		return array("id", "figureSetID", "name", "generalID", "homeworldID", "speciesID", "commonality", "hero", "figureCount", "hexCount", "classID", "personalityID", "sizeID", "height", "life", "move", "range", "attack", "defense", "points", "pointsDeltaClassic", "pointsDeltaVc", "releaseSetID", "imageLink", "heroscapersBookLink", "wikiLink");
+		return array("id", "figureSetID", "figureSetSubGroupID", "name", "generalID", "homeworldID", "speciesID", "commonality", "hero", "figureCount", "hexCount", "classID", "personalityID", "sizeID", "height", "life", "move", "range", "attack", "defense", "points", "pointsDeltaClassic", "pointsDeltaVc", "releaseSetID", "imageLink", "heroscapersBookLink", "wikiLink");
 	}
 
 	public static function getActionNames() {
@@ -402,6 +413,9 @@ class Card extends HS_DatabaseObject {
 
 	protected function deleteLinks() {
 		// N-1 Links
+		if (CardPower::countEntries(array("CardPower.cardID" => $this->id)) > 0) {
+			return "Unable to delete Card because one or more Card Power is dependent on it.";
+		}
 		if (DeltaUpdateCost::countEntries(array("DeltaUpdateCost.cardID" => $this->id)) > 0) {
 			return "Unable to delete Card because one or more Delta Update Cost is dependent on it.";
 		}
@@ -413,7 +427,6 @@ class Card extends HS_DatabaseObject {
 		}
 		
 		// N-M Links
-		CardFigureSetSubGroupLink::deleteEntries(CardFigureSetSubGroupLink::fetch(array("card" => $this)));
 		return "";
 	}
 
@@ -432,6 +445,10 @@ class Card extends HS_DatabaseObject {
 			if (isset($clientDataObj->figureSet, $clientDataObj->figureSet->id) &&
 					$clientDataObj->figureSet->id > 0) {
 					$this->figureSetID = $clientDataObj->figureSet->id;
+			}
+			if (isset($clientDataObj->figureSetSubGroup, $clientDataObj->figureSetSubGroup->id) &&
+					$clientDataObj->figureSetSubGroup->id > 0) {
+					$this->figureSetSubGroupID = $clientDataObj->figureSetSubGroup->id;
 			}
 			if (isset($clientDataObj->name)) {
 				$this->name = $clientDataObj->name;
@@ -519,6 +536,9 @@ class Card extends HS_DatabaseObject {
 			if (isset($clientDataObj->figureSet) && ( ! isset($clientDataObj->updateClasses) || (in_array("FigureSet", $clientDataObj->updateClasses))) && in_array("figureSet", $clientDataObj->fieldsToUpdate) && ! isset($this->figureSetIDJustCreated)) {
 				(FigureSet::fromDB($this->figureSetID))->updateInDB($clientDataObj->figureSet);
 			}
+			if (isset($clientDataObj->figureSetSubGroup) && ( ! isset($clientDataObj->updateClasses) || (in_array("FigureSetSubGroup", $clientDataObj->updateClasses))) && in_array("figureSetSubGroup", $clientDataObj->fieldsToUpdate) && ! isset($this->figureSetSubGroupIDJustCreated)) {
+				(FigureSetSubGroup::fromDB($this->figureSetSubGroupID))->updateInDB($clientDataObj->figureSetSubGroup);
+			}
 			if (isset($clientDataObj->general) && ( ! isset($clientDataObj->updateClasses) || (in_array("General", $clientDataObj->updateClasses))) && in_array("general", $clientDataObj->fieldsToUpdate) && ! isset($this->generalIDJustCreated)) {
 				(General::fromDB($this->generalID))->updateInDB($clientDataObj->general);
 			}
@@ -544,32 +564,23 @@ class Card extends HS_DatabaseObject {
 		
 		$this->dbUpdate((new MySQLBuilder())->
 			update("Card",
-				array("figureSetID", "name", "generalID", "homeworldID", "speciesID", "commonality", "hero", "figureCount", "hexCount", "classID", "personalityID", "sizeID", "height", "life", "move", "range", "attack", "defense", "points", "pointsDeltaClassic", "pointsDeltaVc", "releaseSetID", "imageLink", "heroscapersBookLink", "wikiLink"),
-				array($this->figureSetID, $this->name, $this->generalID, $this->homeworldID, $this->speciesID, $this->commonality, $this->hero, $this->figureCount, $this->hexCount, $this->classID, $this->personalityID, $this->sizeID, $this->height, $this->life, $this->move, $this->range, $this->attack, $this->defense, $this->points, $this->pointsDeltaClassic, $this->pointsDeltaVc, $this->releaseSetID, $this->imageLink, $this->heroscapersBookLink, $this->wikiLink))->
+				array("figureSetID", "figureSetSubGroupID", "name", "generalID", "homeworldID", "speciesID", "commonality", "hero", "figureCount", "hexCount", "classID", "personalityID", "sizeID", "height", "life", "move", "range", "attack", "defense", "points", "pointsDeltaClassic", "pointsDeltaVc", "releaseSetID", "imageLink", "heroscapersBookLink", "wikiLink"),
+				array($this->figureSetID, $this->figureSetSubGroupID, $this->name, $this->generalID, $this->homeworldID, $this->speciesID, $this->commonality, $this->hero, $this->figureCount, $this->hexCount, $this->classID, $this->personalityID, $this->sizeID, $this->height, $this->life, $this->move, $this->range, $this->attack, $this->defense, $this->points, $this->pointsDeltaClassic, $this->pointsDeltaVc, $this->releaseSetID, $this->imageLink, $this->heroscapersBookLink, $this->wikiLink))->
 			where(array("id" => $this->id)));
 		
-		if ((isset($clientDataObj->updateNtoMLinks) || (isset($clientDataObj->joins, $clientDataObj->joins->{'CardFigureSetSubGroupLink.cardID'}))) && in_array("figureSetSubGroups", $clientDataObj->linksToUpdate)) {
-			$links = CardFigureSetSubGroupLink::fetch(array("card" => $this));
-			$oldObjs = array();
-			foreach ($links as $link) {
-				$oldObjs[] = $link->getFigureSetSubGroup();
-			}
-			$newObjs = array();
-			foreach ($clientDataObj->figureSetSubGroups as $clientLinkObj) {
-				if (is_object($clientLinkObj) && isset($clientLinkObj->id) && $clientLinkObj->id > 0) {
-					$newObjs[] = FigureSetSubGroup::fromDB($clientLinkObj->id);
+		// Update 1-N Links
+		if (isset($clientDataObj->cardPowers) &&
+				isset($clientDataObj->updateNto1) && $clientDataObj->updateNto1) {
+			foreach ($clientDataObj->cardPowers as $clientLinkObj) {
+				if (isset($clientLinkObj->id)) {
+					$linkObj = CardPower::fromDB($clientLinkObj->id);
+					$linkObj->updateInDB($clientLinkObj);
+				} else {
+					$clientLinkObj->card = $this;
+					$clientLinkObj->childClassName::create($clientLinkObj);
 				}
 			}
-			subtractOverlap($newObjs, $oldObjs, array("id"));
-			foreach ($newObjs as $newObj) {
-				CardFigureSetSubGroupLink::create(array("figureSetSubGroup" => $newObj, "card" => $this));
-			}
-			foreach ($oldObjs as $oldObj) {
-				(CardFigureSetSubGroupLink::fromDB(array("figureSetSubGroup" => $oldObj, "card" => $this)))->deleteInDB();
-			}
 		}
-		
-		// Update 1-N Links
 		if (isset($clientDataObj->deltaUpdateCosts) &&
 				isset($clientDataObj->updateNto1) && $clientDataObj->updateNto1) {
 			foreach ($clientDataObj->deltaUpdateCosts as $clientLinkObj) {
@@ -639,6 +650,13 @@ class Card extends HS_DatabaseObject {
 			$this->figureSet = FigureSet::fromDB($this->figureSetID);
 		}
 		return $this->figureSet;
+	}
+
+	public function getFigureSetSubGroup() {
+		if ( ! property_exists($this, "figureSetSubGroup")) {
+			$this->figureSetSubGroup = FigureSetSubGroup::fromDB($this->figureSetSubGroupID);
+		}
+		return $this->figureSetSubGroup;
 	}
 
 	public function getGeneral() {

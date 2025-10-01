@@ -3,6 +3,7 @@ echo "
 <footer>
 	<ul>
 		<li><a href='https://heroscape.org/buy'>Buy Heroscape</a></li>
+		<li><a href='https://www.patreon.com/cw/ChrisPerkins_CaesarsGaul'>Patreon</a></li>
 		<li><a href='https://heroscape.org/about'>About</a></li>
 		<li><a href='https://heroscape.org/glossary'>Glossary</a></li>
 		<li><a href='https://heroscape.org/contact'>Contact</a></li>

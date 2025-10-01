@@ -57,6 +57,10 @@
 			padding-left: 10px;
 			padding-right: 10px;
 		}
+		
+		#stealthArmorNumber {
+			width: 40px;
+		}
 	</style>
 
 	<!-- Internal Files -->
@@ -85,12 +89,20 @@
 			const shieldsOfValor = document.getElementById("shieldsOfValor").checked;
 			const stealthDodge = document.getElementById("stealthDodge").checked;
 			const giftOfTheEmpressAuta = document.getElementById("giftOfTheEmpressAuta").checked;
+			const heroicDefenseAura = document.getElementById("heroicDefenseAura").checked;
+			const stealthArmor = document.getElementById("stealthArmor").checked
+				? document.getElementById("stealthArmorNumber").value
+				: null;
 			
 			var attackProbability = orcBattleCryAura ? 2/3 : 1/2;
 			if (rerollNonSkulls) {
 				attackProbability = 1 - (Math.pow(1-attackProbability, 2));
 			}
-			const defenseProbability = giftOfTheEmpressAuta ? 1 - (2/3)*(2/3) : 1/3;
+			const defenseProbability = giftOfTheEmpressAuta 
+				? 1 - (2/3)*(2/3) 
+				: heroicDefenseAura
+					? 1/2
+					: 1/3;
 			
 			var outcomes = [];
 			for (let a = 0; a <= attack; a++) {
@@ -124,8 +136,10 @@
 					
 					subOutcomes[d] = {
 						damage: Math.max(altA-altD, 0),
-						probability: prob(attack, a, attackProbability) * prob(defense, d, defenseProbability)
+						probability: prob(attack, a, attackProbability) * prob(defense, d, defenseProbability),
+						counterStrike: Math.max(0, altD-altA)
 					};
+					
 					if (autoShield && subOutcomes[d].damage > 0) {
 						subOutcomes[d].damage -= 1;
 					}
@@ -138,12 +152,18 @@
 			var averageDamage = 0;
 			for (let a = 0; a <= attack; a++) {
 				for (let b = 0; b <= defense; b++) {
-					averageDamage += outcomes[a][b].damage * outcomes[a][b].probability;
+					var additionalDamage = outcomes[a][b].damage * outcomes[a][b].probability;
+					if (stealthArmor != null) {
+						const damageGoThruProbability = ((parseInt(stealthArmor) - 1) / 20);
+						additionalDamage *= damageGoThruProbability;
+					}
+					averageDamage += additionalDamage;
 				}
 			}
 			
 			parentElem.appendChild(createDiv({innerHTML: "Average Damage : " + averageDamage.toFixed(3) + " wounds"}));
 			
+			parentElem.appendChild(createH2({innerHTML: "Attack Damage Probabilities"}));
 			var tableElem = createTable();
 			parentElem.appendChild(tableElem);
 			var headerRow = createTr();
@@ -159,6 +179,9 @@
 					: autoSkull
 						? parseInt(attack)+1
 						: attack;
+						
+			var p1Running = 0;
+			var p3Running = 1;
 			
 			for (let i = 0; i <= iMax; i++) {
 				var rowElem = createTr({});
@@ -182,12 +205,60 @@
 					}
 				}
 				
+				if (stealthArmor != null) {
+					const stealthArmorProbability = ((parseInt(stealthArmor)-1) / 20);
+					if (i == 0) {
+						p1 += (1 - p1) * (1 - stealthArmorProbability);
+						p2 += (1 - p2) * (1 - stealthArmorProbability);
+						// No change to p3
+					} else {
+						p2 *= stealthArmorProbability;
+					}
+				}
+				
+				p1Running += p2;
+				p1 = p1Running;
+				p3 = p3Running;
+				
 				rowElem.appendChild(createTd({innerHTML: (p1*100).toFixed(2) + " %"}));
 				rowElem.appendChild(createTd({innerHTML: (p2*100).toFixed(2) + " %"}));
 				rowElem.appendChild(createTd({innerHTML: (p3*100).toFixed(2) + " %"}));
 				
-				//parentElem.appendChild(createDiv({innerHTML: "Chance of getting >= " + i + " wounds : " + (p*100).toFixed(2) + " %"}));
+				p3Running -= p2;
 			}
+			
+			parentElem.appendChild(createH2({innerHTML: "Counter Strike Probabilities"}));
+			var counterStrikeTable = createTable({});
+			parentElem.appendChild(counterStrikeTable);
+			var csHeaderRow = createTr();
+			counterStrikeTable.appendChild(csHeaderRow);
+			csHeaderRow.appendChild(createTh({innerHTML: ""}));
+			csHeaderRow.appendChild(createTh({innerHTML: "% <= # Wounds"}));
+			csHeaderRow.appendChild(createTh({innerHTML: "% = # Wounds"}));
+			csHeaderRow.appendChild(createTh({innerHTML: "% >= # Wounds"}));
+			var csProbs = [];
+			for (let i = 0; i < outcomes.length; i++) {
+				for (let j = 0; j < outcomes[i].length; j++) {
+					if (csProbs[outcomes[i][j].counterStrike] == undefined) {
+						csProbs[outcomes[i][j].counterStrike] = 0;
+					}
+					csProbs[outcomes[i][j].counterStrike] += outcomes[i][j].probability;
+				}
+			}
+			var csProbSum = 0;
+			for (let i = 0; i < csProbs.length; i++) {
+				var rowElem = createTr({});
+				counterStrikeTable.appendChild(rowElem);
+				rowElem.appendChild(createTd({innerHTML: i}));
+				var csProbSumOpp = 1-csProbSum;
+				csProbSum += csProbs[i];
+				rowElem.appendChild(createTd({innerHTML: (csProbSum*100).toFixed(2) + " %"}));
+				rowElem.appendChild(createTd({innerHTML: (csProbs[i]*100).toFixed(2) + " %"}));
+				rowElem.appendChild(createTd({innerHTML: (csProbSumOpp*100).toFixed(2) + " %"}));
+				
+
+			}
+			
 		}
 		
 		/*
@@ -307,6 +378,15 @@
 						<input type='checkbox' id='giftOfTheEmpressAuta' />
 						Gift of the Empress Aura
 					</label>
+					<label>
+						<input type='checkbox' id='heroicDefenseAura' />
+						Heroic Defense Aura
+					</label>
+					<label>
+						<input type='checkbox' id='stealthArmor' />
+						Stealth Armor
+						<input type='number' id='stealthArmorNumber' min=1 max=20 />
+					</label>
 					
 					<!--<label>
 						<input type='checkbox' id='vanish' />
@@ -359,7 +439,7 @@
 			
 			<div id='output'></div>
 			
-			<div id='thankYou'>Thanks to Vegietarian18 for inspiring this tool via his Sterilizing Pear app (Android only). Definitely worth a download for any android users out there.</div>
+			<div id='thankYou'>Thanks to Vegietarian18 for inspiring this tool via his Sterilizing Pear app.</div>
 			
 		</article>
 

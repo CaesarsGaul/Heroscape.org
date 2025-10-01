@@ -22,7 +22,7 @@
 
 	<!-- Internal Files -->
 	<script src="/js/scripts.js"></script>
-	<script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
+	<!--<script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>-->
 
 	<!--<script src="/connect/socket.io/socket.io.js"></script>-->
 	
@@ -51,37 +51,95 @@
 				return;
 			}
 			
+			var tournamentsByAddress = {};
 			for (let i = 0; i < tournaments.length; i++) {
 				const tournament = tournaments[i];
-				if (tournament.address != null) {
-					geocoder.geocode( { 'address': tournament.address}, function(results, status) {
-						if (status == 'OK') {
-							const location = results[0].geometry.location;
-							const marker = new AdvancedMarkerElement({
-								map: map,
-								position: { lat: location.lat(), lng: location.lng() },
-								title: tournament.fullDisplayName(),
-								gmpClickable: true
-							});
-							marker.addListener('click', ({ domEvent, latLng }) => {
-								const { target } = domEvent;
-								infoWindow.close();
-								infoWindow.setContent("<a href='https://heroscape.org/events/tournament/?Tournament="+tournament.id+"' target='_blank'>"+marker.title+"</a>");
-								infoWindow.open(marker.map, marker);
-							});
-						} else {
-							// TODO - Error Handling
-						}
-					});
+				if (tournament.address != null && tournament.latitude != null && tournament.longitude != null) {
+					if (tournamentsByAddress[tournament.address.trim()] === undefined) {
+						tournamentsByAddress[tournament.address.trim()] = [];
+					}
+					tournamentsByAddress[tournament.address.trim()].push(tournament);
+				}
+			}
+			for (const [address, tournamentArray] of Object.entries(tournamentsByAddress)) {
+				//geocoder.geocode( { 'address': address}, function(results, status) {
+					//if (status == 'OK') {
+						//const location = results[0].geometry.location;
+						const marker = new AdvancedMarkerElement({
+							map: map,
+							//position: { lat: location.lat(), lng: location.lng() },
+							position: { lat: parseFloat(tournamentArray[0].latitude), lng: parseFloat(tournamentArray[0].longitude) },
+							title: tournamentArray[0].fullDisplayName(),
+							gmpClickable: true
+						});
+						marker.addListener('click', ({ domEvent, latLng }) => {
+							const { target } = domEvent;
+							infoWindow.close();
+							var infoWindowContent = "";
+							for (let j = 0; j < tournamentArray.length; j++) {
+								const tournament = tournamentArray[j];
+								infoWindowContent += "<p><a href='https://heroscape.org/events/tournament/?Tournament="+tournament.id+"' target='_blank'>"+tournament.fullDisplayName()+"</a></p>";
+							}
+							infoWindow.setContent(infoWindowContent);
+							infoWindow.open(marker.map, marker);
+						});
+					//} else {
+						// TODO - Error Handling
+					//}
+				//});
+			}
+			
+			var conventionsByAddress = {};
+			for (let i = 0; i < conventions.length; i++) {
+				const convention = conventions[i];
+				if (convention.address != null && convention.latitude != null && convention.longitude != null) {
+					if (conventionsByAddress[convention.address.trim()] === undefined) {
+						conventionsByAddress[convention.address.trim()] = [];
+					}
+					conventionsByAddress[convention.address.trim()].push(convention);
 				}
 			}
 			
-			for (let i = 0; i < conventions.length; i++) {
+			for (const [address, conventionArray] of Object.entries(conventionsByAddress)) {
+				//geocoder.geocode( { 'address': address}, function(results, status) {
+					//if (status == 'OK') {
+						//const location = results[0].geometry.location;
+						const pinGlyph = new PinElement({
+							glyphColor: "white",
+							//borderColor: "pink",
+							//background: "green"
+						});
+						const marker = new AdvancedMarkerElement({
+							map: map,
+							//position: { lat: location.lat(), lng: location.lng() },
+							position: { lat: parseFloat(conventionArray[0].latitude), lng: parseFloat(conventionArray[0].longitude) },
+							title: conventionArray[0].name,
+							content: pinGlyph.element,
+							gmpClickable: true
+						});
+						marker.addListener('click', ({ domEvent, latLng }) => {
+							const { target } = domEvent;
+							infoWindow.close();
+							var infoWindowContent = "";
+							for (let j = 0; j < conventionArray.length; j++) {
+								const convention = conventionArray[j];
+								infoWindowContent += "<p><a href='https://heroscape.org/events/convention/?Convention="+convention.id+"' target='_blank'>"+convention.name+"</a></p>";
+							}
+							infoWindow.setContent(infoWindowContent);
+							infoWindow.open(marker.map, marker);
+						});
+					//} else {
+						// TODO - Error Handling
+					//}
+				//});
+			}
+			
+			/*for (let i = 0; i < conventions.length; i++) {
 				const convention = conventions[i];
 				if (convention.address != null) {
-					geocoder.geocode( { 'address': convention.address}, function(results, status) {
-						if (status == 'OK') {
-							const location = results[0].geometry.location;
+					//geocoder.geocode( { 'address': convention.address}, function(results, status) {
+						//if (status == 'OK') {
+							//const location = results[0].geometry.location;
 							const pinGlyph = new PinElement({
 								glyphColor: "white",
 								//borderColor: "pink",
@@ -89,7 +147,8 @@
 							});
 							const marker = new AdvancedMarkerElement({
 								map: map,
-								position: { lat: location.lat(), lng: location.lng() },
+								//position: { lat: location.lat(), lng: location.lng() },
+								position: { lat: parseFloat(convention.latitude), lng: parseFloat(convention.longitude) },
 								title: convention.name,
 								content: pinGlyph.element,
 								gmpClickable: true
@@ -100,12 +159,12 @@
 								infoWindow.setContent("<a href='https://heroscape.org/events/convention/?Convention="+convention.id+"' target='_blank'>"+marker.title+"</a>");
 								infoWindow.open(marker.map, marker);
 							});
-						} else {
+						//} else {
 							// TODO - Error Handling
-						}
-					});
+						//}
+					//});
 				}
-			}
+			}*/
 		}
 		
 	</script>

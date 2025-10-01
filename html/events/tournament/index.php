@@ -92,6 +92,16 @@
 			margin-top: 5px;
 			margin-bottom: 5px;
 		}
+		@media (max-width:800px)  { 
+			.signupButton {
+				padding-top: 15px;
+				padding-bottom: 15px;
+				padding-left: 15px;
+				padding-right: 15px;
+			}
+		}
+
+
 		
 		#hideFullMatchupButton {
 			display: none;
@@ -283,6 +293,10 @@
 			min-width: 35px;
 			padding-right: 0 !important;
 		}
+		
+		.broughtByP {
+			background-color: inherit;
+		}
 	</style>
 
 	<!-- Internal Files -->
@@ -314,6 +328,8 @@
 		
 		TournamentFormatTag.options.fieldsToInclude = ["format", "data"];
 		TournamentFormatTag.options.multiLevelEditsToSkip = ["create"];
+		
+		GameMapGlyph.options.multiLevelEditsToSkip = ["create"];
 		
 		Glyph.load(
 			{},
@@ -556,9 +572,9 @@
 					timerDiv.appendChild(createP({innerHTML: "Time Left in Round : " + minutes + ":" + seconds}));		
 					if (secondsLeft == 0) {
 						timerDiv.appendChild(createP({innerHTML: "ROUND OVER!"}));
-					} else if (minutes < 3) {
+					} /*else if (minutes < 2) {
 						timerDiv.appendChild(createP({innerHTML: "LAST ORDER MARKER!"}));
-					} /*else if (minutes < 10) {
+					}*/ /*else if (minutes < 10) {
 						timerDiv.appendChild(createP({innerHTML: "LAST ROUND!"}));
 					}*/
 				}
@@ -770,7 +786,8 @@
 								}	
 								var changeArmyP = createP({});
 								parentElem.appendChild(changeArmyP);
-								changeArmyP.appendChild(createA({innerHTML: "Change Army", href: signupUrl}));
+								//changeArmyP.appendChild(createA({innerHTML: "Change Army", href: signupUrl}));
+								changeArmyP.appendChild(createButton({class: "signupButton", innerHTML: "Change Army", onclick: "location.href='"+signupUrl+"';"}));
 							}					
 						}
 					}
@@ -818,7 +835,8 @@
 					if ( ! armySubmitted) {
 						if (now >= allowArmySubmissionAfter) {
 							if (currentTournament.numArmies > 0) {
-								parentElem.appendChild(createA({href: signupUrl, innerHTML: "Submit Army"}));
+								//parentElem.appendChild(createA({href: signupUrl, innerHTML: "Submit Army"}));
+								parentElem.appendChild(createButton({class: "signupButton", innerHTML: "Submit Army", onclick: "location.href='"+signupUrl+"';"}));
 							}
 						} else {
 							parentElem.appendChild(createDiv({innerHTML: "Army submission begins at " + allowArmySubmissionAfter.toLocaleString()}));
@@ -827,7 +845,8 @@
 				}
 			} else if (currentTournament.started && ! currentTournament.finished) {
 				if ( ! armySubmitted && signedUp && currentTournament.numArmies > 0) {
-					parentElem.appendChild(createA({href: signupUrl, innerHTML: "Submit Army"}));
+					//parentElem.appendChild(createA({href: signupUrl, innerHTML: "Submit Army"}));
+					parentElem.appendChild(createButton({class: "signupButton", innerHTML: "Submit Army", onclick: "location.href='"+signupUrl+"';"}));
 				}
 			}
 			if (signedUp && ! currentTournament.started) {
@@ -985,14 +1004,18 @@
 								onclick: "_unClaimMap("+gameMap.id+")"
 							}));*/
 							mapDiv.classList.add("broughtByMe");
-							mapDiv.appendChild(createP({innerHTML: "Brought by Me"}));
+							mapDiv.appendChild(createP({
+								innerHTML: "Brought by Me",
+								class: "broughtByP"}));
 							mapDiv.appendChild(createButton({
 								innerHTML: "X",
 								class: "mapImageDivBroughtByMeButton",
 								onclick: "_unClaimMap("+gameMap.id+")"
 							}));
 						} else {
-							mapDiv.appendChild(createP({innerHTML: "Brought by " + user.userName}));
+							mapDiv.appendChild(createP({
+								innerHTML: "Brought by " + user.userName,
+								class: "broughtByP"}));
 						}
 					} else {
 						if (loggedIn()) {
@@ -1901,8 +1924,8 @@
 							var pcsDiv = createDiv({});
 							pcsTd.appendChild(pcsDiv);
 							var pcsUrl = "";
-							pcsUrl += "/scoring?army1="+game.heroscapeGamePlayers[0].player.playerArmys[0].toDisplayString();
-							pcsUrl += "&army2="+game.heroscapeGamePlayers[1].player.playerArmys[0].toDisplayString();
+							pcsUrl += "/tools/scoring?army1="+game.heroscapeGamePlayers[0].player.playerArmys[0].toDisplayString(true);
+							pcsUrl += "&army2="+game.heroscapeGamePlayers[1].player.playerArmys[0].toDisplayString(true);
 							pcsUrl += "&delta="+ (currentTournament.useDeltaPricing
 									? "true"
 									: "false");
@@ -3041,6 +3064,9 @@
 							},
 							"TournamentFormatTag.tournamentID": {
 								"formatID": {}
+							},
+							"TournamentIncludesFigureSetSubGroup.tournamentID": {
+								"figureSetSubGroupID": {}
 							}
 					}});
 				} else {

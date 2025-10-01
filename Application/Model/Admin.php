@@ -4,6 +4,7 @@ class Admin extends HS_DatabaseObject {
 	protected $id; // Int
 	protected $userID; // Int
 	protected $conventionID; // Int
+	protected $conventionSeriesID; // Int
 	protected $tournamentID; // Int
 	protected $leagueID; // Int
 
@@ -40,6 +41,10 @@ class Admin extends HS_DatabaseObject {
 				! isset($clientDataObj->convention->id)) {
 			$clientDataObj->convention = Convention::create($clientDataObj->convention);
 		}
+		if (isset($clientDataObj->conventionSeries) &&
+				! isset($clientDataObj->conventionSeries->id)) {
+			$clientDataObj->conventionSeries = ConventionSeries::create($clientDataObj->conventionSeries);
+		}
 		if (isset($clientDataObj->league) &&
 				! isset($clientDataObj->league->id)) {
 			$clientDataObj->league = League::create($clientDataObj->league);
@@ -47,10 +52,13 @@ class Admin extends HS_DatabaseObject {
 		
 		$id = $dbObj->dbInsert((new MySQLBuilder())->
 			insert("Admin",
-				array("userID", "conventionID", "tournamentID", "leagueID"),
+				array("userID", "conventionID", "conventionSeriesID", "tournamentID", "leagueID"),
 				array($clientDataObj->user->id,
 					isset($clientDataObj->convention) 
 						? $clientDataObj->convention->id
+						: null,
+					isset($clientDataObj->conventionSeries) 
+						? $clientDataObj->conventionSeries->id
 						: null,
 					isset($clientDataObj->tournament) 
 						? $clientDataObj->tournament->id
@@ -100,6 +108,13 @@ class Admin extends HS_DatabaseObject {
 					$whereArray["{$prefix}Admin.conventionID"] = null;
 				}
 			}
+			if (array_key_exists("conventionSeries", $whereData)) {
+				if (isset($whereData["conventionSeries"]->id)) {
+					$whereArray["{$prefix}Admin.conventionSeriesID"] = $whereData["conventionSeries"]->id;
+				} else if ($whereData["conventionSeries"] == null) {
+					$whereArray["{$prefix}Admin.conventionSeriesID"] = null;
+				}
+			}
 			if (array_key_exists("tournament", $whereData)) {
 				if (isset($whereData["tournament"]->id)) {
 					$whereArray["{$prefix}Admin.tournamentID"] = $whereData["tournament"]->id;
@@ -121,6 +136,9 @@ class Admin extends HS_DatabaseObject {
 		}
 		if (isset($whereData["convention"])) {
 			$whereArray = array_merge($whereArray, Convention::createWhereArray($whereData["convention"], "{$prefix}Admin_conventionID_"));
+		}
+		if (isset($whereData["conventionSeries"])) {
+			$whereArray = array_merge($whereArray, ConventionSeries::createWhereArray($whereData["conventionSeries"], "{$prefix}Admin_conventionSeriesID_"));
 		}
 		if (isset($whereData["tournament"])) {
 			$whereArray = array_merge($whereArray, Tournament::createWhereArray($whereData["tournament"], "{$prefix}Admin_tournamentID_"));
@@ -159,11 +177,11 @@ class Admin extends HS_DatabaseObject {
 	}
 
 	public static function getForeignKeys() {
-		return array("userID" => "User", "conventionID" => "Convention", "tournamentID" => "Tournament", "leagueID" => "League");
+		return array("userID" => "User", "conventionID" => "Convention", "conventionSeriesID" => "ConventionSeries", "tournamentID" => "Tournament", "leagueID" => "League");
 	}
 
 	public static function getColumnNames() {
-		return array("id", "userID", "conventionID", "tournamentID", "leagueID");
+		return array("id", "userID", "conventionID", "conventionSeriesID", "tournamentID", "leagueID");
 	}
 
 	public static function getActionNames() {
@@ -266,6 +284,18 @@ class Admin extends HS_DatabaseObject {
 					$this->conventionID = null;
 				}
 			}
+			if (property_exists($clientDataObj, "conventionSeries")) {
+				if (isset($clientDataObj->conventionSeries)) {
+					if (isset($clientDataObj->conventionSeries->id) && $clientDataObj->conventionSeries->id > 0) {
+						$this->conventionSeriesID = $clientDataObj->conventionSeries->id;
+					} else {
+						$this->conventionSeriesID = (ConventionSeries::create($clientDataObj->conventionSeries))->id;
+						$this->conventionSeriesIDJustCreated = true;
+					}
+				} else {
+					$this->conventionSeriesID = null;
+				}
+			}
 			if (property_exists($clientDataObj, "tournament")) {
 				if (isset($clientDataObj->tournament)) {
 					if (isset($clientDataObj->tournament->id) && $clientDataObj->tournament->id > 0) {
@@ -300,6 +330,9 @@ class Admin extends HS_DatabaseObject {
 			if (isset($clientDataObj->convention) && ( ! isset($clientDataObj->updateClasses) || (in_array("Convention", $clientDataObj->updateClasses))) && in_array("convention", $clientDataObj->fieldsToUpdate) && ! isset($this->conventionIDJustCreated)) {
 				(Convention::fromDB($this->conventionID))->updateInDB($clientDataObj->convention);
 			}
+			if (isset($clientDataObj->conventionSeries) && ( ! isset($clientDataObj->updateClasses) || (in_array("ConventionSeries", $clientDataObj->updateClasses))) && in_array("conventionSeries", $clientDataObj->fieldsToUpdate) && ! isset($this->conventionSeriesIDJustCreated)) {
+				(ConventionSeries::fromDB($this->conventionSeriesID))->updateInDB($clientDataObj->conventionSeries);
+			}
 			if (isset($clientDataObj->tournament) && ( ! isset($clientDataObj->updateClasses) || (in_array("Tournament", $clientDataObj->updateClasses))) && in_array("tournament", $clientDataObj->fieldsToUpdate) && ! isset($this->tournamentIDJustCreated)) {
 				(Tournament::childFromDB($this->tournamentID))->updateInDB($clientDataObj->tournament);
 			}
@@ -310,8 +343,8 @@ class Admin extends HS_DatabaseObject {
 		
 		$this->dbUpdate((new MySQLBuilder())->
 			update("Admin",
-				array("userID", "conventionID", "tournamentID", "leagueID"),
-				array($this->userID, $this->conventionID, $this->tournamentID, $this->leagueID))->
+				array("userID", "conventionID", "conventionSeriesID", "tournamentID", "leagueID"),
+				array($this->userID, $this->conventionID, $this->conventionSeriesID, $this->tournamentID, $this->leagueID))->
 			where(array("id" => $this->id)));
 		
 		return "";
@@ -353,6 +386,16 @@ class Admin extends HS_DatabaseObject {
 				$this->convention = Convention::fromDB($this->conventionID);
 			}
 			return $this->convention;
+		}
+		return null;
+	}
+
+	public function getConventionSeries() {
+		if ($this->conventionSeriesID != null) {
+			if ( ! property_exists($this, "conventionSeries")) {
+				$this->conventionSeries = ConventionSeries::fromDB($this->conventionSeriesID);
+			}
+			return $this->conventionSeries;
 		}
 		return null;
 	}

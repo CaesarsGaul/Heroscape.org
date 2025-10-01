@@ -13,6 +13,8 @@
 	
 	<!-- CSS -->
 	<link rel="stylesheet" href="/css/styles.css">
+	<link rel="stylesheet" href="/css/tournament.css">
+	<link rel="stylesheet" href="/css/builder.css">
 	<style>
 		
 	</style>
@@ -60,7 +62,7 @@
 			for (let i = 0; i < units.length; i++) {
 				const unit = units[i];
 				const unitParts = unit.split(" x");
-				const unitName = unitParts[0];
+				const unitName = unitParts[0].trim();
 				if (unitParts.length == 1) { // Unique
 					army.units[unitName] = unitsMap[unitName].life * unitsMap[unitName].figures;
 				} else { // Common
@@ -80,14 +82,14 @@
 				switchClassicDelta(deltaCheckbox);
 			}
 			
-			var vcParam = url.searchParams.get("vc");
+			/*var vcParam = url.searchParams.get("vc");
 			if (vcParam !== undefined && vcParam !== null && 
 					vcParam.toLowerCase() == "true") {
 				var pointsCheckbox = document.getElementById("vcCheckbox");
 				pointsCheckbox.checked = true;
 				vcInclusive = true;
 				switchClassicVc(pointsCheckbox);
-			}
+			}*/
 		}
 		
 		var partialScoringArmy1 = new Army();
@@ -95,38 +97,47 @@
 		
 		function updatePartialArmy(unitId, leftOrRight, armyNum) {
 			const rowDiv = document.getElementById("unitRowPartial_"+unitId);
-			const unit = $(rowDiv).data("unit");
+			//const unit = $(rowDiv).data("unit");
+			const unit = units[unitId];
 		
 			var imgElem = leftOrRight == "left"
 				? document.getElementById("leftArrowPartial"+armyNum+"_"+unitId)
 				: document.getElementById("rightArrowPartial"+armyNum+"_"+unitId);
-			if (imgElem.classList.contains("arrowNoClick")) {
-				return;
+			if (imgElem != null) {
+				if (imgElem.classList.contains("arrowNoClick")) {
+					return;
+				}
 			}
 			
 			var numInArmyDiv = document.getElementById("numInArmyPartial"+armyNum+"_"+unitId);
-			var numInArmy = numInArmyDiv.innerHTML;
-			if (leftOrRight == "left") {
-				numInArmy--;
-			} else {
-				numInArmy++;
+			if (numInArmyDiv != null) {
+				var numInArmy = numInArmyDiv.innerHTML;
+				if (leftOrRight == "left") {
+					numInArmy--;
+				} else {
+					numInArmy++;
+				}
+				numInArmyDiv.innerHTML = numInArmy;
 			}
-			numInArmyDiv.innerHTML = numInArmy;
 			
 			var leftArrowImg = document.getElementById("leftArrowPartial"+armyNum+"_"+unitId);
-			if (numInArmy == 0) {
-				leftArrowImg.classList.add("arrowNoClick");
-			} else {
-				leftArrowImg.classList.remove("arrowNoClick");
+			if (leftArrowImg != null) {
+				if (numInArmy == 0) {
+					leftArrowImg.classList.add("arrowNoClick");
+				} else {
+					leftArrowImg.classList.remove("arrowNoClick");
+				}
 			}
 			
-			var rightArrowImg = document.getElementById("rightArrowPartial"+armyNum+"_"+unitId);
-			if (unit.uniqueness == "Unique" && 
-					((unit.squad && numInArmy == unit.figures * unit.life) ||
-						! unit.squad && numInArmy == unit.life)) {
-				rightArrowImg.classList.add("arrowNoClick");
-			} else {
-				rightArrowImg.classList.remove("arrowNoClick");
+			if (rightArrowImg) {
+				var rightArrowImg = document.getElementById("rightArrowPartial"+armyNum+"_"+unitId);
+				if (unit.uniqueness == "Unique" && 
+						((unit.squad && numInArmy == unit.figures * unit.life) ||
+							! unit.squad && numInArmy == unit.life)) {
+					rightArrowImg.classList.add("arrowNoClick");
+				} else {
+					rightArrowImg.classList.remove("arrowNoClick");
+				}
 			}
 			
 			if (leftOrRight == "left") {
@@ -152,53 +163,13 @@
 		}
 		
 		function _updateArmyDisplayPartialScoring(armyNum) {
-			/*var tempArmy = armyNum == 1
-				? partialScoringArmy1
-				: partialScoringArmy2;*/
-			/*var points = tempArmy.getPoints(true);
-			var figures = tempArmy.getFigures(true);
-			var hexes = tempArmy.getHexes(true);*/
-			//var armyString = tempArmy.toString(true);
-			
-			/*if (armyString.length == 0) {
-				armyString = "No figures selected. Choose a figure from the box to add it to your army.";
-			}*/
-						
 			updateArmyDisplay(true, armyNum);
-			/*if (armyNum == 1) {
-				//document.getElementById("armyPartial1List").innerHTML = armyString;
-				document.getElementById("armyPartial1Points").innerHTML = points;
-				document.getElementById("armyPartial1Figures").innerHTML = figures;
-				document.getElementById("armyPartial1Hexes").innerHTML = hexes;
-			} else {
-				//document.getElementById("armyPartial2List").innerHTML = armyString;
-				document.getElementById("armyPartial2Points").innerHTML = points;
-				document.getElementById("armyPartial2Figures").innerHTML = figures;
-				document.getElementById("armyPartial2Hexes").innerHTML = hexes;
-			}*/
-			
-			//adjustBodyTopMargin();
 		}
 		
-		var vcInclusive = false;
-		var marvelInclusive = true; // TODO : consider getting this from a toggle
 		var deltaPoints = false;
 		var partialScoringMode = false;
 		var banList = null;
 		var restrictedList = null;
-		
-		function switchClassicVc(refThis) {
-			vcInclusive = refThis.checked;
-			if (vcInclusive) {
-				document.getElementById("classicToggle").classList.remove("toggleSwitchSelected");
-				document.getElementById("vcToggle").classList.add("toggleSwitchSelected");
-			} else {
-				document.getElementById("classicToggle").classList.add("toggleSwitchSelected");
-				document.getElementById("vcToggle").classList.remove("toggleSwitchSelected");
-			}
-			redrawPage();
-			updateURL();
-		}
 		
 		function switchClassicDelta(refThis) {
 			deltaPoints = refThis.checked;
@@ -220,17 +191,17 @@
 					pointsParam.toLowerCase() == "true") {
 				deltaPoints = true;
 			}
-			var vcParam = findGetParameter("vc");
+			/*var vcParam = findGetParameter("vc");
 			if (vcParam !== undefined && vcParam !== null && 
 					vcParam.toLowerCase() == "true") {
 				vcInclusive = true;
-			}
+			}*/
 			
 			const deltaStr = deltaPoints ? "true" : "false";
-			const vcStr = vcInclusive ? "true" : "false";
+			//const vcStr = vcInclusive ? "true" : "false";
 			var newurl = window.location.origin + 
 				window.location.pathname + 
-				"?" + 'delta='+deltaStr+'&vc='+vcStr;
+				"?" + 'delta='+deltaStr/*+'&vc='+vcStr*/;
 			
 			var armyParam = findGetParameter('army1');
 			if (armyParam != null) {
@@ -243,28 +214,6 @@
 				
 			window.history.pushState({path:newurl},'',newurl);
 		}
-		
-		/*function _switchMode() {
-			var figures1 = document.getElementById("Figures");
-			var figures2 = document.getElementById("FiguresPartialCardScoring");
-			partialScoringMode = ! partialScoringMode;
-			if (partialScoringMode) {
-				figures1.style.display = "none";
-				figures2.style.display = "block";
-				document.getElementById("armyBuilderModeButton").style.display = "none";
-				document.getElementById("partialCardScoringModeButton").style.display = "inline-block";
-				document.getElementById("PartialScoringStatsDiv").style.display = "block";
-				document.getElementById("ArmyBuilderStatsDiv").style.display = "none";
-			} else {
-				figures1.style.display = "block";
-				figures2.style.display = "none";
-				document.getElementById("partialCardScoringModeButton").style.display = "none";
-				document.getElementById("armyBuilderModeButton").style.display = "inline-block";
-				document.getElementById("PartialScoringStatsDiv").style.display = "none";
-				document.getElementById("ArmyBuilderStatsDiv").style.display = "block";
-			}
-			adjustBodyTopMargin();
-		}*/
 		
 		function redrawPage() {
 			var currentUnit = null;
@@ -310,7 +259,7 @@
 					partialScoringArmy2.getHexes() + " Hexes";	
 			}
 			armyText += "\nSettings: " + 
-				(vcInclusive ? "VC" : "Classic") + ", " + 
+				//(vcInclusive ? "VC" : "Classic") + ", " + 
 				(deltaPoints ? "Delta Points " : "Standard Points") + 
 				(partialScoringMode ? ", Partial Scoring" : "");
 			copyTextToClipboard(armyText);
@@ -384,24 +333,69 @@
 	<div id='ArmyStatsDivMobile'></div>
 	
 	<div id='ToggleSwitches'>
-		<span class='toggleSwitch'><!-- Classic / VC -->
-			<span id='classicToggle' class='toggleSwitchSelected'>Classic</span>
-			<label class="switch"> 
-				<input id='vcCheckbox' type="checkbox" onchange="switchClassicVc(this)" >
-				<span class="slider round"></span>
-			</label>
-			<span id='vcToggle'>VC</span>
-		</span>
+		<div id='Tier1SubGroups' class='row1Group tierSubGroup'></div>
+		<div id='Tier2SubGroups' class='row1Group tierSubGroup'></div>
+		<script>
+			FigureSetSubGroup.load(
+				{/*figureSet: */},
+				function (figureSetSubGroups) {
+					var tier1Group = document.getElementById('Tier1SubGroups');
+					var tier2Group = document.getElementById('Tier2SubGroups');
+					for (let i = 0; i < figureSetSubGroups.length; i++) {
+						const subGroup = figureSetSubGroups[i];
+						var subGroupDiv = createDiv({
+							class: "figureSetSubGroup"
+						});
+						if (subGroup.tier == 1) {
+							tier1Group.appendChild(subGroupDiv);
+						} else {
+							tier2Group.appendChild(subGroupDiv);
+						}
+						var labelElem = createLabel({});
+						subGroupDiv.appendChild(labelElem);
+						var inputElem = createInput({
+							type: "checkbox",
+							id: subGroup.name + "_checkbox",
+							onchange: "redrawPage()"
+						});
+						const cookieValue = getCookieValue("hs_setting_Default_Builder_Display_-_"+subGroup.name.replaceAll(" ", "_"));
+						if (cookieValue != null) {
+							if (cookieValue == "1") {
+								inputElem.checked = true;
+							}
+						} else if (subGroup.selectedByDefault) {
+							inputElem.checked = true;
+						}
+						labelElem.appendChild(inputElem);
+						labelElem.appendChild(createText(subGroup.name));
+					}
+					redrawPage();
+				}, 
+				{joins: {}}
+			);
+		</script>
 		
-		<img class='logoImg' src='/images/autoloadIcon.png' />
-		
-		<span class='toggleSwitch'><!-- Standard / Delta -->
-			<span id='standardToggle' class='toggleSwitchSelected'>Standard</span>
-			<label class="switch">
-				<input id='deltaCheckbox' type="checkbox" onchange="switchClassicDelta(this)" >
-				<span class="slider round"></span>
-			</label>
-			<span id='deltaToggle'>Delta</span>
+		<div class='row1Group'>
+			<span class='toggleSwitch row1Column'><!-- Standard / Delta -->
+				<span id='standardToggle' class='toggleSwitchString toggleSwitchSelected'>Standard</span>
+				<label class="switch">
+					<input id='deltaCheckbox' type="checkbox" onchange="switchClassicDelta(this)" >
+					<span class="slider round"></span>
+				</label>
+				<span id='deltaToggle' class='toggleSwitchString'>Delta</span>
+				<a class="tagInfo" href="/todo#todo" target="_blank">?</a>
+				<span class="tagHoverDescription">Switch between standard or delta pricing. Note that some units have a different delta price for VC-inclusive events.</span>
+			</span>
+			
+			<!--<span class='row1Column'>
+				<img class='logoImg' id='centerLogoImg' src='/images/autoloadIcon.png' />
+				
+				<label id='keepX0'>
+					Keep x0s
+					<input id='armyMinCheckbox' type='checkbox' onclick='changeArmyMin()' />
+				</label>
+			</span>-->
+		</div>
 	</div>
 	
 	<script>

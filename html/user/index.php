@@ -146,6 +146,26 @@
 			width: 40px;
 			margin-right: 10px;
 		}
+		
+		/* underlines table headers for visual hierarchy */
+		table#TopUsageFiguresTable th[colspan="2"] {
+			text-decoration: underline;
+		}
+		/* hides ordered list in first column for visual clarity */
+		/*table#TopUsageFiguresTable tr td:first-child {
+			opacity: 0;
+		}*/
+		/* "Count" column numbers centered under header */
+		table#TopUsageFiguresTable td:nth-child(odd) {
+			text-align: center;
+		}
+		
+		#HeadToHeadReocrdsDiv {
+			display: none;
+		}
+		#DisplayHeadToHeadReocrdsDiv table td:not(:first-child) {
+			text-align: center;
+		}
 	</style>
 
 	<!-- Internal Files -->
@@ -156,7 +176,7 @@
 	<script src="/connect/socket.io/socket.io.js"></script>
 	
 	<script>
-		HeroscapeMap.options.fieldsToInclude = ["name", "authorName", "buildInstructionsUrl", "imageUrl", "numberOfPlayers", "ohsGdocId"];
+		HeroscapeMap.options.fieldsToInclude = ["name", "authorName", "buildInstructionsUrl", "imageUrl", "numberOfPlayers", "ohsGdocId", "hexoscapeUrl"];
 		HeroscapeMap.options.linksToInclude = ["heroscapeMapSets", "tags"];
 		HeroscapeMap.options.labelsToIgnore = ["name"];
 		
@@ -345,6 +365,55 @@
 			}
 		}
 		
+		function displayFigureUsageData(viewRows) {
+			var table = document.getElementById('TopUsageFiguresTable');
+			
+			viewRows.sort(function(a, b) {
+				if (a.count > b.count) {
+					return -1;
+				} else if (a.count < b.count) {
+					return 1;
+				} else {
+					return 0;
+				}
+			});
+			
+			var standardPoints = [];
+			var deltaPoints = [];
+			for (let i = 0; i < viewRows.length; i++) {
+				const row = viewRows[i];
+				var entry = {
+					cardName: row.cardName,
+					count: row.count
+				};
+				if (row.delta) {
+					deltaPoints.push(entry);
+				} else {
+					standardPoints.push(entry);
+				}
+			}
+			
+			for (let i = 1; i <= 10; i++) {
+				var tr = createTr({});
+				table.appendChild(tr);
+				
+				//tr.appendChild(createTd({innerHTML: i}));
+				tr.appendChild(createTd({innerHTML: standardPoints.length >= i
+					? standardPoints[i-1].count
+					: ""}));
+				tr.appendChild(createTd({innerHTML: standardPoints.length >= i
+					? standardPoints[i-1].cardName
+					: ""}));
+				tr.appendChild(createTd({innerHTML: deltaPoints.length >= i
+					? deltaPoints[i-1].count
+					: ""}));
+				tr.appendChild(createTd({innerHTML: deltaPoints.length >= i
+					? deltaPoints[i-1].cardName
+					: ""}));
+			}
+			
+		}
+		
 	</script>
 </head>
 <body><div id='content'>
@@ -374,10 +443,33 @@
 					<h2>Maps</h2>
 					<div id='MapsDiv'></div>
 					<div id='CreateMapDiv'></div>
+					
+					<h2>Figure Usage</h2>
+					<table id='TopUsageFiguresTable'>
+						<tr>
+							<!--<th></th>-->
+							<th colspan="2">Classic Points</th>
+							<th colspan="2">Delta Points</th>
+						</tr>
+						<tr>
+							<!--<th></th>-->
+							<th>Count</th>
+							<th>Figure</th>
+							<th>Count</th>
+							<th>Figure</th>
+						</tr>
+					</table>
+					
+					<div id='HeadToHeadReocrdsDiv'>
+						<h2>Head to Head Records</h2>
+						<div id='DisplayHeadToHeadReocrdsDiv'></div>
+					</div>
+					
 					<div id='UserCollectionDiv'>
 						<h2>My Collection</h2>
 						<div id='UserCollectionTerrainSet'></div>
 					</div>
+					
 					<div id='UserSettingsDiv'>
 						<h2>User Settings</h2>
 						<p>Note: You must log out and log back in for any user settings changes to take effect.</p>
@@ -611,9 +703,51 @@
 							"CreateMapDiv", 
 							{});
 					}
+					
+					if (loggedInUserName != null && loggedInUserName == userName) {
+						var sectionDiv = document.getElementById('HeadToHeadReocrdsDiv').style.display = "block";
+						
+						HeadToHeadRecordsView.load(
+							{player1: userName},
+							function(records) {
+								var parentDiv = document.getElementById('DisplayHeadToHeadReocrdsDiv');
+								var table = createTable({});
+								parentDiv.appendChild(table);
+								var thRow = createTr({});
+								table.appendChild(thRow);
+								thRow.appendChild(createTh({innerHTML: "Opponent"}));
+								thRow.appendChild(createTh({innerHTML: "Games"}));
+								thRow.appendChild(createTh({innerHTML: "W"}));
+								thRow.appendChild(createTh({innerHTML: "L"}));
+								for (let i = 0; i < records.length; i++) {
+									const record = records[i];
+									if (record.games <= 2) {
+										break;
+									}
+									var tr = createTr({});
+									table.appendChild(tr);
+									tr.appendChild(createTd({innerHTML: record.player2}));
+									tr.appendChild(createTd({innerHTML: record.games}));
+									tr.appendChild(createTd({innerHTML: record.wins}));
+									tr.appendChild(createTd({innerHTML: record.losses}));									
+								}
+							},
+							{joins: {
+								
+							}}
+						);
+					}
 				} else {
 					document.getElementById("User").innerHTML = "No user specified in URL.";
 				}
+				
+				CardUsageByUserView.load(
+					{userName: userName},
+					function (rows) {
+						displayFigureUsageData(rows);
+					},
+					{joins: {}}
+				);
 			</script>
 			
 		</article>

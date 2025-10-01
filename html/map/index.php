@@ -31,7 +31,7 @@
 			vertical-align: top;
 			text-align: left;
 			flex-grow: 1;
-			max-width: 300px;
+			max-width: 315px;
 		}
 		
 		#Maps a {
@@ -56,7 +56,7 @@
 			text-align: left;
 		}
 		
-		#TerrainSets label, #Tags label {
+		#TerrainSets label, #Tags label, #SearchOptions label {
 			display: block;
 		}
 		
@@ -106,6 +106,13 @@
 		.mapInfoDiv img {
 			height: 100px;
 		}
+		
+		#TerrainSearchExactMatch {
+			width: 15px !important;
+		}
+		#TerrainSearchExactMatchLabel {
+			margin-bottom: 10px;
+		}
 	</style>
 
 	<!-- Internal Files -->
@@ -142,6 +149,7 @@
 			// Search & Filter Data
 			var searchText = document.getElementById("searchBarInput").value.toLowerCase();
 			var numPlayers = document.getElementById("numPlayersInput").value;
+			const terrainMode = document.querySelector('input[name="terrainMode"]:checked').value;
 			var terrainSetInputs = document.getElementsByClassName("terrainSet");
 			var terrainSets = {};
 			for (let i = 0; i < terrainSetInputs.length; i++) {
@@ -190,22 +198,54 @@
 						continue;
 					}
 					var skipMap = false;
-					for (let k = 0; k < map.heroscapeMapSets.length; k++) {
-						const setAndQuantity = map.heroscapeMapSets[k];
-						var setFound = false;
-						for (let j = 0; j < Object.keys(terrainSets).length; j++) {
-							const set = HeroscapeSet.get({id: Object.keys(terrainSets)[j]});
-							const quantity = terrainSets[set.id];
-							if (setAndQuantity.terrainSet.id == set.id) {
-								if (quantity >= setAndQuantity.quantity) {
-									setFound = true;
+					if (terrainMode == "collection" || terrainMode == "exactMatch") {
+						for (let k = 0; k < map.heroscapeMapSets.length; k++) {
+							const setAndQuantity = map.heroscapeMapSets[k];
+							var setFound = false;
+							for (let j = 0; j < Object.keys(terrainSets).length; j++) {
+								const set = HeroscapeSet.get({id: Object.keys(terrainSets)[j]});
+								const quantity = terrainSets[set.id];
+								if (setAndQuantity.terrainSet.id == set.id) {
+									if (quantity >= setAndQuantity.quantity) {
+										setFound = true;
+									}
+									break;
 								}
+							}
+							if ( ! setFound) {
+								skipMap = true;
 								break;
 							}
 						}
-						if ( ! setFound) {
-							skipMap = true;
-							break;
+					}
+					if (terrainMode == "exactMatch" || terrainMode == "includes") {
+						for (let j = 0; j < Object.keys(terrainSets).length; j++) {
+							const set = HeroscapeSet.get({id: Object.keys(terrainSets)[j]});
+							const quantity = terrainSets[set.id];
+							if (quantity == 0) {
+								continue;
+							}
+							var setFound = false;
+							for (let k = 0; k < map.heroscapeMapSets.length; k++) {
+								const setAndQuantity = map.heroscapeMapSets[k];
+								if (setAndQuantity.terrainSet.id == set.id) {
+									if (terrainMode == "exactMatch") {
+										if (quantity == setAndQuantity.quantity) {
+											setFound = true;
+										}
+									}
+									if (terrainMode == "includes") {
+										if (quantity <= setAndQuantity.quantity) {
+											setFound = true;
+										}
+									}
+									break;
+								}
+							}
+							if ( ! setFound) {
+								skipMap = true;
+								break;
+							}
 						}
 					}
 					if (skipMap) {
@@ -230,6 +270,13 @@
 					if (skipMap) {
 						continue;
 					}
+				}
+				
+				if (document.getElementById("SearchOptionInput_Ohs").checked && map.ohsGdocId == null) {
+					continue;
+				}
+				if (document.getElementById("SearchOptionInput_Hexoscape").checked && map.hexoscapeUrl == null) {
+					continue;
 				}
 				
 				var mapDiv = createDiv({
@@ -261,7 +308,6 @@
 		
 		function _displayMapSearchParams() {
 			var terrainSetsDiv = document.getElementById("TerrainSets");
-			terrainSetsDiv.appendChild(createH3({innerHTML: "Terrain Available"}));
 			for (let i = 0; i < HeroscapeSet.list.length; i++) {
 				const set = HeroscapeSet.list[i];
 				var label = createLabel({});
@@ -341,8 +387,45 @@
 				<div id='Reset'>
 					<button onclick='_reset()'>Reset Search & Filter</button>
 				</div>
-				<div id='TerrainSets'></div>
+				<div id='TerrainSets'>
+					<h3>Terrain</h3>
+					<label class='questionMarkParent'>
+						<input type='radio' id='TerrainMode_Includes' name='terrainMode' value='includes' onchange='_displayMaps()' checked />
+						Includes
+						<span class='questionMark'>?</span>
+						<span class='questionMarkHoverDescription'>Shows maps that include at least the specified terrain sets.</span>
+					</label>
+					<label class='questionMarkParent'>
+						<input type='radio' id='TerrainMode_ExactMatch' name='terrainMode' value='exactMatch' onchange='_displayMaps()' />
+						Exact Match
+						<span class='questionMark'>?</span>
+						<span class='questionMarkHoverDescription'>Shows maps whose terrain requirements match the input sets exactly.</span>
+					</label>
+					<label class='questionMarkParent'>
+						<input type='radio' id='TerrainMode_Collection' name='terrainMode' value='collection' onchange='_displayMaps()' />
+						Collection
+						<span class='questionMark'>?</span>
+						<span class='questionMarkHoverDescription'>Enter your whole collection, and it will show you every map you can build.</span>
+					</label>
+					
+					
+					<!--<label id='TerrainSearchExactMatchLabel'>
+						<input id='TerrainSearchExactMatch' type='checkbox' name='terrainSearchExactMatch' onchange='_displayMaps()' />
+						Exact Match Only
+					</label>-->
+				</div>
 				<div id='Tags'></div>
+				<div id='SearchOptions'>
+					<h3>Search Options</h3>
+					<label class='searchOption'>
+						<input type='checkbox' id='SearchOptionInput_Ohs' name='searchOption_ohs' onchange='_displayMaps()' />
+						OHS Link
+					</label>
+					<label class='searchOption'>
+						<input type='checkbox' id='SearchOptionInput_Hexoscape' name='searchOption_hexoscape' onchange='_displayMaps()' />
+						Hexoscape Link
+					</label>
+				</div>
 			</div>
 			<script>
 				HeroscapeSet.load(

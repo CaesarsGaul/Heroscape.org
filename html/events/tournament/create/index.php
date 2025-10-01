@@ -197,8 +197,24 @@
 			}
 			
 			tournament.useDeltaPricing = document.getElementById("useDeltaPricingInput").checked;
-			tournament.includeVC = document.getElementById("includeVCInput").checked;
-			tournament.includeMarvel = document.getElementById("includeMarvelInput").checked;
+						
+			var subGroupCheckboxes = document.getElementsByClassName("figureSetSubGroupInput");
+			for (let i = 0; i < subGroupCheckboxes.length; i++) {
+				var checkbox = subGroupCheckboxes[i];
+				const subGroupName = checkbox.id.split("_")[1];
+				var subGroup = null;
+				for (let j = 0; j < FigureSetSubGroup.list.length; j++) {
+					if (subGroupName == FigureSetSubGroup.list[j].name) {
+						subGroup = FigureSetSubGroup.list[j];
+					}
+				}
+				
+				var usageLink = new TournamentIncludesFigureSetSubGroup();
+				usageLink.tournament = tournament;
+				usageLink.figureSetSubGroup = subGroup;
+				usageLink.include = checkbox.checked;
+				tournament.tournamentIncludesFigureSetSubGroups.push(usageLink);
+			}
 			
 			var allTags = document.getElementsByClassName("tagCheckbox");
 			for (let i = 0; i < allTags.length; i++) {
@@ -237,6 +253,23 @@
 			formElem.innerHTML = "";
 			formElem.appendChild(createH2({innerHTML: "Working on it..."}));
 			
+			if (tournament.address != null) {
+				geocoder.geocode( { 'address': tournament.address}, function(results, status) {
+					if (status == 'OK') {
+						const location = results[0].geometry.location;
+						tournament.latitude = location.lat();
+						tournament.longitude = location.lng();
+					}
+					_finishCreatingTournament(tournament);
+				});
+			} else {
+				_finishCreatingTournament(tournament);
+			}
+			
+			return false; // Do not submit normally 
+		}
+		
+		function _finishCreatingTournament(tournament) {
 			tournament._serverCreate({}, function(tournament) {				
 				socket.emit("createSheet", 
 					JSON.stringify({
@@ -245,8 +278,6 @@
 							id: tournament.id, 
 							maxNumPlayersPerGame: tournament.maxNumPlayersPerGame}}));
 			});
-			
-			return false; // Do not submit normally 
 		}
 		
 		function changeSeason() {
@@ -335,7 +366,46 @@
 							name: "tag_"+tag.id+"_data_2"
 						}));
 						break;
+					case "Max X Copies - Squads":
+						tagDiv.appendChild(createInput({
+							type: "text",
+							class: "short",
+							name: "tag_"+tag.id+"_data"
+						}));
+						break;
+					case "Max X Copies - Heroes":
+						tagDiv.appendChild(createInput({
+							type: "text",
+							class: "short",
+							name: "tag_"+tag.id+"_data"
+						}));
+						break;
 				}				
+			}
+		}
+		
+		function displaySubGroups(subGroups) {
+			var parentElem = document.getElementById('FigureRestrictions');
+						
+			for (let i = 0; i < subGroups.length; i++) {
+				const subGroup = subGroups[i];
+				
+				var labelElem = createLabel({});
+				parentElem.appendChild(labelElem);
+				
+				labelElem.appendChild(createSpan({
+					class: 'fieldName',
+					innerHTML: "Include " + subGroup.name + "?"
+				}));
+				var inputElem = createInput({
+					type: 'checkbox',
+					class: 'figureSetSubGroupInput',
+					id: 'include_' + subGroup.name + '_input'
+				});
+				if (subGroup.selectedByDefault) {
+					inputElem.checked = 'true';
+				}
+				labelElem.appendChild(inputElem);
 			}
 		}
 		
@@ -349,6 +419,18 @@
 	<h1>Create New Tournament</h1>
 	
 	<article>
+	
+		<script>
+			(g=>{var h,a,k,p="The Google Maps JavaScript API",c="google",l="importLibrary",q="__ib__",m=document,b=window;b=b[c]||(b[c]={});var d=b.maps||(b.maps={}),r=new Set,e=new URLSearchParams,u=()=>h||(h=new Promise(async(f,n)=>{await (a=m.createElement("script"));e.set("libraries",[...r]+"");for(k in g)e.set(k.replace(/[A-Z]/g,t=>"_"+t[0].toLowerCase()),g[k]);e.set("callback",c+".maps."+q);a.src=`https://maps.${c}apis.com/maps/api/js?`+e;d[q]=f;a.onerror=()=>h=n(Error(p+" could not load."));a.nonce=m.querySelector("script[nonce]")?.nonce||"";m.head.append(a)}));d[l]?console.warn(p+" only loads once. Ignoring:",g):d[l]=(f,...n)=>r.add(f)&&u().then(()=>d[l](f,...n))})
+			({key: "AIzaSyBFHfaA7c_5YQ5G6GNQWKLAsUxCQOE0FRc", v: "weekly"});
+		
+			let geocoder;
+			async function initGeocoder() {
+				const { Map, InfoWindow } = await google.maps.importLibrary("maps");
+				geocoder = new google.maps.Geocoder();
+			}
+			initGeocoder();
+		</script>
 		
 		<form id='CreateTournamentForm' onsubmit='return createTournament(this, event);'>
 			<label>
@@ -489,15 +571,7 @@
 			
 			<h2>Figure Restrictions</h2>
 			
-			<label>
-				<span class='fieldName'>Include VC? </span>
-				<input type='checkbox' id='includeVCInput' />
-			</label>
-			
-			<label>
-				<span class='fieldName'>Include Marvel? </span>
-				<input type='checkbox' id='includeMarvelInput' />
-			</label>
+			<div id='FigureRestrictions'></div>
 			
 			<div id='TagsDiv'>
 				<h2>Format Tags</h2>
@@ -513,6 +587,16 @@
 					{joins: {
 						
 				}});
+				
+				FigureSetSubGroup.load(
+					{},
+					function (subGroups) {
+						displaySubGroups(subGroups);
+					},
+					{joins: {
+						
+					}}
+				);
 			</script>
 			
 			

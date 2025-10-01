@@ -112,6 +112,8 @@
 			}
 		}
 		
+		var season;
+		
 		function _emitAnnouncement(announcement) {
 			socket.emit("seasonAnnouncement",
 				JSON.stringify({
@@ -162,6 +164,7 @@
 								null,
 								null,
 								{includeLabel: false});*/
+							season = seasons[0];
 							displaySeason(seasons[0]);
 						},
 						{joins: {

@@ -38,8 +38,8 @@
 		
 		var army = new Army();
 		
-		var vcInclusive = false;
-		var marvelInclusive = true;
+		//var vcInclusive = false;
+		//var marvelInclusive = true;
 		var deltaPoints = false;
 		var banList = null;
 		var restrictedList = null;
