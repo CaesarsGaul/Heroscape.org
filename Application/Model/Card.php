@@ -313,9 +313,9 @@ class Card extends HS_DatabaseObject {
 		return $whereArray;
 	}
 
+	// @DoNotUpdate
 	public static function getOrderBy() {
-	// TODO: fill in this array with column(s) to order results by like this: array("Card.name" => "ASC")
-		return array();
+		return array("Card.name" => "ASC");
 	}
 
 	public static function getPrimaryKey() {

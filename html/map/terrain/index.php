@@ -10,7 +10,7 @@
 	<style>
 		.heroscapeSetGroup {
 			display: inline-block;
-			width: 275px;
+			width: 310px;
 			vertical-align: top;
 		}
 		
@@ -33,6 +33,21 @@
 		
 		.heroscapeSetName {
 			display: inline-block;
+		}
+		
+		
+		#TerrainTypes table th {
+			padding-left: 5px;
+			padding-right: 5px;
+		}
+		#TerrainTypes table td:nth-child(1) {
+			width: 125px;
+		}
+		#TerrainTypes table td:nth-child(4) {
+			text-align: left;
+		}
+		.terrainImage {
+			width: 40px;
 		}
 	</style>
 
@@ -72,7 +87,39 @@
 					innerHTML: set.name
 				}));
 			}
-			
+		}
+		
+		function displayTerrainTypes(terrainGroups) {
+			var parentElem = document.getElementById('TerrainTypes');
+
+			for (let i = 0; i < terrainGroups.length; i++) {
+				const terrainGroup = terrainGroups[i];
+				parentElem.appendChild(createH3({innerHTML: terrainGroup.name}));
+				var table = createTable({});
+				parentElem.appendChild(table);
+				var headerRow = createTr({});
+				table.appendChild(headerRow);
+				headerRow.appendChild(createTh({innerHTML: "Name"}));
+				headerRow.appendChild(createTh({innerHTML: "Image"}));
+				headerRow.appendChild(createTh({innerHTML: "Height"}));
+				headerRow.appendChild(createTh({innerHTML: "Special Rules"}));
+				for (let j = 0; j < terrainGroup.terrainTypes.length; j++) {
+					const terrainType = terrainGroup.terrainTypes[j];
+					var row = createTr({});
+					table.appendChild(row);
+					row.appendChild(createTd({innerHTML: terrainType.name}));
+					var imgTd = createTd({});
+					row.appendChild(imgTd);
+					if (terrainType.image != null) {
+						imgTd.appendChild(createImage({
+							src: terrainType.image,
+							class: "terrainImage"
+						}));
+					}
+					row.appendChild(createTd({innerHTML: terrainType.height}));
+					row.appendChild(createTd({innerHTML: terrainType.rules}));
+				}
+			}
 		}
 	</script>
 </head>
@@ -83,16 +130,16 @@
 	
 	<div id='pageContent'>
 		<article>	
-			<h1>Terrain Sets</h1>
+			<h2>Terrain Sets</h2>
 			<div id='HeroscapeSets'>
 				<div class='heroscapeSetGroup' id='MasterSets'>
-					<h2>Master Sets</h2>
+					<h3>Master Sets</h3>
 				</div>
 				<div class='heroscapeSetGroup' id='TerrainExpansionSets'>
-					<h2>Terrain Expansion Sets</h2>
+					<h3>Terrain Expansion Sets</h3>
 				</div>
 				<div class='heroscapeSetGroup' id='OtherSets'>
-					<h2>Other Sets</h2>
+					<h3>Other Sets</h3>
 				</div>
 			</div>
 			
@@ -108,6 +155,28 @@
 					}}
 				);
 				
+			</script>
+			
+			<h2>Terrain Types</h2>
+			<div id='TerrainTypes'></div>
+			
+			<script>
+				TerrainTypeGroup.load(
+					{},
+					function (groups) {
+						displayTerrainTypes(groups);
+					},
+					{joins: {
+						"TerrainType.groupID": {
+							/*"TerrainPiece.terrainTypeID": {
+								"terrainSizeID": {},
+								"HeroscapeSetTerrainPieceQuantity.terrainPieceID": {
+									"heroscapeSetID": {}
+								}
+							}*/
+						}
+					}}
+				);
 			</script>
 		</article>
 	</div>

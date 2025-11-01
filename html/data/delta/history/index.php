@@ -61,11 +61,12 @@
 	<script src="https://www.gstatic.com/charts/loader.js"></script>
 	<script src="/js/scripts.js"></script>
 	<script src="/js/deltaPriceGraph.js"></script>
+	<script src='/js/armyBuilder.js'></script>
 	<script>
 		google.charts.load('current', {packages: ['corechart', 'line']});
 		//google.charts.setOnLoadCallback(drawChart);
 		
-		function writeFigureList() {
+		function redrawPage() {
 			var parentElement = document.getElementById("FigureList");
 			parentElement.innerHTML = "";
 			
@@ -76,7 +77,6 @@
 				}
 				
 				if ( ! document.getElementById(card.figureSetSubGroup.name + "_checkbox").checked) {
-				//if ( ! vcInclusive && card.figureSetSubGroups[0].name == "Valhalla Customs (VC)") {
 					continue;
 				}
 				
@@ -120,7 +120,7 @@
 				document.getElementById("classicToggle").classList.add("toggleSwitchSelected");
 				document.getElementById("vcToggle").classList.remove("toggleSwitchSelected");
 			}
-			writeFigureList();
+			redrawPage();
 			drawDeltaPriceGraph();
 		}*/
 	</script>
@@ -140,31 +140,7 @@
 					FigureSetSubGroup.load(
 						{/*figureSet: */},
 						function (figureSetSubGroups) {
-							var tier1Group = document.getElementById('Tier1SubGroups');
-							var tier2Group = document.getElementById('Tier2SubGroups');
-							for (let i = 0; i < figureSetSubGroups.length; i++) {
-								const subGroup = figureSetSubGroups[i];
-								var subGroupDiv = createDiv({
-									class: "figureSetSubGroup"
-								});
-								if (subGroup.tier == 1) {
-									tier1Group.appendChild(subGroupDiv);
-								} else {
-									tier2Group.appendChild(subGroupDiv);
-								}
-								var labelElem = createLabel({});
-								subGroupDiv.appendChild(labelElem);
-								var inputElem = createInput({
-									type: "checkbox",
-									id: subGroup.name + "_checkbox",
-									onchange: "writeFigureList()"
-								});
-								if (subGroup.selectedByDefault) {
-									inputElem.checked = true;
-								}
-								labelElem.appendChild(inputElem);
-								labelElem.appendChild(createText(subGroup.name));
-							}
+							createFigureSetCheckboxes(figureSetSubGroups);
 						}, 
 						{joins: {}}
 					);
@@ -188,7 +164,7 @@
 					
 					// TODO 
 					console.log(cards);
-					writeFigureList();
+					redrawPage();
 					
 					drawDeltaPriceGraph();
 					

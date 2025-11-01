@@ -1146,6 +1146,20 @@ class TournamentOverviewView extends DatabaseObject {
 		this.Convention_softPlayerCap = null; // Int
 		this.ConventionSeries_id = null; // Int
 		this.ConventionSeries_name = null; // Int
+		this.TournamentFormatTag_id = null; // Int
+		this.TournamentFormatTag_tournamentID = null; // Int
+		this.TournamentFormatTag_formatID = null; // Int
+		this.TournamentFormatTag_data = null; // String
+		this.TournamentFormat_id = null; // Int
+		this.TournamentFormat_name = null; // String
+		this.TournamentFormat_impactBuilder = null; // Boolean
+		this.TournamentFormat_description = null; // String
+		this.TournamentIncludesFigureSetSubGroup_id = null; // Int
+		this.TournamentIncludesFigureSetSubGroup_tournamentID = null; // Int
+		this.TournamentIncludesFigureSetSubGroup_figureSetSubGroupID = null; // Int
+		this.TournamentIncludesFigureSetSubGroup_include = null; // Boolean
+		this.FigureSetSubGroup_id = null; // Int
+		this.FigureSetSubGroup_name = null; // String
 		
 		// Links
 		this.links = [];
@@ -1204,6 +1218,20 @@ class TournamentOverviewView extends DatabaseObject {
 			this.Convention_softPlayerCap = jsonObj.Convention_softPlayerCap;
 			this.ConventionSeries_id = jsonObj.ConventionSeries_id;
 			this.ConventionSeries_name = jsonObj.ConventionSeries_name;
+			this.TournamentFormatTag_id = jsonObj.TournamentFormatTag_id;
+			this.TournamentFormatTag_tournamentID = jsonObj.TournamentFormatTag_tournamentID;
+			this.TournamentFormatTag_formatID = jsonObj.TournamentFormatTag_formatID;
+			this.TournamentFormatTag_data = jsonObj.TournamentFormatTag_data;
+			this.TournamentFormat_id = jsonObj.TournamentFormat_id;
+			this.TournamentFormat_name = jsonObj.TournamentFormat_name;
+			this.TournamentFormat_impactBuilder = jsonObj.TournamentFormat_impactBuilder;
+			this.TournamentFormat_description = jsonObj.TournamentFormat_description;
+			this.TournamentIncludesFigureSetSubGroup_id = jsonObj.TournamentIncludesFigureSetSubGroup_id;
+			this.TournamentIncludesFigureSetSubGroup_tournamentID = jsonObj.TournamentIncludesFigureSetSubGroup_tournamentID;
+			this.TournamentIncludesFigureSetSubGroup_figureSetSubGroupID = jsonObj.TournamentIncludesFigureSetSubGroup_figureSetSubGroupID;
+			this.TournamentIncludesFigureSetSubGroup_include = jsonObj.TournamentIncludesFigureSetSubGroup_include;
+			this.FigureSetSubGroup_id = jsonObj.FigureSetSubGroup_id;
+			this.FigureSetSubGroup_name = jsonObj.FigureSetSubGroup_name;
 			
 			// Links
 			
@@ -1228,11 +1256,11 @@ class TournamentOverviewView extends DatabaseObject {
 	}
 
 	static getRequiredFields() {
-		return ["id", "HeroscapeTournament_tournamentID", "HeroscapeTournament_numArmies", "HeroscapeTournament_allowedPointOverlap", "HeroscapeTournament_pointLimit", "HeroscapeTournament_hexLimit", "HeroscapeTournament_figureLimit", "HeroscapeTournament_useDeltaPricing", "HeroscapeTournament_includeVC", "HeroscapeTournament_includeMarvel", "Tournament_id", "Tournament_name", "Tournament_description", "Tournament_conventionID", "Tournament_startTime", "Tournament_endDate", "Tournament_address", "Tournament_started", "Tournament_finished", "Tournament_online", "Tournament_maxEntries", "Tournament_teamSize", "Tournament_maxNumPlayersPerGame", "Tournament_numLossesToBeEliminated", "Tournament_pairAfterEliminated", "Tournament_roundLengthMinutes", "Tournament_ignoreInStandings", "Season_id", "Season_name", "Season_leagueID", "Season_start", "Season_end", "Season_description", "League_id", "League_name", "League_description", "Convention_id", "Convention_name", "Convention_description", "Convention_startDate", "Convention_endDate", "Convention_address", "Convention_conventionSeriesID", "Convention_hardPlayerCap", "Convention_softPlayerCap", "ConventionSeries_id", "ConventionSeries_name"];
+		return ["id", "HeroscapeTournament_tournamentID", "HeroscapeTournament_numArmies", "HeroscapeTournament_allowedPointOverlap", "HeroscapeTournament_pointLimit", "HeroscapeTournament_hexLimit", "HeroscapeTournament_figureLimit", "HeroscapeTournament_useDeltaPricing", "HeroscapeTournament_includeVC", "HeroscapeTournament_includeMarvel", "Tournament_id", "Tournament_name", "Tournament_description", "Tournament_conventionID", "Tournament_startTime", "Tournament_endDate", "Tournament_address", "Tournament_started", "Tournament_finished", "Tournament_online", "Tournament_maxEntries", "Tournament_teamSize", "Tournament_maxNumPlayersPerGame", "Tournament_numLossesToBeEliminated", "Tournament_pairAfterEliminated", "Tournament_roundLengthMinutes", "Tournament_ignoreInStandings", "Season_id", "Season_name", "Season_leagueID", "Season_start", "Season_end", "Season_description", "League_id", "League_name", "League_description", "Convention_id", "Convention_name", "Convention_description", "Convention_startDate", "Convention_endDate", "Convention_address", "Convention_conventionSeriesID", "Convention_hardPlayerCap", "Convention_softPlayerCap", "ConventionSeries_id", "ConventionSeries_name", "TournamentFormatTag_id", "TournamentFormatTag_tournamentID", "TournamentFormatTag_formatID", "TournamentFormatTag_data", "TournamentFormat_id", "TournamentFormat_name", "TournamentFormat_impactBuilder", "TournamentFormat_description", "TournamentIncludesFigureSetSubGroup_id", "TournamentIncludesFigureSetSubGroup_tournamentID", "TournamentIncludesFigureSetSubGroup_figureSetSubGroupID", "TournamentIncludesFigureSetSubGroup_include", "FigureSetSubGroup_id", "FigureSetSubGroup_name"];
 	}
 
 	static getAllFields() {
-		return ["id", "HeroscapeTournament_tournamentID", "HeroscapeTournament_numArmies", "HeroscapeTournament_allowedPointOverlap", "HeroscapeTournament_pointLimit", "HeroscapeTournament_hexLimit", "HeroscapeTournament_figureLimit", "HeroscapeTournament_useDeltaPricing", "HeroscapeTournament_includeVC", "HeroscapeTournament_includeMarvel", "Tournament_id", "Tournament_name", "Tournament_description", "Tournament_conventionID", "Tournament_startTime", "Tournament_endDate", "Tournament_address", "Tournament_started", "Tournament_finished", "Tournament_online", "Tournament_maxEntries", "Tournament_teamSize", "Tournament_maxNumPlayersPerGame", "Tournament_numLossesToBeEliminated", "Tournament_pairAfterEliminated", "Tournament_roundLengthMinutes", "Tournament_ignoreInStandings", "Season_id", "Season_name", "Season_leagueID", "Season_start", "Season_end", "Season_description", "League_id", "League_name", "League_description", "Convention_id", "Convention_name", "Convention_description", "Convention_startDate", "Convention_endDate", "Convention_address", "Convention_conventionSeriesID", "Convention_hardPlayerCap", "Convention_softPlayerCap", "ConventionSeries_id", "ConventionSeries_name"];
+		return ["id", "HeroscapeTournament_tournamentID", "HeroscapeTournament_numArmies", "HeroscapeTournament_allowedPointOverlap", "HeroscapeTournament_pointLimit", "HeroscapeTournament_hexLimit", "HeroscapeTournament_figureLimit", "HeroscapeTournament_useDeltaPricing", "HeroscapeTournament_includeVC", "HeroscapeTournament_includeMarvel", "Tournament_id", "Tournament_name", "Tournament_description", "Tournament_conventionID", "Tournament_startTime", "Tournament_endDate", "Tournament_address", "Tournament_started", "Tournament_finished", "Tournament_online", "Tournament_maxEntries", "Tournament_teamSize", "Tournament_maxNumPlayersPerGame", "Tournament_numLossesToBeEliminated", "Tournament_pairAfterEliminated", "Tournament_roundLengthMinutes", "Tournament_ignoreInStandings", "Season_id", "Season_name", "Season_leagueID", "Season_start", "Season_end", "Season_description", "League_id", "League_name", "League_description", "Convention_id", "Convention_name", "Convention_description", "Convention_startDate", "Convention_endDate", "Convention_address", "Convention_conventionSeriesID", "Convention_hardPlayerCap", "Convention_softPlayerCap", "ConventionSeries_id", "ConventionSeries_name", "TournamentFormatTag_id", "TournamentFormatTag_tournamentID", "TournamentFormatTag_formatID", "TournamentFormatTag_data", "TournamentFormat_id", "TournamentFormat_name", "TournamentFormat_impactBuilder", "TournamentFormat_description", "TournamentIncludesFigureSetSubGroup_id", "TournamentIncludesFigureSetSubGroup_tournamentID", "TournamentIncludesFigureSetSubGroup_figureSetSubGroupID", "TournamentIncludesFigureSetSubGroup_include", "FigureSetSubGroup_id", "FigureSetSubGroup_name"];
 	}
 
 	static getNtoMLinkClasses() {
@@ -1248,7 +1276,7 @@ class TournamentOverviewView extends DatabaseObject {
 	}
 
 	static getClassOfColumn(columnName) {
-		if (["id", "HeroscapeTournament_tournamentID", "HeroscapeTournament_numArmies", "HeroscapeTournament_allowedPointOverlap", "HeroscapeTournament_pointLimit", "HeroscapeTournament_hexLimit", "HeroscapeTournament_figureLimit", "HeroscapeTournament_useDeltaPricing", "HeroscapeTournament_includeVC", "HeroscapeTournament_includeMarvel", "Tournament_id", "Tournament_name", "Tournament_description", "Tournament_conventionID", "Tournament_startTime", "Tournament_endDate", "Tournament_address", "Tournament_started", "Tournament_finished", "Tournament_online", "Tournament_maxEntries", "Tournament_teamSize", "Tournament_maxNumPlayersPerGame", "Tournament_numLossesToBeEliminated", "Tournament_pairAfterEliminated", "Tournament_roundLengthMinutes", "Tournament_ignoreInStandings", "Season_id", "Season_name", "Season_leagueID", "Season_start", "Season_end", "Season_description", "League_id", "League_name", "League_description", "Convention_id", "Convention_name", "Convention_description", "Convention_startDate", "Convention_endDate", "Convention_address", "Convention_conventionSeriesID", "Convention_hardPlayerCap", "Convention_softPlayerCap", "ConventionSeries_id", "ConventionSeries_name"].includes(columnName)) {
+		if (["id", "HeroscapeTournament_tournamentID", "HeroscapeTournament_numArmies", "HeroscapeTournament_allowedPointOverlap", "HeroscapeTournament_pointLimit", "HeroscapeTournament_hexLimit", "HeroscapeTournament_figureLimit", "HeroscapeTournament_useDeltaPricing", "HeroscapeTournament_includeVC", "HeroscapeTournament_includeMarvel", "Tournament_id", "Tournament_name", "Tournament_description", "Tournament_conventionID", "Tournament_startTime", "Tournament_endDate", "Tournament_address", "Tournament_started", "Tournament_finished", "Tournament_online", "Tournament_maxEntries", "Tournament_teamSize", "Tournament_maxNumPlayersPerGame", "Tournament_numLossesToBeEliminated", "Tournament_pairAfterEliminated", "Tournament_roundLengthMinutes", "Tournament_ignoreInStandings", "Season_id", "Season_name", "Season_leagueID", "Season_start", "Season_end", "Season_description", "League_id", "League_name", "League_description", "Convention_id", "Convention_name", "Convention_description", "Convention_startDate", "Convention_endDate", "Convention_address", "Convention_conventionSeriesID", "Convention_hardPlayerCap", "Convention_softPlayerCap", "ConventionSeries_id", "ConventionSeries_name", "TournamentFormatTag_id", "TournamentFormatTag_tournamentID", "TournamentFormatTag_formatID", "TournamentFormatTag_data", "TournamentFormat_id", "TournamentFormat_name", "TournamentFormat_impactBuilder", "TournamentFormat_description", "TournamentIncludesFigureSetSubGroup_id", "TournamentIncludesFigureSetSubGroup_tournamentID", "TournamentIncludesFigureSetSubGroup_figureSetSubGroupID", "TournamentIncludesFigureSetSubGroup_include", "FigureSetSubGroup_id", "FigureSetSubGroup_name"].includes(columnName)) {
 			return TournamentOverviewView;
 		}
 		return null;
@@ -1377,6 +1405,34 @@ class TournamentOverviewView extends DatabaseObject {
 				return null;
 			case "ConventionSeries_name":
 				return null;
+			case "TournamentFormatTag_id":
+				return null;
+			case "TournamentFormatTag_tournament":
+				return null;
+			case "TournamentFormatTag_format":
+				return null;
+			case "TournamentFormatTag_data":
+				return null;
+			case "TournamentFormat_id":
+				return null;
+			case "TournamentFormat_name":
+				return null;
+			case "TournamentFormat_impactBuilder":
+				return null;
+			case "TournamentFormat_description":
+				return null;
+			case "TournamentIncludesFigureSetSubGroup_id":
+				return null;
+			case "TournamentIncludesFigureSetSubGroup_tournament":
+				return null;
+			case "TournamentIncludesFigureSetSubGroup_figureSetSubGroup":
+				return null;
+			case "TournamentIncludesFigureSetSubGroup_include":
+				return null;
+			case "FigureSetSubGroup_id":
+				return null;
+			case "FigureSetSubGroup_name":
+				return null;
 			default:
 				return null;
 		}
@@ -1475,6 +1531,34 @@ class TournamentOverviewView extends DatabaseObject {
 			case "ConventionSeries_id":
 				return ""; // TODO
 			case "ConventionSeries_name":
+				return ""; // TODO
+			case "TournamentFormatTag_id":
+				return ""; // TODO
+			case "TournamentFormatTag_tournament":
+				return ""; // TODO
+			case "TournamentFormatTag_format":
+				return ""; // TODO
+			case "TournamentFormatTag_data":
+				return ""; // TODO
+			case "TournamentFormat_id":
+				return ""; // TODO
+			case "TournamentFormat_name":
+				return ""; // TODO
+			case "TournamentFormat_impactBuilder":
+				return ""; // TODO
+			case "TournamentFormat_description":
+				return ""; // TODO
+			case "TournamentIncludesFigureSetSubGroup_id":
+				return ""; // TODO
+			case "TournamentIncludesFigureSetSubGroup_tournament":
+				return ""; // TODO
+			case "TournamentIncludesFigureSetSubGroup_figureSetSubGroup":
+				return ""; // TODO
+			case "TournamentIncludesFigureSetSubGroup_include":
+				return ""; // TODO
+			case "FigureSetSubGroup_id":
+				return ""; // TODO
+			case "FigureSetSubGroup_name":
 				return ""; // TODO
 			default:
 				return "";
@@ -2140,6 +2224,208 @@ class TournamentOverviewView extends DatabaseObject {
 			fieldData["label"] = "Convention Series_name";
 			if (this.ConventionSeries_name !== null) {
 				fieldData["value"] = this.ConventionSeries_name;
+			} else {
+				fieldData["inputRequired"] = true;
+			}
+			data.push(fieldData);
+		}
+		
+		if (TournamentOverviewView.includeField("TournamentFormatTag_id", forEditing, forCreateForm)) {
+			var fieldData = {};
+			fieldData["propertyName"] = "TournamentFormatTag_id";
+			fieldData["elemType"] = "input";
+			fieldData["inputType"] = "number";
+			fieldData["inputNumber_step"] = "1";
+			fieldData["label"] = "Tournament Format Tag_id";
+			if (this.TournamentFormatTag_id !== null) {
+				fieldData["value"] = this.TournamentFormatTag_id;
+			} else {
+				fieldData["inputRequired"] = true;
+			}
+			data.push(fieldData);
+		}
+		
+		if (TournamentOverviewView.includeField("TournamentFormatTag_tournament", forEditing, forCreateForm)) {
+			var fieldData = {};
+			fieldData["propertyName"] = "TournamentFormatTag_tournament";
+			fieldData["elemType"] = "input";
+			fieldData["inputType"] = "number";
+			fieldData["inputNumber_step"] = "1";
+			fieldData["label"] = "Tournament Format Tag_tournament ID";
+			if (this.TournamentFormatTag_tournament !== null) {
+				fieldData["value"] = this.TournamentFormatTag_tournament;
+			} else {
+				fieldData["inputRequired"] = true;
+			}
+			data.push(fieldData);
+		}
+		
+		if (TournamentOverviewView.includeField("TournamentFormatTag_format", forEditing, forCreateForm)) {
+			var fieldData = {};
+			fieldData["propertyName"] = "TournamentFormatTag_format";
+			fieldData["elemType"] = "input";
+			fieldData["inputType"] = "number";
+			fieldData["inputNumber_step"] = "1";
+			fieldData["label"] = "Tournament Format Tag_format ID";
+			if (this.TournamentFormatTag_format !== null) {
+				fieldData["value"] = this.TournamentFormatTag_format;
+			} else {
+				fieldData["inputRequired"] = true;
+			}
+			data.push(fieldData);
+		}
+		
+		if (TournamentOverviewView.includeField("TournamentFormatTag_data", forEditing, forCreateForm)) {
+			var fieldData = {};
+			fieldData["propertyName"] = "TournamentFormatTag_data";
+			fieldData["elemType"] = "textarea";
+			fieldData["label"] = "Tournament Format Tag_data";
+			if (this.TournamentFormatTag_data !== null) {
+				fieldData["value"] = this.TournamentFormatTag_data;
+			} else {
+				fieldData["inputRequired"] = true;
+			}
+			data.push(fieldData);
+		}
+		
+		if (TournamentOverviewView.includeField("TournamentFormat_id", forEditing, forCreateForm)) {
+			var fieldData = {};
+			fieldData["propertyName"] = "TournamentFormat_id";
+			fieldData["elemType"] = "input";
+			fieldData["inputType"] = "number";
+			fieldData["inputNumber_step"] = "1";
+			fieldData["label"] = "Tournament Format_id";
+			if (this.TournamentFormat_id !== null) {
+				fieldData["value"] = this.TournamentFormat_id;
+			} else {
+				fieldData["inputRequired"] = true;
+			}
+			data.push(fieldData);
+		}
+		
+		if (TournamentOverviewView.includeField("TournamentFormat_name", forEditing, forCreateForm)) {
+			var fieldData = {};
+			fieldData["propertyName"] = "TournamentFormat_name";
+			fieldData["elemType"] = "input";
+			fieldData["inputType"] = "text";
+			fieldData["label"] = "Tournament Format_name";
+			if (this.TournamentFormat_name !== null) {
+				fieldData["value"] = this.TournamentFormat_name;
+			} else {
+				fieldData["inputRequired"] = true;
+			}
+			data.push(fieldData);
+		}
+		
+		if (TournamentOverviewView.includeField("TournamentFormat_impactBuilder", forEditing, forCreateForm)) {
+			var fieldData = {};
+			fieldData["propertyName"] = "TournamentFormat_impactBuilder";
+			fieldData["elemType"] = "input";
+			fieldData["inputType"] = "checkbox";
+			fieldData["label"] = "Tournament Format_impact Builder";
+			if (this.TournamentFormat_impactBuilder !== null) {
+				fieldData["value"] = this.TournamentFormat_impactBuilder;
+			} else {
+				fieldData["inputRequired"] = false;
+			}
+			data.push(fieldData);
+		}
+		
+		if (TournamentOverviewView.includeField("TournamentFormat_description", forEditing, forCreateForm)) {
+			var fieldData = {};
+			fieldData["propertyName"] = "TournamentFormat_description";
+			fieldData["elemType"] = "textarea";
+			fieldData["label"] = "Tournament Format_description";
+			if (this.TournamentFormat_description !== null) {
+				fieldData["value"] = this.TournamentFormat_description;
+			} else {
+				fieldData["inputRequired"] = true;
+			}
+			data.push(fieldData);
+		}
+		
+		if (TournamentOverviewView.includeField("TournamentIncludesFigureSetSubGroup_id", forEditing, forCreateForm)) {
+			var fieldData = {};
+			fieldData["propertyName"] = "TournamentIncludesFigureSetSubGroup_id";
+			fieldData["elemType"] = "input";
+			fieldData["inputType"] = "number";
+			fieldData["inputNumber_step"] = "1";
+			fieldData["label"] = "Tournament Includes Figure Set Sub Group_id";
+			if (this.TournamentIncludesFigureSetSubGroup_id !== null) {
+				fieldData["value"] = this.TournamentIncludesFigureSetSubGroup_id;
+			} else {
+				fieldData["inputRequired"] = true;
+			}
+			data.push(fieldData);
+		}
+		
+		if (TournamentOverviewView.includeField("TournamentIncludesFigureSetSubGroup_tournament", forEditing, forCreateForm)) {
+			var fieldData = {};
+			fieldData["propertyName"] = "TournamentIncludesFigureSetSubGroup_tournament";
+			fieldData["elemType"] = "input";
+			fieldData["inputType"] = "number";
+			fieldData["inputNumber_step"] = "1";
+			fieldData["label"] = "Tournament Includes Figure Set Sub Group_tournament ID";
+			if (this.TournamentIncludesFigureSetSubGroup_tournament !== null) {
+				fieldData["value"] = this.TournamentIncludesFigureSetSubGroup_tournament;
+			} else {
+				fieldData["inputRequired"] = true;
+			}
+			data.push(fieldData);
+		}
+		
+		if (TournamentOverviewView.includeField("TournamentIncludesFigureSetSubGroup_figureSetSubGroup", forEditing, forCreateForm)) {
+			var fieldData = {};
+			fieldData["propertyName"] = "TournamentIncludesFigureSetSubGroup_figureSetSubGroup";
+			fieldData["elemType"] = "input";
+			fieldData["inputType"] = "number";
+			fieldData["inputNumber_step"] = "1";
+			fieldData["label"] = "Tournament Includes Figure Set Sub Group_figure Set Sub Group ID";
+			if (this.TournamentIncludesFigureSetSubGroup_figureSetSubGroup !== null) {
+				fieldData["value"] = this.TournamentIncludesFigureSetSubGroup_figureSetSubGroup;
+			} else {
+				fieldData["inputRequired"] = true;
+			}
+			data.push(fieldData);
+		}
+		
+		if (TournamentOverviewView.includeField("TournamentIncludesFigureSetSubGroup_include", forEditing, forCreateForm)) {
+			var fieldData = {};
+			fieldData["propertyName"] = "TournamentIncludesFigureSetSubGroup_include";
+			fieldData["elemType"] = "input";
+			fieldData["inputType"] = "checkbox";
+			fieldData["label"] = "Tournament Includes Figure Set Sub Group_include";
+			if (this.TournamentIncludesFigureSetSubGroup_include !== null) {
+				fieldData["value"] = this.TournamentIncludesFigureSetSubGroup_include;
+			} else {
+				fieldData["inputRequired"] = false;
+			}
+			data.push(fieldData);
+		}
+		
+		if (TournamentOverviewView.includeField("FigureSetSubGroup_id", forEditing, forCreateForm)) {
+			var fieldData = {};
+			fieldData["propertyName"] = "FigureSetSubGroup_id";
+			fieldData["elemType"] = "input";
+			fieldData["inputType"] = "number";
+			fieldData["inputNumber_step"] = "1";
+			fieldData["label"] = "Figure Set Sub Group_id";
+			if (this.FigureSetSubGroup_id !== null) {
+				fieldData["value"] = this.FigureSetSubGroup_id;
+			} else {
+				fieldData["inputRequired"] = true;
+			}
+			data.push(fieldData);
+		}
+		
+		if (TournamentOverviewView.includeField("FigureSetSubGroup_name", forEditing, forCreateForm)) {
+			var fieldData = {};
+			fieldData["propertyName"] = "FigureSetSubGroup_name";
+			fieldData["elemType"] = "input";
+			fieldData["inputType"] = "text";
+			fieldData["label"] = "Figure Set Sub Group_name";
+			if (this.FigureSetSubGroup_name !== null) {
+				fieldData["value"] = this.FigureSetSubGroup_name;
 			} else {
 				fieldData["inputRequired"] = true;
 			}
@@ -6660,17 +6946,17 @@ class Tournament extends DatabaseObject {
 			return new databaseObjectClassMap[jsonObj.className](jsonObj);
 		}
 	}
-	
+
 	// @DoNotUpdate
 	includesVC() {
 		for (let i = 0; i < this.tournamentIncludesFigureSetSubGroups.length; i++) {
-			if (this.tournamentIncludesFigureSetSubGroups[i].figureSetSubGroup.name == "VC") {
+			if (this.tournamentIncludesFigureSetSubGroups[i].figureSetSubGroup.name == "VC" && 
+					this.tournamentIncludesFigureSetSubGroups[i].include) {
 				return true;
 			}
 		}
 		return false;
 	}
-
 
 	// @DoNotUpdate
 	static getOrderBy() {
@@ -8297,7 +8583,7 @@ class PlayerArmy extends DatabaseObject {
 			return null;
 		}
 	}
-	
+
 	// @DoNotUpdate
 	figures() {
 		if (this.playerArmyCards.length > 0) {
@@ -8312,7 +8598,7 @@ class PlayerArmy extends DatabaseObject {
 			return null;
 		}
 	}
-	
+
 	// @DoNotUpdate
 	hexes() {
 		if (this.playerArmyCards.length > 0) {
@@ -8327,7 +8613,6 @@ class PlayerArmy extends DatabaseObject {
 			return null;
 		}
 	}
-
 
 	// @DoNotUpdate
 	toDisplayString(figsOnly=false) {
@@ -15908,8 +16193,11 @@ class TerrainType extends DatabaseObject {
 		this.id = null; // Int
 		this.name = null; // String
 		this.height = null; // Int
+		this.image = null; // String
 		this.color = null; // String
 		this.rules = null; // String
+		this.group = null; // Int
+		this.groupOrder = null; // Int
 		
 		// Links
 		this.links = [{terrainPieces: TerrainPiece, label: "Terrain Pieces", nTo1Link: true, linkField: 'terrainType'}];
@@ -15925,8 +16213,18 @@ class TerrainType extends DatabaseObject {
 			this.id = jsonObj.id;
 			this.name = jsonObj.name;
 			this.height = jsonObj.height;
+			this.image = jsonObj.image;
 			this.color = jsonObj.color;
 			this.rules = jsonObj.rules;
+			if (jsonObj.group != null) {
+				this.group = TerrainTypeGroup.exists(jsonObj.group) ?
+					TerrainTypeGroup.get(jsonObj.group) : new TerrainTypeGroup(jsonObj.group);
+				if ( ! this.group.terrainTypes.includes(this)) {
+					this.group.terrainTypes.push(this);
+					TerrainTypeGroup.orderBy(this.group.terrainTypes);
+				}
+			}
+			this.groupOrder = jsonObj.groupOrder;
 			
 			// Links
 			if (jsonObj.terrainPieces != undefined && jsonObj.terrainPieces != null) {
@@ -15975,11 +16273,11 @@ class TerrainType extends DatabaseObject {
 	}
 
 	static getRequiredFields() {
-		return ["id", "name", "height", "color"];
+		return ["id", "name", "height", "rules", "group", "groupOrder"];
 	}
 
 	static getAllFields() {
-		return ["id", "name", "height", "color", "rules"];
+		return ["id", "name", "height", "image", "color", "rules", "group", "groupOrder"];
 	}
 
 	static getNtoMLinkClasses() {
@@ -15995,7 +16293,7 @@ class TerrainType extends DatabaseObject {
 	}
 
 	static getClassOfColumn(columnName) {
-		if (["id", "name", "height", "color", "rules"].includes(columnName)) {
+		if (["id", "name", "height", "image", "color", "rules", "groupID", "groupOrder"].includes(columnName)) {
 			return TerrainType;
 		}
 		return null;
@@ -16003,6 +16301,8 @@ class TerrainType extends DatabaseObject {
 
 	static getForeignTableNameByKey(columnName) {
 		switch (columnName) {
+			case "groupID":
+				return "TerrainTypeGroup";
 		}
 		return null;
 	}
@@ -16036,9 +16336,15 @@ class TerrainType extends DatabaseObject {
 				return null;
 			case "height":
 				return null;
+			case "image":
+				return null;
 			case "color":
 				return null;
 			case "rules":
+				return null;
+			case "group":
+				return null;
+			case "groupOrder":
 				return null;
 			default:
 				return null;
@@ -16051,9 +16357,15 @@ class TerrainType extends DatabaseObject {
 				return ""; // TODO
 			case "height":
 				return ""; // TODO
+			case "image":
+				return ""; // TODO
 			case "color":
 				return ""; // TODO
 			case "rules":
+				return ""; // TODO
+			case "group":
+				return ""; // TODO
+			case "groupOrder":
 				return ""; // TODO
 			default:
 				return "";
@@ -16092,6 +16404,20 @@ class TerrainType extends DatabaseObject {
 			data.push(fieldData);
 		}
 		
+		if (TerrainType.includeField("image", forEditing, forCreateForm)) {
+			var fieldData = {};
+			fieldData["propertyName"] = "image";
+			fieldData["elemType"] = "input";
+			fieldData["inputType"] = "text";
+			fieldData["label"] = "Image";
+			if (this.image !== null) {
+				fieldData["value"] = this.image;
+			} else {
+				fieldData["inputRequired"] = false;
+			}
+			data.push(fieldData);
+		}
+		
 		if (TerrainType.includeField("color", forEditing, forCreateForm)) {
 			var fieldData = {};
 			fieldData["propertyName"] = "color";
@@ -16101,7 +16427,7 @@ class TerrainType extends DatabaseObject {
 			if (this.color !== null) {
 				fieldData["value"] = this.color;
 			} else {
-				fieldData["inputRequired"] = true;
+				fieldData["inputRequired"] = false;
 			}
 			data.push(fieldData);
 		}
@@ -16114,7 +16440,40 @@ class TerrainType extends DatabaseObject {
 			if (this.rules !== null) {
 				fieldData["value"] = this.rules;
 			} else {
-				fieldData["inputRequired"] = false;
+				fieldData["inputRequired"] = true;
+			}
+			data.push(fieldData);
+		}
+		
+		if (TerrainType.includeField("group", forEditing, forCreateForm)) {
+			var fieldData = {};
+			fieldData["propertyName"] = "group";
+			fieldData["elemType"] = "select";
+			fieldData["selectOptions"] = TerrainTypeGroup.selectOptions(this.group, this.selectFilters("group", filterObjects));
+			fieldData["optionClass"] = "TerrainTypeGroup";
+			fieldData["propertyForeignClass"] = TerrainTypeGroup;
+			fieldData["label"] = "Group";
+			if (this.group !== undefined && this.group !== null) {
+				fieldData["value"] = this.group.toDisplayString();
+				fieldData["databaseObj"] = this.group;
+				fieldData["databaseObjProperty"] = "name";
+			} else {
+				fieldData["inputRequired"] = true;
+			}
+			data.push(fieldData);
+		}
+		
+		if (TerrainType.includeField("groupOrder", forEditing, forCreateForm)) {
+			var fieldData = {};
+			fieldData["propertyName"] = "groupOrder";
+			fieldData["elemType"] = "input";
+			fieldData["inputType"] = "number";
+			fieldData["inputNumber_step"] = "1";
+			fieldData["label"] = "Group Order";
+			if (this.groupOrder !== null) {
+				fieldData["value"] = this.groupOrder;
+			} else {
+				fieldData["inputRequired"] = true;
 			}
 			data.push(fieldData);
 		}
@@ -16127,6 +16486,15 @@ class TerrainType extends DatabaseObject {
 
 	set(field, jsonObj) {
 		switch (field) {
+			case "group":
+				if (typeof jsonObj === "object" && jsonObj instanceof DatabaseObject) {
+					this.group = jsonObj;
+				} else if (TerrainTypeGroup.exists(jsonObj)) {
+					this.group = TerrainTypeGroup.get(jsonObj);
+				} else {
+					this.group = new TerrainTypeGroup(jsonObj);
+				}
+				break;
 		}
 	}
 
@@ -16134,6 +16502,210 @@ class TerrainType extends DatabaseObject {
 
 TerrainType.list = [];
 TerrainType.options = [];
+
+class TerrainTypeGroup extends DatabaseObject {
+	constructor(jsonObj) {
+		if (TerrainTypeGroup.exists(jsonObj)) {
+			return TerrainTypeGroup.get(jsonObj);
+		}
+		
+		super(jsonObj);
+		
+		// Table Columns
+		this.id = null; // Int
+		this.name = null; // String
+		this.order = null; // Int
+		
+		// Links
+		this.links = [{terrainTypes: TerrainType, label: "Terrain Types", nTo1Link: true, linkField: 'group'}];
+		this.terrainTypes = [];
+		
+		if (jsonObj !== undefined && jsonObj !== null) {
+			// Static Variables
+			TerrainTypeGroup.list.push(this);
+			
+			// Instance Variables
+			
+			// Table Columns
+			this.id = jsonObj.id;
+			this.name = jsonObj.name;
+			this.order = jsonObj.order;
+			
+			// Links
+			if (jsonObj.terrainTypes != undefined && jsonObj.terrainTypes != null) {
+				for (var i = 0; i < jsonObj.terrainTypes.length; i++) {
+					if (TerrainType.exists(jsonObj.terrainTypes[i])){
+						const newLinkObj = TerrainType.get(jsonObj.terrainTypes[i]);
+						var alreadyLinked = false;
+						for (let j = 0; j < this.terrainTypes.length; j++) {
+							if (this.terrainTypes[j].id == newLinkObj.id) {
+								alreadyLinked = true;
+								break;
+							}
+						}
+						if ( ! alreadyLinked) {
+							this.terrainTypes.push(newLinkObj);
+						}
+					} else {
+						const newForeignObj = new TerrainType(jsonObj.terrainTypes[i]);
+						if ( ! this.terrainTypes.includes(newForeignObj)) {
+							this.terrainTypes.push(newForeignObj);
+						}
+						newForeignObj.group = this;
+					}
+				}
+			}
+			TerrainType.orderBy(this.terrainTypes);
+			
+			// Draggable
+			this.objectIsDraggable = true;
+			this.draggableProperty = "order"
+			
+			TerrainTypeGroup.orderBy();
+		}
+	}
+
+	static getOrderBy() {
+		return ["order"];
+	}
+
+	static label() {
+		return "Terrain Type Group";
+	}
+
+	static primaryKeys() {
+		return ["id"];
+	}
+
+	static primaryKeysWithChildKeys() {
+		return ["id"];
+	}
+
+	static getRequiredFields() {
+		return ["id", "name", "order"];
+	}
+
+	static getAllFields() {
+		return ["id", "name", "order"];
+	}
+
+	static getNtoMLinkClasses() {
+		return {};
+	}
+
+	static isAbstract() {
+		return false;
+	}
+
+	static editableOptions() {
+		return [""];
+	}
+
+	static getClassOfColumn(columnName) {
+		if (["id", "name", "order"].includes(columnName)) {
+			return TerrainTypeGroup;
+		}
+		return null;
+	}
+
+	static getForeignTableNameByKey(columnName) {
+		switch (columnName) {
+		}
+		return null;
+	}
+
+	static getActionNames() {
+		return [];
+	}
+
+	getAction(actionName) {
+		switch (actionName) {
+			default:
+				return null;
+		}
+	}
+
+	toDisplayString() {
+		return this.name;
+	}
+
+	summary() {
+		return this.name.substring(0, 147)+'...';
+	}
+
+	selectOption() {
+		return {id: this.id, value: this.toDisplayString(), databaseObj: this, databaseObjProperty: "name"};
+	}
+
+	selectFilters(property, filterObjects) {
+		switch (property) {
+			case "name":
+				return null;
+			case "order":
+				return null;
+			default:
+				return null;
+		}
+	}
+
+	getTooltip(propName) {
+		switch (propName) {
+			case "name":
+				return ""; // TODO
+			case "order":
+				return ""; // TODO
+			default:
+				return "";
+		}
+	}
+
+	dataForDisplay(forEditing, forCreateForm, filterObjects) {
+		var data = [];
+		
+		if (TerrainTypeGroup.includeField("name", forEditing, forCreateForm)) {
+			var fieldData = {};
+			fieldData["propertyName"] = "name";
+			fieldData["elemType"] = "input";
+			fieldData["inputType"] = "text";
+			fieldData["label"] = "Name";
+			if (this.name !== null) {
+				fieldData["value"] = this.name;
+			} else {
+				fieldData["inputRequired"] = true;
+			}
+			data.push(fieldData);
+		}
+		
+		if (TerrainTypeGroup.includeField("order", forEditing, forCreateForm)) {
+			var fieldData = {};
+			fieldData["propertyName"] = "order";
+			fieldData["elemType"] = "input";
+			fieldData["inputType"] = "number";
+			fieldData["inputNumber_step"] = "1";
+			fieldData["label"] = "Order";
+			if (this.order !== null) {
+				fieldData["value"] = this.order;
+			} else {
+				fieldData["inputRequired"] = true;
+			}
+			data.push(fieldData);
+		}
+		
+		if (TerrainTypeGroup.options.fieldOrder !== undefined && TerrainTypeGroup.options.fieldOrder != null) {
+			data = DatabaseObject.reorderData(data, TerrainTypeGroup.options.fieldOrder);
+		}
+		return data;
+	}
+
+	set(field, jsonObj) {
+		switch (field) {
+		}
+	}
+
+}
+
+TerrainTypeGroup.list = [];
+TerrainTypeGroup.options = [];
 
 class TerrainSize extends DatabaseObject {
 	constructor(jsonObj) {
@@ -23799,6 +24371,7 @@ databaseObjectClassMap['UserSettingOption'] = UserSettingOption;
 databaseObjectClassMap['FigureNickname'] = FigureNickname;
 databaseObjectClassMap['Term'] = Term;
 databaseObjectClassMap['TerrainType'] = TerrainType;
+databaseObjectClassMap['TerrainTypeGroup'] = TerrainTypeGroup;
 databaseObjectClassMap['TerrainSize'] = TerrainSize;
 databaseObjectClassMap['TerrainPiece'] = TerrainPiece;
 databaseObjectClassMap['HeroscapeSetTerrainPieceQuantity'] = HeroscapeSetTerrainPieceQuantity;

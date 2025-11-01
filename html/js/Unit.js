@@ -56,8 +56,8 @@ class Unit {
 		this.height = parseInt(row[31]);
 		this.bookUrl = row[32];
 		this.powerRankings = {
-			OEAO: row[33],
-			Dok: row[34]};
+			Classic: row[33],
+			VC: row[34]};
 		if (row.length > 35) {
 			this.releaseSet = row[35];
 			this.releaseDate = row[36];

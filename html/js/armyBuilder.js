@@ -4,6 +4,8 @@ var tournamentSignup = window.location.href.includes("tournament");
 
 var armyMin = 1;
 
+var deltaPoints = false;
+
 function changeArmyMin() {
 	var checked = document.getElementById("armyMinCheckbox").checked;
 	if (checked) {
@@ -188,8 +190,8 @@ function displayUnits() {
 						break;
 					case "X(+/-) & Under":
 						var powerRank = vcInclusive()
-							? unit.powerRankings.Dok
-							: unit.powerRankings.OEAO;
+							? unit.powerRankings.VC
+							: unit.powerRankings.Classic;
 						if (powerRank !== undefined) {
 							powerRank = powerRank.replace("+", "a");
 							powerRank = powerRank.replace("-", "c");
@@ -470,8 +472,8 @@ function displayUnits() {
 				break;
 			case "powerRanking":
 				var powerRankingValue = vcInclusive()
-						? unit.powerRankings.Dok
-						: unit.powerRankings.OEAO;
+						? unit.powerRankings.VC
+						: unit.powerRankings.Classic;
 				if (powerRankingValue == undefined) {
 					if (unit.marvel) {
 						powerRankingValue = "N/A";
@@ -1172,6 +1174,150 @@ function _clearArmy(armyNum) {
 	redrawPage();
 }
 
+function createFigureSetCheckboxes(figureSetSubGroups, checkDefaults=true) {
+	var tier1Group = document.getElementById('Tier1SubGroups');
+	var tier2Group = document.getElementById('Tier2SubGroups');
+	for (let i = 0; i < figureSetSubGroups.length; i++) {
+		const subGroup = figureSetSubGroups[i];
+		var subGroupDiv = createDiv({
+			class: "figureSetSubGroup"
+		});
+		if (subGroup.tier == 1) {
+			tier1Group.appendChild(subGroupDiv);
+		} else {
+			tier2Group.appendChild(subGroupDiv);
+		}
+		var labelElem = createLabel({});
+		subGroupDiv.appendChild(labelElem);
+		var inputElem = createInput({
+			type: "checkbox",
+			id: subGroup.name + "_checkbox",
+			class: "figureSetSubGroupCheckbox",
+			onchange: "_toggleFigureSetCheckbox()"
+		});
+		if (checkDefaults) {
+			const cookieValue = 
+				getCookieValue("hs_setting_Default_Builder_Display_-_"+subGroup.name.replaceAll(" ", "_"));
+			if (cookieValue != null) {
+				if (cookieValue == "1") {
+					inputElem.checked = true;
+				}
+			} else if (subGroup.selectedByDefault) {
+				inputElem.checked = true;
+			}
+		}
+		labelElem.appendChild(inputElem);
+		labelElem.appendChild(createText(subGroup.name));
+	}
+	/*updateURL();
+	if (typeof redrawPage == 'function') {
+		redrawPage();
+	}*/
+}
+
+function _toggleFigureSetCheckbox() {
+	updateURL();
+	if (typeof redrawPage == 'function') {
+		redrawPage();
+	}
+}
+
+function updateURL() {
+	if (window.location.origin.includes("c3g")) {
+		return;
+	}
+	
+	const deltaStr = deltaPoints ? "true" : "false";
+	
+	var figureSetStr = "";
+	figureSetCheckboxes = document.getElementsByClassName('figureSetSubGroupCheckbox');
+	for (let i = 0; i < figureSetCheckboxes.length; i++) {
+		const checkbox = figureSetCheckboxes[i];
+		if (figureSetStr.length > 0) {
+			figureSetStr += ",";
+		}
+		figureSetStr += checkbox.id.split("_")[0] + "_" + checkbox.checked; 
+	}
+	
+	var newurl = window.location.origin + 
+		window.location.pathname + 
+		"?" + 
+			'delta='+deltaStr+
+			'&figureSet='+figureSetStr+
+			'&search='+searchText+
+			'&sort1='+sortOption1+
+			'&sort2='+sortOption2;
+			
+	if (typeof updateUrlPageSpecific == 'function') {
+		newurl += updateUrlPageSpecific();
+	}
+	
+	window.history.pushState({path:newurl},'',newurl);
+}
+
+function switchClassicDelta(refThis) {
+	deltaPoints = refThis.checked;
+	if (deltaPoints) {
+		document.getElementById("standardToggle").classList.remove("toggleSwitchSelected");
+		document.getElementById("deltaToggle").classList.add("toggleSwitchSelected");
+	} else {
+		document.getElementById("standardToggle").classList.add("toggleSwitchSelected");
+		document.getElementById("deltaToggle").classList.remove("toggleSwitchSelected");
+	}
+	redrawPage();
+	updateURL();
+}
+
+function checkUrlParameters() {
+	if (window.location.origin.includes("c3g")) {
+		return;
+	}
+	var url = new URL(window.location.href);
+	
+	var figureSetCheckboxes = document.getElementsByClassName('figureSetSubGroupCheckbox');
+	for (let i = 0; i < figureSetCheckboxes.length; i++) {
+		const checkbox = figureSetCheckboxes[i];
+		if (findGetParameter('figureSet') != null) {
+			var figureSetUrlParams = findGetParameter('figureSet').split(",");
+			for (let j = 0; j < figureSetUrlParams.length; j++) {
+				const param = figureSetUrlParams[j].split("_");
+				if (param[0] == checkbox.id.split("_")[0]) {
+					if (param[1] == 'false') {
+						checkbox.checked = false;
+					} else if (param[1] == 'true') {
+						checkbox.checked = true;
+					}
+					break;
+				}
+			}
+		}
+	}
+	
+	var searchParam = url.searchParams.get("search");
+	if (searchParam !== undefined && searchParam !== null && searchParam != "null"){
+		document.getElementById("searchInput").value = searchParam;
+		searchText = searchParam;
+	}
+	
+	var sort1Param = url.searchParams.get("sort1");
+	if (sort1Param !== undefined && sort1Param !== null && sort1Param != "null"){
+		document.getElementById("sort1").value = sort1Param;
+		sortOption1 = sort1Param;
+	}
+	
+	var sort2Param = url.searchParams.get("sort2");
+	if (sort2Param !== undefined && sort2Param !== null && sort2Param != "null"){
+		document.getElementById("sort2").value = sort2Param;
+		sortOption2 = sort2Param;
+	}
+	
+	if (typeof checkUrlParametersPageSpecific == 'function') {
+		checkUrlParametersPageSpecific();
+	}
+	
+	redrawPage();
+}
+
 
 /** Search **/
 
@@ -1532,11 +1678,11 @@ function _compareUnitsOnce(a, b, sortOption) {
 			break;
 		case "powerRanking":
 			var aVal = vcInclusive()
-				? a.powerRankings.Dok
-				: a.powerRankings.OEAO;
+				? a.powerRankings.VC
+				: a.powerRankings.Classic;
 			var bVal = vcInclusive()
-				? b.powerRankings.Dok
-				: b.powerRankings.OEAO;
+				? b.powerRankings.VC
+				: b.powerRankings.Classic;
 			if (aVal == undefined) {
 				aVal = "Z";
 			}
@@ -1596,42 +1742,46 @@ function _compareUnitsOnce(a, b, sortOption) {
 	return 0;
 }
 
-function _copyArmy(lineDelimeter="\n") {
+function _copyArmy(lineDelimeter="\n", figuresOnly=false) {
 	var armyText = "";
 	
-	if (typeof tournament == "object" && lineDelimeter != "_") {
+	if (typeof tournament == "object" && ! figuresOnly) {
 		armyText += tournament.fullDisplayName() + lineDelimeter;
 	}
 	
 	armyText += army.toString(false, false, true).replaceAll("<br>", lineDelimeter);
-	armyText += lineDelimeter + army.getPoints() + " Points, " + 
-		army.getFigures() + " Figures";
 	
-	if (typeof tournament == "object" && tournament.figureLimit != null && army.getFigures() > tournament.figureLimit) {
-		armyText += " (Drop " + (army.getFigures() - tournament.figureLimit) + ")";
-	}
-	
-	armyText += ", " + army.getHexes() + " Hexes";
-	
-	if (typeof tournament == "object" && tournament.hexLimit != null && army.getHexes() > tournament.hexLimit) {
-		armyText += " (Drop " + (army.getHexes() - tournament.hexLimit) + ")";
-	}
+	if ( ! figuresOnly) {
 		
-	var standardPointsStr = "Standard Points";
-	switch (subdomainFigureSet.name) {
-		case "Renegade Points":
-			standardPointsStr = "Renegade Points";
-			break;
-	}
+		armyText += lineDelimeter + army.getPoints() + " Points, " + 
+			army.getFigures() + " Figures";
 		
-	armyText += lineDelimeter+"Settings: " + 
-		(vcInclusive() ? "VC" : "Classic") + ", " + 
-		(deltaPoints ? "Delta Points " : standardPointsStr);
-	
-	switch (subdomainFigureSet.name) {
-		case "Renegade Contemporary":
-			armyText += ", " + "Renegade Contemporary";
-			break;
+		if (typeof tournament == "object" && tournament.figureLimit != null && army.getFigures() > tournament.figureLimit) {
+			armyText += " (Drop " + (army.getFigures() - tournament.figureLimit) + ")";
+		}
+		
+		armyText += ", " + army.getHexes() + " Hexes";
+		
+		if (typeof tournament == "object" && tournament.hexLimit != null && army.getHexes() > tournament.hexLimit) {
+			armyText += " (Drop " + (army.getHexes() - tournament.hexLimit) + ")";
+		}
+			
+		var standardPointsStr = "Standard Points";
+		switch (subdomainFigureSet.name) {
+			case "Renegade Points":
+				standardPointsStr = "Renegade Points";
+				break;
+		}
+			
+		armyText += lineDelimeter+"Settings: " + 
+			(vcInclusive() ? "VC" : "Classic") + ", " + 
+			(deltaPoints ? "Delta Points " : standardPointsStr);
+		
+		switch (subdomainFigureSet.name) {
+			case "Renegade Contemporary":
+				armyText += ", " + "Renegade Contemporary";
+				break;
+		}
 	}
 	
 	copyTextToClipboard(armyText);
@@ -1639,20 +1789,6 @@ function _copyArmy(lineDelimeter="\n") {
 
 function _copyUrl() {
 	var urlText = window.location.href;
-	/*if (urlText.includes("?")) {
-		urlText += "&";
-	} else {
-		urlText += "?";
-	}
-	urlText += "units=";
-	
-	for (var figureName in army.units) {
-		if (army.units.hasOwnProperty(figureName)) {
-			const quantity = army.units[figureName];
-			urlText += figureName + "_" + quantity;
-			urlText += ";"
-		}
-	}*/
 	copyTextToClipboard(urlText);
 }
 

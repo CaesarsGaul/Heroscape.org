@@ -7,7 +7,7 @@
 		
 	<!-- CSS -->
 	<link rel="stylesheet" href="/css/styles.css">
-	<link rel="stylesheet" href="/css/about.css">
+	<!--<link rel="stylesheet" href="/css/about.css">-->
 	<style>
 		#DataLinks {
 			

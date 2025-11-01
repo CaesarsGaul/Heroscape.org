@@ -25,10 +25,10 @@
 			display: none;
 		}
 		
-		#ohsArmyListCopy {
+		/*#ohsArmyListCopy {
 			top: 5px;
 			left: 0px;
-		}
+		}*/
 	</style>
 
 	<!-- Internal Files -->
@@ -46,9 +46,6 @@
 		}
 		var setupPageCalled = false;
 		
-		//var vcInclusive = null;
-		//var marvelInclusive = null;
-		var deltaPoints = null;
 		var banList = null;
 		var restrictedList = null;
 		var armies = null;
@@ -82,8 +79,58 @@
 				document.getElementById("ohsArmyListCopy").style.display = "none";
 			}
 			
+			checkUrlParameters();
 			displayUnits();
 			displayFilters();
+		}
+		
+		function updateUrlPageSpecific() {
+			var urlPart = "";
+			
+			var units = "";
+			for (var figureName in army.units) {
+				if (army.units.hasOwnProperty(figureName)) {
+					const quantity = army.units[figureName];
+					units += figureName + "_" + quantity;
+					units += ";"
+				}
+			}
+			urlPart += "&units="+units;
+			
+			if (tournament != null) {
+				urlPart += "&HeroscapeTournament="+tournament.id;
+			}
+			
+			return urlPart;
+		}
+		
+		function checkUrlParametersPageSpecific() {
+			var url = new URL(window.location.href);
+			
+			var unitsParam = url.searchParams.get("units");
+			if (unitsParam !== undefined && unitsParam !== null && unitsParam != "null") {
+				unitsParam = unitsParam.split(";");
+				console.log(unitsParam);
+				for (let i = 0; i < unitsParam.length; i++) {
+					var unitName = unitsParam[i];
+					if (unitName.length == 0) {
+						continue;
+					}
+					var quantity = 1;
+					if (unitName.includes("_")) {
+						const unitNameParts = unitName.split("_");
+						unitName = unitNameParts[0];
+						quantity = parseInt(unitNameParts[1]);
+					}
+					if (unitsMap[unitName] === undefined) {
+						continue;
+					}
+					for (let j = 0; j < quantity; j++) {
+						army.addUnit(unitsMap[unitName]);
+					}
+				}
+				updateArmyDisplay();
+			}
 		}
 		
 		function redrawPage() {
@@ -192,7 +239,7 @@
 		});
 		
 		function _copyArmyOHS() {
-			_copyArmy("_");
+			_copyArmy("_", true);
 		}
 	</script>
 	

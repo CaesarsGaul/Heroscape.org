@@ -286,6 +286,7 @@
 				
 				mapDiv.appendChild(createA({
 					innerHTML: mapName,
+					target: "_blank",
 					href: "/map/view/?HeroscapeMap="+map.id
 				}));
 				

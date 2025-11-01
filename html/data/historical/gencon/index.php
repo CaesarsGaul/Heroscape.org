@@ -56,6 +56,94 @@
 			<p>1st - Spider Poison (Gladiatrons x4, Blastatrons x2, Raelin the Kyrie Warrior (RotV))</p>
 			<p>2nd - Lone Wolf (Marro Stingers x4, Deathreavers x2, Kaemon Awa, Raelin the Kyrie Warrior (RotV))</p>
 			<p>Map - Feylund Fountain (Jalgard (D+2), Ulanivia)</p>
+			<h4>Top 16</h4>
+			<table class='t16Table'>
+				<tr>
+					<th>Record</th>
+					<th>Player</th>
+					<th>Army</th>
+				</tr>
+				<tr>
+					<td>5-0</td>
+					<td>Hendal</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>5-0</td>
+					<td>Kaharma</td>
+					<td>Major Q9, Raelin the Kyrie Warrior (RotV), Marro Stingers x3, Deathreavers x2</td>
+				</tr>
+				<tr>
+					<td>5-0</td>
+					<td>Spider Poison</td>
+					<td>Blastatrons x2, Gladiatrons x4, Raelin the Kyrie Warrior (RotV)</td>
+				</tr>
+				<tr>
+					<td>4-1</td>
+					<td>Killer Cactus</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>4-1</td>
+					<td>Matrix Renegade</td>
+					<td>Krav Maga Agents, Knights of Weston x3, Finn the Viking Champion, Thorgrim the Viking Champion, Eldgrim the Viking Champion</td>
+				</tr>
+				<tr>
+					<td>4-1</td>
+					<td>Gamjuven</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>4-1</td>
+					<td>Southwest Ninja</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>4-1</td>
+					<td>Lonewolf</td>
+					<td>Marro Stingers x4, Deathreavers x2, Raelin the Kyrie Warrior (RotV), Kaemon Awa</td>
+				</tr>
+				<tr>
+					<td>4-1</td>
+					<td>Mattster Truck Rally</td>
+					<td>4th Massachusetts Line x5, Sgt. Drake Alexander (SotM)</td>
+				</tr>
+				<tr>
+					<td>4-1</td>
+					<td>Eirikr</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>4-1</td>
+					<td>Scaper_Dude</td>
+					<td>Marro Stingers x4, Deathreavers x2, Raelin the Kyrie Warrior (RotV), Kaemon Awa</td>
+				</tr>
+				<tr>
+					<td>4-1</td>
+					<td>[Unknown]</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>4-1</td>
+					<td>Main Train Choochoo</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>3-2</td>
+					<td>Brownsfan82</td>
+					<td>Nilfheim, Zelrig, Major Q10</td>
+				</tr>
+				<tr>
+					<td>3-2</td>
+					<td>Mecha Frog</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>3-2</td>
+					<td>Weesel</td>
+					<td></td>
+				</tr>
+			</table>
 			
 			<h2>2009</h2>
 			<h3>Main Event (Cheese)</h3>

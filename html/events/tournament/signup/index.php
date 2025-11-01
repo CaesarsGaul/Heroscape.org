@@ -38,9 +38,6 @@
 		}
 		var setupPageCalled = false;
 		
-		//var vcInclusive = null;
-		//var marvelInclusive = null;
-		var deltaPoints = null;
 		var banList = null;
 		var restrictedList = null;
 		var armies = null;

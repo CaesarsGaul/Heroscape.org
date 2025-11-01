@@ -1,38 +1,29 @@
 <?php
 
-class TerrainType extends HS_DatabaseObject {
+class TerrainTypeGroup extends HS_DatabaseObject {
 	protected $id; // Int
 	protected $name; // String
-	protected $height; // Int
-	protected $image; // String
-	protected $color; // String
-	protected $rules; // String
-	protected $groupID; // Int
-	protected $groupOrder; // Int
+	protected $order; // Int
 
 	/* Static 'Constructors' */
 	
 	public static function fromDB($id, $subdomain = null) {
 		global $OBJECT_MAP;
-		if ( ! isset($OBJECT_MAP["TerrainType"])) {
-			$OBJECT_MAP["TerrainType"] = array();
+		if ( ! isset($OBJECT_MAP["TerrainTypeGroup"])) {
+			$OBJECT_MAP["TerrainTypeGroup"] = array();
 		}
 		$obj = null;
-		if (isset($OBJECT_MAP["TerrainType"][$id])) {
-			$obj = $OBJECT_MAP["TerrainType"][$id];
+		if (isset($OBJECT_MAP["TerrainTypeGroup"][$id])) {
+			$obj = $OBJECT_MAP["TerrainTypeGroup"][$id];
 		} else {
 			$obj = parent::fromDBHelper(new self($subdomain), array("id" => $id));
-			$OBJECT_MAP["TerrainType"][$id] = $obj;
+			$OBJECT_MAP["TerrainTypeGroup"][$id] = $obj;
 		}
 		return $obj;
 	}
 
 	public static function fromDB_id($id, $subdomain = null) {
 		return parent::fromDBHelper(new self($subdomain), array("id" => $id));
-	}
-
-	public static function fromDB_name($name, $subdomain = null) {
-		return parent::fromDBHelper(new self($subdomain), array("name" => $name));
 	}
 
 	public static function create($clientDataObj, $subdomain=null) {
@@ -44,26 +35,15 @@ class TerrainType extends HS_DatabaseObject {
 		
 		
 		if (isset($clientDataObj->id) && self::exists(array("id" => $clientDataObj->id))) {
-			return "A Terrain Type already exists with that id - you cannot have duplicate entries.";
-		}
-		if (isset($clientDataObj->name) && self::exists(array("name" => $clientDataObj->name))) {
-			return "A Terrain Type already exists with that name - you cannot have duplicate entries.";
+			return "A Terrain Type Group already exists with that id - you cannot have duplicate entries.";
 		}
 		
-		if ( ! isset($clientDataObj->group->id)) {
-			$clientDataObj->group = TerrainTypeGroup::create($clientDataObj->group);
-		}
 		
 		$id = $dbObj->dbInsert((new MySQLBuilder())->
-			insert("TerrainType",
-				array("name", "height", "image", "color", "rules", "groupID", "groupOrder"),
+			insert("TerrainTypeGroup",
+				array("name", "order"),
 				array($clientDataObj->name,
-					$clientDataObj->height,
-					$clientDataObj->image,
-					$clientDataObj->color,
-					$clientDataObj->rules,
-					$clientDataObj->group->id,
-					$clientDataObj->groupOrder)));
+					self::countEntries(parent::orderWhereArrayFromClientDataObj($clientDataObj)))));
 		
 		$dbObj = self::fromDB($id);
 		
@@ -73,9 +53,9 @@ class TerrainType extends HS_DatabaseObject {
 
 	protected function createInitialLinks($clientDataObj) {
 		// Create 1-N Links
-		if (isset($clientDataObj->terrainPieces)) {
-			foreach ($clientDataObj->terrainPieces as $clientLinkObj) {
-				$clientLinkObj->terrainType = $this;
+		if (isset($clientDataObj->terrainTypes)) {
+			foreach ($clientDataObj->terrainTypes as $clientLinkObj) {
+				$clientLinkObj->group = $this;
 				$clientLinkObj->childClassName::create($clientLinkObj);
 			}
 		}
@@ -96,39 +76,14 @@ class TerrainType extends HS_DatabaseObject {
 		$whereArray = array();
 		
 		if (isset($whereData["id"])) {
-			$whereArray["{$prefix}TerrainType.id"] = $whereData["id"];
+			$whereArray["{$prefix}TerrainTypeGroup.id"] = $whereData["id"];
 		}
 		else {
 			if (isset($whereData["name"])) {
-				$whereArray["{$prefix}TerrainType.name"] = $whereData["name"];
-			}
-			if (isset($whereData["height"])) {
-				$whereArray["{$prefix}TerrainType.height"] = $whereData["height"];
-			}
-			if (isset($whereData["image"])) {
-				$whereArray["{$prefix}TerrainType.image"] = $whereData["image"];
-			}
-			if (isset($whereData["color"])) {
-				$whereArray["{$prefix}TerrainType.color"] = $whereData["color"];
-			}
-			if (isset($whereData["rules"])) {
-				$whereArray["{$prefix}TerrainType.rules"] = $whereData["rules"];
-			}
-			if (array_key_exists("group", $whereData)) {
-				if (isset($whereData["group"]->id)) {
-					$whereArray["{$prefix}TerrainType.groupID"] = $whereData["group"]->id;
-				} else if ($whereData["group"] == null) {
-					$whereArray["{$prefix}TerrainType.groupID"] = null;
-				}
-			}
-			if (isset($whereData["groupOrder"])) {
-				$whereArray["{$prefix}TerrainType.groupOrder"] = $whereData["groupOrder"];
+				$whereArray["{$prefix}TerrainTypeGroup.name"] = $whereData["name"];
 			}
 		}
 		
-		if (isset($whereData["group"])) {
-			$whereArray = array_merge($whereArray, TerrainTypeGroup::createWhereArray($whereData["group"], "{$prefix}TerrainType_groupID_"));
-		}
 		
 		
 		return $whereArray;
@@ -136,7 +91,7 @@ class TerrainType extends HS_DatabaseObject {
 
 	// @DoNotUpdate
 	public static function getOrderBy() {
-		return array("LENGTH(TerrainType.groupOrder)" => "ASC", "TerrainType.groupOrder" => "ASC");
+		return array("LENGTH(TerrainTypeGroup.order)" => "ASC", "TerrainTypeGroup.order" => "ASC");
 	}
 
 	public static function getPrimaryKey() {
@@ -156,15 +111,15 @@ class TerrainType extends HS_DatabaseObject {
 	}
 
 	public static function getNTo1LinkClasses() {
-		return array("TerrainPiece" => "terrainTypeID");
+		return array("TerrainType" => "groupID");
 	}
 
 	public static function getForeignKeys() {
-		return array("groupID" => "TerrainTypeGroup");
+		return array();
 	}
 
 	public static function getColumnNames() {
-		return array("id", "name", "height", "image", "color", "rules", "groupID", "groupOrder");
+		return array("id", "name", "order");
 	}
 
 	public static function getActionNames() {
@@ -232,10 +187,15 @@ class TerrainType extends HS_DatabaseObject {
 		}*/
 	}
 
+	public static function columnsForOrderGroup() {
+		// TODO: Fill in the array below
+		return array();
+	}
+
 	protected function deleteLinks() {
 		// N-1 Links
-		if (TerrainPiece::countEntries(array("TerrainPiece.terrainTypeID" => $this->id)) > 0) {
-			return "Unable to delete Terrain Type because one or more Terrain Piece is dependent on it.";
+		if (TerrainType::countEntries(array("TerrainType.groupID" => $this->id)) > 0) {
+			return "Unable to delete Terrain Type Group because one or more Terrain Type is dependent on it.";
 		}
 		
 		// N-M Links
@@ -255,54 +215,32 @@ class TerrainType extends HS_DatabaseObject {
 		
 		if ($clientDataObj != null) {
 			if (isset($clientDataObj->name)) {
-				if (isset($clientDataObj->name) && $this->name != $clientDataObj->name && self::exists(array("name" => $clientDataObj->name))) {
-					return "A Terrain Type already exists with that name - you cannot have duplicate entries.";
-				}
 				$this->name = $clientDataObj->name;
 			}
-			if (isset($clientDataObj->height)) {
-				$this->height = $clientDataObj->height;
-			}
-			if (property_exists($clientDataObj, "image")) {
-				$this->image = $clientDataObj->image;
-			}
-			if (property_exists($clientDataObj, "color")) {
-				$this->color = $clientDataObj->color;
-			}
-			if (isset($clientDataObj->rules)) {
-				$this->rules = $clientDataObj->rules;
-			}
-			if (isset($clientDataObj->group, $clientDataObj->group->id) &&
-					$clientDataObj->group->id > 0) {
-					$this->groupID = $clientDataObj->group->id;
-			}
-			if (isset($clientDataObj->groupOrder)) {
-				$this->groupOrder = $clientDataObj->groupOrder;
+			if (isset($clientDataObj->order)) {
+				$this->order = $clientDataObj->order;
 			}
 		}
 		
 		// Update Foreign Key Columns
 		if ( ! isset($clientDataObj->updateDepth) || $clientDataObj->updateDepth > 0) {
-			if (isset($clientDataObj->group) && ( ! isset($clientDataObj->updateClasses) || (in_array("TerrainTypeGroup", $clientDataObj->updateClasses))) && in_array("group", $clientDataObj->fieldsToUpdate) && ! isset($this->groupIDJustCreated)) {
-				(TerrainTypeGroup::fromDB($this->groupID))->updateInDB($clientDataObj->group);
-			}
 		}
 		
 		$this->dbUpdate((new MySQLBuilder())->
-			update("TerrainType",
-				array("name", "height", "image", "color", "rules", "groupID", "groupOrder"),
-				array($this->name, $this->height, $this->image, $this->color, $this->rules, $this->groupID, $this->groupOrder))->
+			update("TerrainTypeGroup",
+				array("name", "order"),
+				array($this->name, $this->order))->
 			where(array("id" => $this->id)));
 		
 		// Update 1-N Links
-		if (isset($clientDataObj->terrainPieces) &&
+		if (isset($clientDataObj->terrainTypes) &&
 				isset($clientDataObj->updateNto1) && $clientDataObj->updateNto1) {
-			foreach ($clientDataObj->terrainPieces as $clientLinkObj) {
+			foreach ($clientDataObj->terrainTypes as $clientLinkObj) {
 				if (isset($clientLinkObj->id)) {
-					$linkObj = TerrainPiece::fromDB($clientLinkObj->id);
+					$linkObj = TerrainType::fromDB($clientLinkObj->id);
 					$linkObj->updateInDB($clientLinkObj);
 				} else {
-					$clientLinkObj->terrainType = $this;
+					$clientLinkObj->group = $this;
 					$clientLinkObj->childClassName::create($clientLinkObj);
 				}
 			}
@@ -327,21 +265,16 @@ class TerrainType extends HS_DatabaseObject {
 		}
 		
 		$this->dbDelete((new MySQLBuilder())->
-			delete("TerrainType")->
+			delete("TerrainTypeGroup")->
 			where(array("id" => $this->id)));
+		
+		self::cleanOrder($this->orderWhereArray());
 		
 		return "";
 	}
 
 	/* Getters */
 	
-	public function getGroup() {
-		if ( ! property_exists($this, "group")) {
-			$this->group = TerrainTypeGroup::fromDB($this->groupID);
-		}
-		return $this->group;
-	}
-
 	/* 'Constructor' only for DB Connection */
 	protected static function dbConnection($subdomain = null) {
 		return new self($subdomain);

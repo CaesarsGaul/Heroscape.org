@@ -48,6 +48,20 @@ class TournamentOverviewView extends HS_DatabaseObject {
 	protected $Convention_softPlayerCap; // Int
 	protected $ConventionSeries_id; // Int
 	protected $ConventionSeries_name; // Int
+	protected $TournamentFormatTag_id; // Int
+	protected $TournamentFormatTag_tournamentID; // Int
+	protected $TournamentFormatTag_formatID; // Int
+	protected $TournamentFormatTag_data; // String
+	protected $TournamentFormat_id; // Int
+	protected $TournamentFormat_name; // String
+	protected $TournamentFormat_impactBuilder; // Boolean
+	protected $TournamentFormat_description; // String
+	protected $TournamentIncludesFigureSetSubGroup_id; // Int
+	protected $TournamentIncludesFigureSetSubGroup_tournamentID; // Int
+	protected $TournamentIncludesFigureSetSubGroup_figureSetSubGroupID; // Int
+	protected $TournamentIncludesFigureSetSubGroup_include; // Boolean
+	protected $FigureSetSubGroup_id; // Int
+	protected $FigureSetSubGroup_name; // String
 
 	/* Static 'Constructors' */
 	
@@ -300,7 +314,7 @@ class TournamentOverviewView extends HS_DatabaseObject {
 	}
 
 	public static function getColumnNames() {
-		return array("id", "HeroscapeTournament_tournamentID", "HeroscapeTournament_numArmies", "HeroscapeTournament_allowedPointOverlap", "HeroscapeTournament_pointLimit", "HeroscapeTournament_hexLimit", "HeroscapeTournament_figureLimit", "HeroscapeTournament_useDeltaPricing", "HeroscapeTournament_includeVC", "HeroscapeTournament_includeMarvel", "Tournament_id", "Tournament_name", "Tournament_description", "Tournament_conventionID", "Tournament_startTime", "Tournament_endDate", "Tournament_address", "Tournament_started", "Tournament_finished", "Tournament_online", "Tournament_maxEntries", "Tournament_teamSize", "Tournament_maxNumPlayersPerGame", "Tournament_numLossesToBeEliminated", "Tournament_pairAfterEliminated", "Tournament_roundLengthMinutes", "Tournament_ignoreInStandings", "Season_id", "Season_name", "Season_leagueID", "Season_start", "Season_end", "Season_description", "League_id", "League_name", "League_description", "Convention_id", "Convention_name", "Convention_description", "Convention_startDate", "Convention_endDate", "Convention_address", "Convention_conventionSeriesID", "Convention_hardPlayerCap", "Convention_softPlayerCap", "ConventionSeries_id", "ConventionSeries_name");
+		return array("id", "HeroscapeTournament_tournamentID", "HeroscapeTournament_numArmies", "HeroscapeTournament_allowedPointOverlap", "HeroscapeTournament_pointLimit", "HeroscapeTournament_hexLimit", "HeroscapeTournament_figureLimit", "HeroscapeTournament_useDeltaPricing", "HeroscapeTournament_includeVC", "HeroscapeTournament_includeMarvel", "Tournament_id", "Tournament_name", "Tournament_description", "Tournament_conventionID", "Tournament_startTime", "Tournament_endDate", "Tournament_address", "Tournament_started", "Tournament_finished", "Tournament_online", "Tournament_maxEntries", "Tournament_teamSize", "Tournament_maxNumPlayersPerGame", "Tournament_numLossesToBeEliminated", "Tournament_pairAfterEliminated", "Tournament_roundLengthMinutes", "Tournament_ignoreInStandings", "Season_id", "Season_name", "Season_leagueID", "Season_start", "Season_end", "Season_description", "League_id", "League_name", "League_description", "Convention_id", "Convention_name", "Convention_description", "Convention_startDate", "Convention_endDate", "Convention_address", "Convention_conventionSeriesID", "Convention_hardPlayerCap", "Convention_softPlayerCap", "ConventionSeries_id", "ConventionSeries_name", "TournamentFormatTag_id", "TournamentFormatTag_tournamentID", "TournamentFormatTag_formatID", "TournamentFormatTag_data", "TournamentFormat_id", "TournamentFormat_name", "TournamentFormat_impactBuilder", "TournamentFormat_description", "TournamentIncludesFigureSetSubGroup_id", "TournamentIncludesFigureSetSubGroup_tournamentID", "TournamentIncludesFigureSetSubGroup_figureSetSubGroupID", "TournamentIncludesFigureSetSubGroup_include", "FigureSetSubGroup_id", "FigureSetSubGroup_name");
 	}
 
 	public static function getActionNames() {

@@ -39,43 +39,15 @@
 			updateArmyDisplay();
 		}
 		
-		function checkUrlParameters() {
-			if (window.location.origin.includes("c3g")) {
-				return;
-			}
+		function checkUrlParametersPageSpecific() {
 			var url = new URL(window.location.href);
+			
 			var pointsParam = url.searchParams.get("delta");
 			if (pointsParam !== undefined && pointsParam !== null && 
 					pointsParam.toLowerCase() == "true") {
 				var deltaCheckbox = document.getElementById("deltaCheckbox");
 				deltaCheckbox.checked = true;
 				switchClassicDelta(deltaCheckbox);
-			}
-			
-			var vcParam = url.searchParams.get("vc");
-			if (vcParam !== undefined && vcParam !== null && 
-					vcParam.toLowerCase() == "true") {
-				var pointsCheckbox = document.getElementById("vcCheckbox");
-				pointsCheckbox.checked = true;
-				switchClassicVc(pointsCheckbox);
-			}
-			
-			var searchParam = url.searchParams.get("search");
-			if (searchParam !== undefined && searchParam !== null && searchParam != "null"){
-				document.getElementById("searchInput").value = searchParam;
-				searchText = searchParam;
-			}
-			
-			var sort1Param = url.searchParams.get("sort1");
-			if (sort1Param !== undefined && sort1Param !== null && sort1Param != "null"){
-				document.getElementById("sort1").value = sort1Param;
-				sortOption1 = sort1Param;
-			}
-			
-			var sort2Param = url.searchParams.get("sort2");
-			if (sort2Param !== undefined && sort2Param !== null && sort2Param != "null"){
-				document.getElementById("sort2").value = sort2Param;
-				sortOption2 = sort2Param;
 			}
 			
 			var unitsParam = url.searchParams.get("units");
@@ -102,51 +74,14 @@
 				}
 				updateArmyDisplay();
 			}
-			
-			redrawPage();
 		}
 		
 		var army = new Army();
-		
-		//var vcInclusive = false;
-		//var marvelInclusive = true; // TODO : consider having a toggle for this 
-		var deltaPoints = false;
 		var banList = null;
 		var restrictedList = null;
 		
-		/*function switchClassicVc(refThis) {
-			vcInclusive = refThis.checked;
-			if (vcInclusive) {
-				document.getElementById("classicToggle").classList.remove("toggleSwitchSelected");
-				document.getElementById("vcToggle").classList.add("toggleSwitchSelected");
-			} else {
-				document.getElementById("classicToggle").classList.add("toggleSwitchSelected");
-				document.getElementById("vcToggle").classList.remove("toggleSwitchSelected");
-			}
-			redrawPage();
-			//updateURL();
-		}*/
-		
-		function switchClassicDelta(refThis) {
-			deltaPoints = refThis.checked;
-			if (deltaPoints) {
-				document.getElementById("standardToggle").classList.remove("toggleSwitchSelected");
-				document.getElementById("deltaToggle").classList.add("toggleSwitchSelected");
-			} else {
-				document.getElementById("standardToggle").classList.add("toggleSwitchSelected");
-				document.getElementById("deltaToggle").classList.remove("toggleSwitchSelected");
-			}
-			redrawPage();
-			//updateURL();
-		}
-		
-		function updateURL() {
-			if (window.location.origin.includes("c3g")) {
-				return;
-			}
-			const deltaStr = deltaPoints ? "true" : "false";
-			//const vcStr = vcInclusive ? "true" : "false";
-			
+		function updateUrlPageSpecific() {
+			var urlPart = "";
 			var units = "";
 			for (var figureName in army.units) {
 				if (army.units.hasOwnProperty(figureName)) {
@@ -155,20 +90,8 @@
 					units += ";"
 				}
 			}
-			
-			var newurl = window.location.origin + 
-				window.location.pathname + 
-				"?" + 
-					'delta='+deltaStr+
-					/*'&vc='+vcStr+*/
-					'&search='+searchText+
-					'&sort1='+sortOption1+
-					'&sort2='+sortOption2+
-					'&units='+units;
-					
-			
-			
-			window.history.pushState({path:newurl},'',newurl);
+			urlPart += "&units="+units;
+			return urlPart;
 		}
 		
 		function redrawPage() {
@@ -239,36 +162,7 @@
 			FigureSetSubGroup.load(
 				{/*figureSet: */},
 				function (figureSetSubGroups) {
-					var tier1Group = document.getElementById('Tier1SubGroups');
-					var tier2Group = document.getElementById('Tier2SubGroups');
-					for (let i = 0; i < figureSetSubGroups.length; i++) {
-						const subGroup = figureSetSubGroups[i];
-						var subGroupDiv = createDiv({
-							class: "figureSetSubGroup"
-						});
-						if (subGroup.tier == 1) {
-							tier1Group.appendChild(subGroupDiv);
-						} else {
-							tier2Group.appendChild(subGroupDiv);
-						}
-						var labelElem = createLabel({});
-						subGroupDiv.appendChild(labelElem);
-						var inputElem = createInput({
-							type: "checkbox",
-							id: subGroup.name + "_checkbox",
-							onchange: "redrawPage()"
-						});
-						const cookieValue = getCookieValue("hs_setting_Default_Builder_Display_-_"+subGroup.name.replaceAll(" ", "_"));
-						if (cookieValue != null) {
-							if (cookieValue == "1") {
-								inputElem.checked = true;
-							}
-						} else if (subGroup.selectedByDefault) {
-							inputElem.checked = true;
-						}
-						labelElem.appendChild(inputElem);
-						labelElem.appendChild(createText(subGroup.name));
-					}
+					createFigureSetCheckboxes(figureSetSubGroups);
 				}, 
 				{joins: {}}
 			);
