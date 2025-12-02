@@ -1134,6 +1134,9 @@
 			}
 			childDiv = document.getElementById("NumPlayersSignedUp");
 			childDiv.appendChild(createDiv({innerHTML: currentTournament.players.length + " Players Signed-Up"}));
+			if (currentTournament.maxEntries != null) {
+				childDiv.appendChild(createDiv({innerHTML: "Player Cap: " + currentTournament.maxEntries}));
+			}
 		}
 		
 		function displayArmyBuilderLink() {

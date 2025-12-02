@@ -622,8 +622,12 @@ io.on('connection', (socket) => {
 			
 			var data = await response.text();
 			
-			data = data.substr(data.indexOf('url') + 6); // Offset by 'url: "'
-			data = data.substr(0, data.indexOf(',')-1).trim();
+			const matchStr = 'insertRandomNumberIntoFilename("';
+			data = data.substr(data.indexOf(matchStr) + matchStr.length);
+			data = data.substr(0, data.indexOf('"')).trim();
+			
+			/*data = data.substr(data.indexOf('url') + 6); // Offset by 'url: "'
+			data = data.substr(0, data.indexOf(',')-1).trim();*/
 			
 			callbackFcn(data);
 		} catch (err) {
@@ -788,6 +792,8 @@ io.on('connection', (socket) => {
 						
 						io.to("Convention_"+convention.id)
 							.emit("deRegisteredConvention", JSON.stringify({}));
+							
+						_alertConventionAdminOfDrop(user, convention);
 					});
 				});
 			});			
@@ -810,12 +816,14 @@ io.on('connection', (socket) => {
 					socket.emit("announcementError", JSON.stringify({}));
 					return;
 				}			
-				var emails = [];
+				/*var emails = [];
 				for (let i = 0; i < results.length; i++) {
 					emails.push(results[i].email);
-				}
+				}*/
 				io.to("Convention_"+currentConvention.id)
 					.emit("userDropped", JSON.stringify({user: {id: user.id}}));
+				
+				_alertConventionAdminOfDrop(user, currentConvention);
 			});	
 		}
 	});
@@ -846,6 +854,25 @@ io.on('connection', (socket) => {
 			});		
 		}
 	});
+	
+	function _alertConventionAdminOfDrop(user, convention) {
+		dbConnection.query(
+				"SELECT `User`.`email` FROM `Admin`" + 
+					"INNER JOIN `User` ON `User`.`id` = `Admin`.`userID` " +
+					"WHERE `conventionID`=?",
+				[convention.id],
+				(error, results, fields) => {
+			if (error) {
+				return;
+			}			
+			for (let i = 0; i < results.length; i++) {
+				sendEmail(
+					results[i].email, 
+					convention.name + ": Attendee Dropped", 
+					user.userName+" Dropped From "+convention.name);
+			}
+		});		
+	}
 	
 	/** Convention Series Entry Points **/
 	
@@ -2297,6 +2324,53 @@ io.on('connection', (socket) => {
 		}
 	}
 	
+	
+	
+	/** Data Search Functionality **/
+	
+	socket.on('armySearch', (objStr) => {
+		const searchParams = JSON.parse(objStr);
+		
+		var searchQuery = "SELECT `C1`.`id` FROM ";
+		var searchQueryParams = [];
+		var keyCount = 1;
+		for (var key of Object.keys(searchParams)) {
+			if (keyCount > 1) {
+				searchQuery += "INNER JOIN ";
+			}
+			searchQuery += "(SELECT `PlayerArmy`.`id` FROM `PlayerArmy` " +
+				"INNER JOIN `PlayerArmyCard` ON `PlayerArmyCard`.`playerArmyID` = `PlayerArmy`.`id` " +
+				"INNER JOIN `Card` ON `Card`.`id` = `PlayerArmyCard`.`cardID` " +
+				"WHERE `Card`.`name` = ? "+
+				"AND `PlayerArmyCard`.`quantity` >= ? " +
+				") AS `C" + keyCount + "` ";
+			if (keyCount > 1) {
+				searchQuery += "ON `C1`.`id` = `C" + keyCount + "`.`id` "
+			}
+			searchQueryParams.push(key);
+			searchQueryParams.push(searchParams[key]);
+			keyCount++;
+		}
+		searchQuery += " ORDER BY `id`";
+		
+		dbConnection.query(
+				searchQuery,
+				searchQueryParams,
+				(error, results, fields) => {
+					if (error) {
+						socket.emit("armySearchResult", JSON.stringify({
+							'error': true,
+							'errorMsg': error,
+							'query': searchQuery,
+							'params': searchQueryParams
+						}));
+						return;
+					}
+					socket.emit("armySearchResult", JSON.stringify(results));
+					return;
+				}
+			);
+	});
 	
 	
 	/** Player Rankings **/

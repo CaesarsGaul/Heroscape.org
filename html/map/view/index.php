@@ -171,6 +171,14 @@
 						class: "createOhsLink",
 						href: "/ohs?HeroscapeMap="+map.id+"&create=y",
 						target: "_blank"}));
+					
+					var ohsDiv2 = createDiv({});
+					parentElem.appendChild(ohsDiv2);
+					ohsDiv2.appendChild(createA({
+						innerHTML: "View OHS Board",
+						class: "createOhsLink",
+						href: "https://docs.google.com/drawings/d/"+map.ohsGdocId,
+						target: "_blank"}));
 				}
 				
 				if (map.hexoscapeUrl != null) {
@@ -197,6 +205,20 @@
 				for (let i = 0; i < map.heroscapeMapPreviousVersions.length; i++) {
 					createVersionDiv(parentElem, map.heroscapeMapPreviousVersions[i], versionDivCount++, map.heroscapeMapPreviousVersions.length+1);
 				}
+				
+				/*if (map.ohsGdocId != null) {
+					var ohsImgDiv = createDiv({});
+					parentElem.appendChild(ohsImgDiv);
+					var ifrm = document.createElement("iframe");
+					ifrm.setAttribute("src", "https://docs.google.com/drawings/d/"+map.ohsGdocId+"/edit?embedded=true");
+					ifrm.style.width = "640px";
+					ifrm.style.height = "480px";
+					ifrm.setAttribute("frameborder", "0");
+					ifrm.setAttribute("marginheight", "0");
+					ifrm.setAttribute("marginwidth", "0");
+					document.body.appendChild(ifrm);
+					ohsImgDiv.appendChild(ifrm);
+				}*/
 				
 				var tournamentUseDiv = createDiv({});
 				parentElem.appendChild(tournamentUseDiv);

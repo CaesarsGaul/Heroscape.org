@@ -301,10 +301,12 @@
 			if (confirm("Are you sure you want to remove '"+user.userName+"' from the Attendee list?")) {
 				socket.emit("dropUserFromConvention", JSON.stringify({
 					convention: {
-						id: currentConvention.id
+						id: currentConvention.id,
+						name: currentConvention.name
 					},
 					user: {
-						id: userID
+						id: userID,
+						userName: user.userName
 					}
 				}));
 			}

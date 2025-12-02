@@ -69,6 +69,7 @@
 		<h1>Figure Data</h1>
 		<article>	
 			<div id='DataLinks'>
+				<a href='/data/figures/army-search'>Army Search</a>
 				<a href='/data/figures/release-set'>Release Sets</a>
 				<a href='/data/figures/win-rate'>Win Rates</a>
 			</div>

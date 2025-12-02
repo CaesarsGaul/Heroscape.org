@@ -36,55 +36,52 @@
 				return;
 			}
 			
-			var tournamentsByAddress = {};
-			for (let i = 0; i < tournaments.length; i++) {
-				const tournament = tournaments[i];
-				if (tournament.address != null && tournament.latitude != null && tournament.longitude != null) {
-					if (tournamentsByAddress[tournament.address.trim()] === undefined) {
-						tournamentsByAddress[tournament.address.trim()] = [];
-					}
-					tournamentsByAddress[tournament.address.trim()].push(tournament);
-				}
-			}
-			for (const [address, tournamentArray] of Object.entries(tournamentsByAddress)) {
-				const marker = new AdvancedMarkerElement({
-					map: map,
-					position: { lat: parseFloat(tournamentArray[0].latitude), lng: parseFloat(tournamentArray[0].longitude) },
-					title: tournamentArray[0].fullDisplayName(),
-					gmpClickable: true
-				});
-				marker.addListener('click', ({ domEvent, latLng }) => {
-					const { target } = domEvent;
-					infoWindow.close();
-					var infoWindowContent = "";
-					for (let j = 0; j < tournamentArray.length; j++) {
-						const tournament = tournamentArray[j];
-						infoWindowContent += "<p><a href='https://heroscape.org/events/tournament/?Tournament="+tournament.id+"' target='_blank'>"+tournament.fullDisplayName()+"</a></p>";
-					}
-					infoWindow.setContent(infoWindowContent);
-					infoWindow.open(marker.map, marker);
-				});
-			}
+			var onlineParentElem = document.getElementById("OnlineList");
+			onlineParentElem.innerHTML = "";
 			
-			var conventionsByAddress = {};
+			var eventsByAddress = {};
 			for (let i = 0; i < conventions.length; i++) {
 				const convention = conventions[i];
 				if (convention.address != null && convention.latitude != null && convention.longitude != null) {
-					if (conventionsByAddress[convention.address.trim()] === undefined) {
-						conventionsByAddress[convention.address.trim()] = [];
+					if (eventsByAddress[convention.address.trim()] === undefined) {
+						eventsByAddress[convention.address.trim()] = [];
 					}
-					conventionsByAddress[convention.address.trim()].push(convention);
+					eventsByAddress[convention.address.trim()].push(convention);
 				}
 			}
+			for (let i = 0; i < tournaments.length; i++) {
+				const tournament = tournaments[i];
+				if (tournament.address != null && tournament.latitude != null && tournament.longitude != null) {
+					if (eventsByAddress[tournament.address.trim()] === undefined) {
+						eventsByAddress[tournament.address.trim()] = [];
+					}
+					eventsByAddress[tournament.address.trim()].push(tournament);
+				} else if (tournament.online) {
+					var pElem = createP({});
+					pElem.appendChild(createA({
+						innerHTML: tournament.fullDisplayName(),
+						href: "/events/tournament/?Tournament="+tournament.id,
+						target: "_blank"
+					}));
+					onlineParentElem.appendChild(pElem);					
+				}
+			}			
 			
-			for (const [address, conventionArray] of Object.entries(conventionsByAddress)) {
+			for (const [address, eventArray] of Object.entries(eventsByAddress)) {
 				const pinGlyph = new PinElement({
-					glyphColor: "white"
+					glyphColor: eventArray[0] instanceof Convention
+						? "white"
+						: "black"
 				});
 				const marker = new AdvancedMarkerElement({
 					map: map,
-					position: { lat: parseFloat(conventionArray[0].latitude), lng: parseFloat(conventionArray[0].longitude) },
-					title: conventionArray[0].name,
+					position: { lat: parseFloat(eventArray[0].latitude), lng: parseFloat(eventArray[0].longitude) },
+					title: eventArray[0] instanceof Convention
+						? eventArray[0].name
+						: eventArray[0].fullDisplayName(),
+					zIndex: eventArray[0] instanceof Convention
+						? 20
+						: 10,
 					content: pinGlyph.element,
 					gmpClickable: true
 				});
@@ -92,9 +89,13 @@
 					const { target } = domEvent;
 					infoWindow.close();
 					var infoWindowContent = "";
-					for (let j = 0; j < conventionArray.length; j++) {
-						const convention = conventionArray[j];
-						infoWindowContent += "<p><a href='https://heroscape.org/events/convention/?Convention="+convention.id+"' target='_blank'>"+convention.name+"</a></p>";
+					for (let j = 0; j < eventArray.length; j++) {
+						const event = eventArray[j];
+						if (event instanceof Convention) {
+							infoWindowContent += "<p><a href='https://heroscape.org/events/convention/?Convention="+event.id+"' target='_blank'>"+event.name+"</a></p>";
+						} else if (event instanceof Tournament){
+							infoWindowContent += "<p><a href='https://heroscape.org/events/tournament/?Tournament="+event.id+"' target='_blank'>"+event.fullDisplayName()+"</a></p>";
+						}
 					}
 					infoWindow.setContent(infoWindowContent);
 					infoWindow.open(marker.map, marker);
@@ -118,7 +119,12 @@
 			
 			<!--The div element for the map -->
 			<div id="map"></div>
-			
+			<div id="Online">
+				<h2>Online Events</h2>
+				<div id="OnlineList">
+				
+				</div>
+			</div>
 
 			<script>
 				(g=>{var h,a,k,p="The Google Maps JavaScript API",c="google",l="importLibrary",q="__ib__",m=document,b=window;b=b[c]||(b[c]={});var d=b.maps||(b.maps={}),r=new Set,e=new URLSearchParams,u=()=>h||(h=new Promise(async(f,n)=>{await (a=m.createElement("script"));e.set("libraries",[...r]+"");for(k in g)e.set(k.replace(/[A-Z]/g,t=>"_"+t[0].toLowerCase()),g[k]);e.set("callback",c+".maps."+q);a.src=`https://maps.${c}apis.com/maps/api/js?`+e;d[q]=f;a.onerror=()=>h=n(Error(p+" could not load."));a.nonce=m.querySelector("script[nonce]")?.nonce||"";m.head.append(a)}));d[l]?console.warn(p+" only loads once. Ignoring:",g):d[l]=(f,...n)=>r.add(f)&&u().then(()=>d[l](f,...n))})
