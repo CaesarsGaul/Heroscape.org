@@ -270,26 +270,27 @@
 						: card.cardPowerRankings[1].ranking;
 				document.getElementById("PowerRanking_Classic").innerHTML = "Power Ranking Classic (Mike) : " + powerRankingClassic;
 			}
-			const powerRankingVc = 
-				card.cardPowerRankings[0].powerRankingList.name == "VC-Inclusive Power Rankings"
-					? card.cardPowerRankings[0].ranking
-					: card.cardPowerRankings[1].ranking;
-			document.getElementById("PowerRanking_VC").innerHTML = "Power Ranking VC (Dok) : " + powerRankingVc;
+			if (card.cardPowerRankings.length > 0) {
+				const powerRankingVc = 
+					card.cardPowerRankings[0].powerRankingList.name == "VC-Inclusive Power Rankings"
+						? card.cardPowerRankings[0].ranking
+						: card.cardPowerRankings[1].ranking;
+				document.getElementById("PowerRanking_VC").innerHTML = "Power Ranking VC (Dok) : " + powerRankingVc;
+			}
 			
 			drawDeltaPriceGraph({height: 300}, [card]);
 		}
 		
 		function displayWinRateData() {
-			if (cardWinRateDelta == null || cardWinRateStandard == null) {
-				return;
+			if (cardWinRateDelta != null) {
+				var deltaDiv = document.getElementById("WinRateDelta");
+				deltaDiv.innerHTML = cardWinRateDelta.W + "-" + cardWinRateDelta.L + " (" + cardWinRateDelta.WinPercent + ")";
 			}
 			
-			var standardDiv = document.getElementById("WinRateStandard");
-			var deltaDiv = document.getElementById("WinRateDelta");
-			
-			standardDiv.innerHTML = cardWinRateStandard.W + "-" + cardWinRateStandard.L + " (" + cardWinRateStandard.WinPercent + ")";
-			deltaDiv.innerHTML = cardWinRateDelta.W + "-" + cardWinRateDelta.L + " (" + cardWinRateDelta.WinPercent + ")";
-			
+			if (cardWinRateStandard != null) {
+				var standardDiv = document.getElementById("WinRateStandard");
+				standardDiv.innerHTML = cardWinRateStandard.W + "-" + cardWinRateStandard.L + " (" + cardWinRateStandard.WinPercent + ")";
+			}
 		}
 		
 		function displayUserUsageData(viewRows) {

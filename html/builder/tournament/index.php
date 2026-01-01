@@ -79,6 +79,12 @@
 				document.getElementById("ohsArmyListCopy").style.display = "none";
 			}
 			
+			if (tournament.name.startsWith("War League ")) {
+				document.getElementById("warLeagueArmyListCopy").style.display = "inline-block";
+			} else {
+				document.getElementById("warLeagueArmyListCopy").style.display = "none";
+			} 
+			
 			checkUrlParameters();
 			displayUnits();
 			displayFilters();
@@ -410,6 +416,7 @@
 					</div>
 					<button id='armyListCopy' class='armyBtn' onclick='_copyArmy()'>Copy</button>
 					<button id='ohsArmyListCopy' class='armyBtn hidden' onclick='_copyArmyOHS()'>OHS Copy</button>
+					<button id='warLeagueArmyListCopy' class='armyBtn hidden' onclick='_copyArmyOHS()'>WL Copy</button>
 					<button id='armyListX' class='armyBtn' onclick='_clearArmy()'>X</button>
 					<div class='armyStatsGroup'>
 						<div id='armyPoints' class='armyStatsValue'>

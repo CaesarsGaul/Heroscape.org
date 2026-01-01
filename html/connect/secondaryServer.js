@@ -30,7 +30,7 @@ const io = require('socket.io')(http,
 const port = 3000;
 const SCOPES = ['https://www.googleapis.com/auth/spreadsheets',
 	'https://www.googleapis.com/auth/drive'];
-const TOKEN_PATH = 'token.json';
+const TOKEN_PATH = '/var/www/html/connect/token.json';
 
 AWS.config.update({region: 'us-east-1'});
 
@@ -41,6 +41,7 @@ AWS.config.update({region: 'us-east-1'});
  * @param {function} callback The callback to call with the authorized client.
  */
 function authorize(callback) {
+	
 	fs.readFile('/var/www/secureFiles/google/credentials.json', (err, content) => {
 		if (err) {
 			return;
@@ -572,10 +573,10 @@ io.on('connection', (socket) => {
 	
 	function createGameLink(gameName, mapGdocId, players=null, callbackFcn=null) {
 		const loginUrl = "https://www.heroscapers.com/ohs/index.php";	
-		
+				
 		createMap(mapGdocId, gameName, players, function(resultData) {
 			const gDocId = resultData.id;
-			
+						
 			const form = new FormData();
 			form.append('name', 'Heroscape.org');
 			form.append('game', '');
@@ -611,7 +612,7 @@ io.on('connection', (socket) => {
 		});	
 	}
 	
-	async function _createGameLink(loginUrl, loginOpt, callbackFcn) {
+	async function _createGameLink(loginUrl, loginOpt, callbackFcn) {		
 		try {
 			var response = await fetch(loginUrl, loginOpt);
 			
@@ -621,11 +622,11 @@ io.on('connection', (socket) => {
 			// TODO - I might need 'set-cookie', 'sec_session_id' later if I want to re-enter game to post anything...
 			
 			var data = await response.text();
-			
+						
 			const matchStr = 'insertRandomNumberIntoFilename("';
 			data = data.substr(data.indexOf(matchStr) + matchStr.length);
 			data = data.substr(0, data.indexOf('"')).trim();
-			
+						
 			/*data = data.substr(data.indexOf('url') + 6); // Offset by 'url: "'
 			data = data.substr(0, data.indexOf(',')-1).trim();*/
 			
@@ -3499,49 +3500,7 @@ io.on('connection', (socket) => {
 		}		
 	}
 	
-	function sendEmail(emailAddress, subject, message) {
-		
-		message += "<br><br>------------<br>Please DO NOT REPLY to this email. It will not go back to the sender.";
-		
-		if (emailAddress == null) {
-			return; 
-		}
-		var params = {
-			Destination: {
-				ToAddresses: [
-					emailAddress
-				]
-			},
-			Message: {
-				Body: {
-					Html: {
-						Charset: "UTF-8",
-						Data: message
-					}
-				},
-				Subject: {
-					Charset: 'UTF-8',
-					Data: subject
-				}
-			},
-			Source: 'Heroscape.org@heroscape.org',
-			ReplyToAddresses: [
-				'chrisperkins.cp@gmail.com'
-			],
-		};
-
-		// Create the promise and SES service object
-		var sendPromise = new AWS.SES({apiVersion: '2010-12-01'}).sendEmail(params).promise();
-
-		// Handle promise's fulfilled/rejected states
-		sendPromise.then(
-			function(data) {
-				// Do nothing
-			}).catch(
-				function(err) {
-					// Do nothing 
-		});
-	}
+	
 	
 	function _updateBackupSheet() {
 		if (sheetId == null) {
@@ -3632,3 +3591,48 @@ process.on('uncaughtException', err => {
 	logToFile("    Stack : " + err.stack);
 	//process.exit(1);
 });
+
+
+function sendEmail(emailAddress, subject, message) {
+		
+		message += "<br><br>------------<br>Please DO NOT REPLY to this email. It will not go back to the sender.";
+		
+		if (emailAddress == null) {
+			return; 
+		}
+		var params = {
+			Destination: {
+				ToAddresses: [
+					emailAddress
+				]
+			},
+			Message: {
+				Body: {
+					Html: {
+						Charset: "UTF-8",
+						Data: message
+					}
+				},
+				Subject: {
+					Charset: 'UTF-8',
+					Data: subject
+				}
+			},
+			Source: 'Heroscape.org@heroscape.org',
+			ReplyToAddresses: [
+				'chrisperkins.cp@gmail.com'
+			],
+		};
+
+		// Create the promise and SES service object
+		var sendPromise = new AWS.SES({apiVersion: '2010-12-01'}).sendEmail(params).promise();
+
+		// Handle promise's fulfilled/rejected states
+		sendPromise.then(
+			function(data) {
+				// Do nothing
+			}).catch(
+				function(err) {
+					// Do nothing 
+		});
+	}

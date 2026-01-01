@@ -81,6 +81,9 @@
 			const autoSkull = document.getElementById("autoSkull").checked;
 			const orcBattleCryAura = document.getElementById("orcBattleCryAura").checked;
 			const rerollNonSkulls = document.getElementById("rerollNonSkulls").checked;
+			const rerollXDie = document.getElementById("rerollXDie").checked
+				? document.getElementById("rerollXDieNumber").value
+				: null;
 			
 			// Defensive powers
 			const ironTough = document.getElementById("ironTough").checked;
@@ -103,12 +106,18 @@
 				: heroicDefenseAura
 					? 1/2
 					: 1/3;
+					
+			var originalAttack = attack;
+			if (rerollXDie != null) {
+				attack = parseInt(attack) + parseInt(rerollXDie);
+			}
 			
 			var outcomes = [];
 			for (let a = 0; a <= attack; a++) {
 				var subOutcomes = [];
 				for (let d = 0; d <= defense; d++) {
-					var altA = a;
+					var altA = Math.min(a, originalAttack);
+					//var altA = a;
 					var altD = d;
 					if (deadlyStrike) {
 						altA *= 2;
@@ -173,12 +182,18 @@
 			headerRow.appendChild(createTh({innerHTML: "% = # Wounds"}));
 			headerRow.appendChild(createTh({innerHTML: "% >= # Wounds"}));
 			
-			const iMax = 
+			/*const iMax = 
 				deadlyStrike
 					? attack*2 
 					: autoSkull
 						? parseInt(attack)+1
-						: attack;
+						: attack;*/
+			const iMax = 
+				deadlyStrike
+					? originalAttack*2 
+					: autoSkull
+						? parseInt(originalAttack)+1
+						: originalAttack;
 						
 			var p1Running = 0;
 			var p3Running = 1;
@@ -346,6 +361,10 @@
 					<label>
 						<input type='checkbox' id='rerollNonSkulls' />
 						Reroll Non-Skulls
+					</label>
+					<label>
+						<input type='checkbox' id='rerollXDie' />
+						Reroll <input type='number' id='rerollXDieNumber' min=1 max=10> Die
 					</label>
 				</div>
 				<div class='powers'>

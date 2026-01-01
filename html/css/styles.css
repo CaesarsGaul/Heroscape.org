@@ -596,7 +596,7 @@ input:checked + .slider:before {
 	right: 90px;
 }
 
-#CopyUrlButton, #ohsArmyListCopy {
+#CopyUrlButton, #ohsArmyListCopy, #warLeagueArmyListCopy, .externalLeagueArmyCopyButton {
 	left: 50px;
 }
 

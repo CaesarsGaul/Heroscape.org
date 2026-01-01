@@ -272,6 +272,7 @@
 				//console.log(Object.keys(unitsMap).length);
 				
 				const unitsToDoubleLives = ["Mezzodemon Warmongers", "Axentia", "Vulcanmech Incendiborgs"];
+				const unitsToHalfLives = ["Crimson Twins"];
 				
 				for (const unitName of Object.keys(unitsMap)) {
 				//Object.keys(unitsMap).forEach(unitName => function() {
@@ -280,6 +281,13 @@
 							unitsMap[unitName].figures *= 2;
 						} else {
 							unitsMap[unitName].life *= 2;
+						}
+					} 
+					if (unitsToHalfLives.includes(unitName)) {
+						if (unitsMap[unitName].squad) {
+							unitsMap[unitName].figures /= 2;
+						} else {
+							unitsMap[unitName].life /= 2;
 						}
 					}
 				//});
