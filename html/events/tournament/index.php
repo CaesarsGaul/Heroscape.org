@@ -322,9 +322,12 @@
 		Tournament.options.fieldsToInclude = ["name", "description", "startTime", "address",
 			"endDate", "allowSignupAfter", "allowArmySubmissionAfter", "allowLateSignup", "online", 
 			"maxEntries", "numLossesToBeEliminated", "pairAfterEliminated", "roundLengthMinutes"];
-		HeroscapeTournament.options.fieldsToInclude = ["pointLimit", "hexLimit", "figureLimit", "useDeltaPricing", "includeVC", "includeMarvel", "uniquesOnly", "commonsOnly", "heroesOnly", "squadsOnly", "banList", "restrictedList"];
+		HeroscapeTournament.options.fieldsToInclude = ["pointLimit", "hexLimit", "figureLimit", "useDeltaPricing"];
 		Tournament.options.labelsToIgnore = ["name"];
-		Tournament.options.linksToInclude = ["tournamentFormatTags"];
+		Tournament.options.linksToInclude = ["tournamentFormatTags", "tournamentIncludesFigureSetSubGroups"];
+		Tournament.options.nonEditableLinks = ["tournamentIncludesFigureSetSubGroups"];
+
+		TournamentIncludesFigureSetSubGroup.options.fieldsToInclude = ["figureSetSubGroup", "include"];
 		
 		TournamentFormatTag.options.fieldsToInclude = ["format", "data"];
 		TournamentFormatTag.options.multiLevelEditsToSkip = ["create"];

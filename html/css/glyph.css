@@ -1,0 +1,82 @@
+#Glyphs, #GlyphSearch {
+	display: inline-block;
+	vertical-align: top;
+	text-align: left;
+	flex-grow: 1;
+	max-width: 300px;
+}
+
+#GlyphSearch label {
+	display: block;
+	text-align: left;
+}
+
+.glyph {
+	
+}
+
+#Glyph {
+	border: 1px solid black;
+	/*display: none;*/
+	max-width: 400px;
+	margin: auto;
+}
+
+.glyphLeft, .glyphRight {
+	display: inline-block;
+	vertical-align: top;
+	text-align: left;
+	flex-grow: 1;
+}
+
+.glyphLeft {
+	text-align: center;
+}
+
+.glyphRight {
+	
+}
+
+.glyphName {
+	font-weight: bold;
+}
+
+.glyphSummary {
+	
+}
+
+.glyphDescription {
+	
+}
+
+.glyphTypeGroup {
+	font-style: italic;
+}
+
+.glyphType {
+	display: inline-block;
+}
+
+.glyphType:not(:first-child):before  {
+	content: "|";
+	margin-right: 5px;
+	margin-left: 5px;
+}
+
+.glyphImage {
+	width: 100px;
+	margin-left: 10px;
+}
+
+.authorName {
+	color: red;
+}
+
+.glyphLink {
+	text-decoration: inherit;
+	color: inherit !important;
+}
+
+.glyphLink:visited {
+	color: inherit !important;
+}

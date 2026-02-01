@@ -160,15 +160,14 @@ class TournamentIncludesFigureSetSubGroup extends HS_DatabaseObject {
 
 	/* Public Dynamic Functions */
 	
+	// @DoNotUpdate
 	public function isEditableByUser() {
-		//$user = LoginCredentials::getLoggedInUser();
-		return false; // TODO: temporary only
-		// TODO: return $user->TODO();
+		return $this->getTournament()->isEditableByUser();
 	}
 
+	// @DoNotUpdate
 	public function isViewableByUser() {
-		//$user = LoginCredentials::getLoggedInUser();
-		return true; // TODO: temporary only
+		return true;
 	}
 
 	public static function userCanCreate($implicitObjects=null) {
