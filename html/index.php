@@ -222,7 +222,7 @@
 								convention: null}, 
 							function (tournaments) {						
 								for (var i = 0; i < tournaments.length; i++) {
-									displayTournament(tournaments[i], "upcomingTournaments");
+									displayTournament(tournaments[i], "upcomingTournaments", ["showDate"]);
 								}
 							}, 
 							{joins: {
@@ -263,14 +263,8 @@
 							{startBefore: today,
 								endAfter: today},
 							function (conventions) {
-								var parentElem = document.getElementById("CurrentConventions");
 								for (let i = 0; i < conventions.length; i++) {
-									const convention = conventions[i];
-									var newDiv = createDiv({});
-									parentElem.appendChild(newDiv);
-									newDiv.appendChild(createA({
-										href: "/events/convention/?Convention="+convention.id, 
-										innerHTML: convention.name}));
+									displayConvention(conventions[i], "CurrentConventions");
 								}
 							},
 							{joins: {
@@ -289,12 +283,7 @@
 							function (conventions) {
 								var parentElem = document.getElementById("UpcomingConventions");
 								for (let i = 0; i < conventions.length; i++) {
-									const convention = conventions[i];
-									var newDiv = createDiv({});
-									parentElem.appendChild(newDiv);
-									newDiv.appendChild(createA({
-										href: "/events/convention/?Convention="+convention.id, 
-										innerHTML: convention.name}));
+									displayConvention(conventions[i], "UpcomingConventions", ["showDate"]);
 								}
 							},
 							{joins: {

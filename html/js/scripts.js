@@ -98,14 +98,32 @@ function displayTournament(tournament, divId, options=[]) {
 		href: "/events/tournament/?Tournament="+tournament.id, 
 		innerHTML: tournament.fullDisplayName()});
 	
-	if (options.includes("showDate")) { // TODO : Put this on a new line 
-		link.appendChild(createDiv({
-			innerHTML: "(" + dateToString(createDate(tournament.startTime)) + ")"
+	div.appendChild(link);	
+
+	if (options.includes("showDate")) {
+		div.appendChild(createSpan({
+			innerHTML: " (" + dateToString(createDate(tournament.startTime)) + ")"
+		}))
+	}	
+}
+
+function displayConvention(convention, divId, options=[]) {
+	var parentElem = document.getElementById(divId);
+	
+	var div = createDiv({});
+	parentElem.appendChild(div);
+	
+	var link = createA({
+		href: "/events/convention/?Convention="+convention.id, 
+		innerHTML: convention.name});
+		
+	div.appendChild(link);
+	
+	if (options.includes("showDate")) {
+		div.appendChild(createSpan({
+			innerHTML: " (" + convention.startDate + " - " + convention.endDate + ")"
 		}))
 	}
-	
-	
-	div.appendChild(link);					
 }
 
 function vcInclusive() {
