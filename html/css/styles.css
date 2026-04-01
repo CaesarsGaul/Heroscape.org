@@ -527,6 +527,12 @@ input:checked + .slider:before {
 .unitPowerText a:visited {
 	color: inherit !important;
 }
+.unitPowerText ul {
+	margin: 0;
+}
+.unitPowerText ul li {
+	
+}
 
 #UnitPowerRankings {
 	text-align: left;

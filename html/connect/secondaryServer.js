@@ -1486,7 +1486,7 @@ io.on('connection', (socket) => {
 						// Swiss Case (Normal/Default)
 						var numMapsNeeded = null;
 						if (maxPlayersPerMatchup == 2) {
-							const playerCount = tournament.teamSize == 1
+							const playerCount = tournament.teamSize == 1 // Can also use currentTournament.teamSize here instead...
 								? players.length
 								: Math.ceil(players.length / tournament.teamSize);
 							numMapsNeeded = playerCount % 2 == 0
@@ -1677,7 +1677,7 @@ io.on('connection', (socket) => {
 					if (error) {
 						socket.emit("publishRoundError", JSON.stringify({}));
 						return;
-					} 
+					}
 					dbConnection.query(
 							"SELECT `Game`.`id`, `roundID`, `mapID`, `GameMap`.`name` AS `mapName`, `GameMap`.`altOhsGdocId` AS `mapAltOhsGdocId`," +
 								"`GameMap`.`number` AS `mapNumber` " + 
@@ -2522,8 +2522,116 @@ io.on('connection', (socket) => {
 	
 	function _updatePlayerTTT() {
 		
-		// TODO 
+		const query = `
+			SELECT day, Winner, CONCAT("[", User.id, "]:0") AS "Loser"  FROM (
+
+			SELECT 
+					HeroscapeGamePlayer.gameID AS "gameID",
+					DATE_FORMAT(Tournament.startTime,'%Y%m%d') AS "day",
+					CONCAT("[", User.id, "]:1") AS "Winner" FROM HeroscapeGamePlayer
+				INNER JOIN Player ON Player.id = HeroscapeGamePlayer.playerID
+				INNER JOIN Tournament ON Player.tournamentID = Tournament.id
+				INNER JOIN User ON User.id = Player.userID
+				WHERE HeroscapeGamePlayer.result = 2 AND Player.userID IS NOT NULL
+				
+				) AS P1
+				
+				INNER JOIN HeroscapeGamePlayer ON HeroscapeGamePlayer.gameID = P1.gameID
+				INNER JOIN Player ON Player.id = HeroscapeGamePlayer.playerID
+				INNER JOIN User ON User.id = Player.userID
+				WHERE HeroscapeGamePlayer.result = 0
+				
+				ORDER BY day
+		`;
 		
+		dbConnection.query(
+			query,
+			[],
+			(error, results, fields) => {
+				if (error) {
+					return;
+				}
+				
+				var matchdata = "";
+				for (let i = 0; i < results.length; i++) {
+					const result = results[i];
+					if (i > 0) {
+						matchdata += "\n";
+					}
+					matchdata += result.day + "," + result.Winner + "," + result.Loser;
+				}
+				
+				_updatePlayerTTTAsync(matchdata);
+			}
+		);
+	}
+	
+	async function _updatePlayerTTTAsync(matchdata) {
+		const endPoint = "https://zeros.gg/play/api/ttt-fullcalc";
+		const tttOptions = {
+			method: "POST",
+			timeout: 10 * 1000, // 10 Seconds
+			body: JSON.stringify({
+				passport: "youdabest", // heroscape.org private key 
+				matchdata: matchdata
+			}),
+			headers: {
+				"Content-type": "application/json; charset=UTF-8"
+			}
+		};
+		
+		var response = await fetch(endPoint, tttOptions);
+		var data = await response.text();
+		var dataLines = data.split("\n");		
+		var users = {};
+		
+		// Add response data to users object 1 line at a time
+		for (let i = 1; i < dataLines.length; i++) {
+			const dataLine = dataLines[i];
+			const dataLineParts = dataLine.split(",");
+			const ratingsPeriod = dataLineParts[0];
+			const userID = dataLineParts[1];
+			const cse = dataLineParts[2];
+			const mu = dataLineParts[3]; // Ignore for now 
+			const sigma = dataLineParts[4]; // Ignore for now
+			
+			if (users[userID] === undefined) {
+				users[userID] = {
+					userID: userID,
+					ratingsPeriods: []
+				}
+			}
+			var user = users[userID];
+			
+			user.ratingsPeriods.push({
+				ratingsPeriod: ratingsPeriod,
+				cse: cse,
+				mu: mu,
+				sigma: sigma
+			});
+			user.ratingsPeriods.sort(function(a, b) {
+				if (a.ratingsPeriod < b.ratingsPeriod) {
+					return 1;
+				}
+				if (a.ratingsPeriod > b.ratingsPeriod) {
+					return -1;
+				}
+				return 0;
+			});
+		}
+		
+		// Update CSE in Database
+		for (const [key, user] of Object.entries(users)) {
+			dbConnection.query(
+				"UPDATE `User` SET `tttCSE` = ?, `tttMu` = ?, `tttSigma` = ? WHERE `id` = ?",
+				[user.ratingsPeriods[0].cse, user.ratingsPeriods[0].mu, user.ratingsPeriods[0].sigma, user.userID],
+				(error, results, fields) => {
+					if (error) {
+						return;
+					}
+				}
+			);
+		}
 	}
 	
 	

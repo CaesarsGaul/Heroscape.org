@@ -2945,7 +2945,8 @@
 							numLossesToBeEliminated: currentTournament.numLossesToBeEliminated,
 							pairAfterEliminated: currentTournament.pairAfterEliminated,
 							roundLengthMinutes: currentTournament.roundLengthMinutes,
-							maxNumPlayersPerGame: currentTournament.maxNumPlayersPerGame}}));
+							maxNumPlayersPerGame: currentTournament.maxNumPlayersPerGame,
+							teamSize: currentTournament.teamSize}}));
 			}
 		}
 		

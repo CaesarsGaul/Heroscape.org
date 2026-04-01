@@ -82,9 +82,18 @@ function _writeTournamentTagsP(parentElem, tournament) {
 		for (let i = 0; i < tournament.tournamentFormatTags.length; i++) {
 			const tag = tournament.tournamentFormatTags[i];
 			var tagText = tag.format.name;
+			var tagHoverData = null;
 			if (tag.data != null) {
 				switch (tag.format.name) {
 					case "Ban List":
+						tagHoverData = "";
+						const banListItems = tag.data.split(";");
+						for (let i = 0; i < banListItems.length; i++) {
+							if (i > 0) {
+								tagHoverData += "<br>";
+							}
+							tagHoverData += banListItems[i].trim();
+						}					
 						break; // Do Nothing
 					case "YxZ (i.e. 4x400)":
 						const dataArray = tag.data.split(";");
@@ -118,9 +127,13 @@ function _writeTournamentTagsP(parentElem, tournament) {
 					href: "/events/tournament/format-glossary/#TournamentFormat_"+tag.format.id,
 					target: "_blank"
 				}));
+				var description = tag.format.description;
+				if (tagHoverData != null) {
+					description += "<br>" + tagHoverData;
+				}
 				tagSpan.appendChild(createSpan({
 					class: "tagHoverDescription",
-					innerHTML: tag.format.description
+					innerHTML: description
 				}));
 			}
 		}

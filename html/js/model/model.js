@@ -5032,6 +5032,9 @@ class User extends DatabaseObject {
 		this.siteAdmin = null; // Boolean
 		this.verificationKey = null; // String
 		this.elo = null; // Int
+		this.tttCSE = null; // Int
+		this.tttMu = null; // Int
+		this.tttSigma = null; // Int
 		
 		// Links
 		this.links = [{loginCredentialss: LoginCredentials, label: "Login Credentialss", nTo1Link: true, linkField: 'user'}, {admins: Admin, label: "Admins", nTo1Link: true, linkField: 'user'}, {players: Player, label: "Players", nTo1Link: true, linkField: 'user'}, {gameMaps: GameMap, label: "Game Maps", nTo1Link: true, linkField: 'broughtByUser'}, {attendees: Attendee, label: "Attendees", nTo1Link: true, linkField: 'user'}, {userPasswordResets: UserPasswordReset, label: "User Password Resets", nTo1Link: true, linkField: 'user'}, {glyphs: Glyph, label: "Glyphs", nTo1Link: true, linkField: 'author'}, {userSettingTags: UserSettingTag, label: "User Setting Tags", nTo1Link: true, linkField: 'user'}, {powerRankingLists: PowerRankingList, label: "Power Ranking Lists", nTo1Link: true, linkField: 'author'}, {userCollectionHeroscapeSets: UserCollectionHeroscapeSet, label: "User Collection Heroscape Sets", nTo1Link: true, linkField: 'user'}];
@@ -5064,6 +5067,9 @@ class User extends DatabaseObject {
 			this.siteAdmin = jsonObj.siteAdmin;
 			this.verificationKey = jsonObj.verificationKey;
 			this.elo = jsonObj.elo;
+			this.tttCSE = jsonObj.tttCSE;
+			this.tttMu = jsonObj.tttMu;
+			this.tttSigma = jsonObj.tttSigma;
 			
 			// Links
 			if (jsonObj.loginCredentialss != undefined && jsonObj.loginCredentialss != null) {
@@ -5332,7 +5338,7 @@ class User extends DatabaseObject {
 	}
 
 	static getAllFields() {
-		return ["id", "userName", "email", "phoneNumber", "firstName", "lastName", "verified", "mapEditor", "siteAdmin", "verificationKey", "elo"];
+		return ["id", "userName", "email", "phoneNumber", "firstName", "lastName", "verified", "mapEditor", "siteAdmin", "verificationKey", "elo", "tttCSE", "tttMu", "tttSigma"];
 	}
 
 	static getNtoMLinkClasses() {
@@ -5348,7 +5354,7 @@ class User extends DatabaseObject {
 	}
 
 	static getClassOfColumn(columnName) {
-		if (["id", "userName", "email", "phoneNumber", "firstName", "lastName", "verified", "mapEditor", "siteAdmin", "verificationKey", "elo"].includes(columnName)) {
+		if (["id", "userName", "email", "phoneNumber", "firstName", "lastName", "verified", "mapEditor", "siteAdmin", "verificationKey", "elo", "tttCSE", "tttMu", "tttSigma"].includes(columnName)) {
 			return User;
 		}
 		return null;
@@ -5460,6 +5466,12 @@ class User extends DatabaseObject {
 				return null;
 			case "elo":
 				return null;
+			case "tttCSE":
+				return null;
+			case "tttMu":
+				return null;
+			case "tttSigma":
+				return null;
 			default:
 				return null;
 		}
@@ -5486,6 +5498,12 @@ class User extends DatabaseObject {
 			case "verificationKey":
 				return ""; // TODO
 			case "elo":
+				return ""; // TODO
+			case "tttCSE":
+				return ""; // TODO
+			case "tttMu":
+				return ""; // TODO
+			case "tttSigma":
 				return ""; // TODO
 			default:
 				return "";
@@ -5630,6 +5648,51 @@ class User extends DatabaseObject {
 			fieldData["label"] = "Elo";
 			if (this.elo !== null) {
 				fieldData["value"] = this.elo;
+			} else {
+				fieldData["inputRequired"] = false;
+			}
+			data.push(fieldData);
+		}
+		
+		if (User.includeField("tttCSE", forEditing, forCreateForm)) {
+			var fieldData = {};
+			fieldData["propertyName"] = "tttCSE";
+			fieldData["elemType"] = "input";
+			fieldData["inputType"] = "number";
+			fieldData["inputNumber_step"] = "1";
+			fieldData["label"] = "Ttt CSE";
+			if (this.tttCSE !== null) {
+				fieldData["value"] = this.tttCSE;
+			} else {
+				fieldData["inputRequired"] = false;
+			}
+			data.push(fieldData);
+		}
+		
+		if (User.includeField("tttMu", forEditing, forCreateForm)) {
+			var fieldData = {};
+			fieldData["propertyName"] = "tttMu";
+			fieldData["elemType"] = "input";
+			fieldData["inputType"] = "number";
+			fieldData["inputNumber_step"] = "1";
+			fieldData["label"] = "Ttt Mu";
+			if (this.tttMu !== null) {
+				fieldData["value"] = this.tttMu;
+			} else {
+				fieldData["inputRequired"] = false;
+			}
+			data.push(fieldData);
+		}
+		
+		if (User.includeField("tttSigma", forEditing, forCreateForm)) {
+			var fieldData = {};
+			fieldData["propertyName"] = "tttSigma";
+			fieldData["elemType"] = "input";
+			fieldData["inputType"] = "number";
+			fieldData["inputNumber_step"] = "1";
+			fieldData["label"] = "Ttt Sigma";
+			if (this.tttSigma !== null) {
+				fieldData["value"] = this.tttSigma;
 			} else {
 				fieldData["inputRequired"] = false;
 			}
@@ -23202,6 +23265,7 @@ class StandingsView extends DatabaseObject {
 		this.id = null; // Int
 		this.userName = null; // String
 		this.elo = null; // Int
+		this.tttCSE = null; // Int
 		this.W = null; // Int
 		this.L = null; // Int
 		this.WinPercent = null; // Decimal
@@ -23219,6 +23283,7 @@ class StandingsView extends DatabaseObject {
 			this.id = jsonObj.id;
 			this.userName = jsonObj.userName;
 			this.elo = jsonObj.elo;
+			this.tttCSE = jsonObj.tttCSE;
 			this.W = jsonObj.W;
 			this.L = jsonObj.L;
 			this.WinPercent = jsonObj.WinPercent;
@@ -23246,11 +23311,11 @@ class StandingsView extends DatabaseObject {
 	}
 
 	static getRequiredFields() {
-		return ["id", "userName", "elo", "W", "L", "WinPercent"];
+		return ["id", "userName", "elo", "tttCSE", "W", "L", "WinPercent"];
 	}
 
 	static getAllFields() {
-		return ["id", "userName", "elo", "W", "L", "WinPercent"];
+		return ["id", "userName", "elo", "tttCSE", "W", "L", "WinPercent"];
 	}
 
 	static getNtoMLinkClasses() {
@@ -23266,7 +23331,7 @@ class StandingsView extends DatabaseObject {
 	}
 
 	static getClassOfColumn(columnName) {
-		if (["id", "userName", "elo", "W", "L", "WinPercent"].includes(columnName)) {
+		if (["id", "userName", "elo", "tttCSE", "W", "L", "WinPercent"].includes(columnName)) {
 			return StandingsView;
 		}
 		return null;
@@ -23307,6 +23372,8 @@ class StandingsView extends DatabaseObject {
 				return null;
 			case "elo":
 				return null;
+			case "tttCSE":
+				return null;
 			case "W":
 				return null;
 			case "L":
@@ -23323,6 +23390,8 @@ class StandingsView extends DatabaseObject {
 			case "userName":
 				return ""; // TODO
 			case "elo":
+				return ""; // TODO
+			case "tttCSE":
 				return ""; // TODO
 			case "W":
 				return ""; // TODO
@@ -23361,6 +23430,21 @@ class StandingsView extends DatabaseObject {
 			fieldData["label"] = "Elo";
 			if (this.elo !== null) {
 				fieldData["value"] = this.elo;
+			} else {
+				fieldData["inputRequired"] = true;
+			}
+			data.push(fieldData);
+		}
+		
+		if (StandingsView.includeField("tttCSE", forEditing, forCreateForm)) {
+			var fieldData = {};
+			fieldData["propertyName"] = "tttCSE";
+			fieldData["elemType"] = "input";
+			fieldData["inputType"] = "number";
+			fieldData["inputNumber_step"] = "1";
+			fieldData["label"] = "Ttt CSE";
+			if (this.tttCSE !== null) {
+				fieldData["value"] = this.tttCSE;
 			} else {
 				fieldData["inputRequired"] = true;
 			}

@@ -4,6 +4,7 @@ class StandingsView extends HS_DatabaseObject {
 	protected $id; // Int
 	protected $userName; // String
 	protected $elo; // Int
+	protected $tttCSE; // Int
 	protected $W; // Int
 	protected $L; // Int
 	protected $WinPercent; // Decimal
@@ -64,6 +65,9 @@ class StandingsView extends HS_DatabaseObject {
 			if (isset($whereData["elo"])) {
 				$whereArray["{$prefix}StandingsView.elo"] = $whereData["elo"];
 			}
+			if (isset($whereData["tttCSE"])) {
+				$whereArray["{$prefix}StandingsView.tttCSE"] = $whereData["tttCSE"];
+			}
 			if (isset($whereData["W"])) {
 				$whereArray["{$prefix}StandingsView.W"] = $whereData["W"];
 			}
@@ -110,7 +114,7 @@ class StandingsView extends HS_DatabaseObject {
 	}
 
 	public static function getColumnNames() {
-		return array("id", "userName", "elo", "W", "L", "WinPercent");
+		return array("id", "userName", "elo", "tttCSE", "W", "L", "WinPercent");
 	}
 
 	public static function getActionNames() {

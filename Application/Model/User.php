@@ -12,6 +12,9 @@ class User extends HS_DatabaseObject {
 	protected $siteAdmin; // Boolean
 	protected $verificationKey; // String
 	protected $elo; // Int
+	protected $tttCSE; // Int
+	protected $tttMu; // Int
+	protected $tttSigma; // Int
 
 	/* Static 'Constructors' */
 	
@@ -216,6 +219,15 @@ class User extends HS_DatabaseObject {
 			if (isset($whereData["elo"])) {
 				$whereArray["{$prefix}User.elo"] = $whereData["elo"];
 			}
+			if (isset($whereData["tttCSE"])) {
+				$whereArray["{$prefix}User.tttCSE"] = $whereData["tttCSE"];
+			}
+			if (isset($whereData["tttMu"])) {
+				$whereArray["{$prefix}User.tttMu"] = $whereData["tttMu"];
+			}
+			if (isset($whereData["tttSigma"])) {
+				$whereArray["{$prefix}User.tttSigma"] = $whereData["tttSigma"];
+			}
 		}
 		
 		
@@ -253,7 +265,7 @@ class User extends HS_DatabaseObject {
 	}
 
 	public static function getColumnNames() {
-		return array("id", "userName", "email", "phoneNumber", "firstName", "lastName", "verified", "mapEditor", "siteAdmin", "verificationKey", "elo");
+		return array("id", "userName", "email", "phoneNumber", "firstName", "lastName", "verified", "mapEditor", "siteAdmin", "verificationKey", "elo", "tttCSE", "tttMu", "tttSigma");
 	}
 
 	public static function getActionNames() {
@@ -410,6 +422,15 @@ class User extends HS_DatabaseObject {
 			if (property_exists($clientDataObj, "elo")) {
 				$this->elo = $clientDataObj->elo;
 			}
+			if (property_exists($clientDataObj, "tttCSE")) {
+				$this->tttCSE = $clientDataObj->tttCSE;
+			}
+			if (property_exists($clientDataObj, "tttMu")) {
+				$this->tttMu = $clientDataObj->tttMu;
+			}
+			if (property_exists($clientDataObj, "tttSigma")) {
+				$this->tttSigma = $clientDataObj->tttSigma;
+			}
 		}
 		
 		// Update Foreign Key Columns
@@ -418,8 +439,8 @@ class User extends HS_DatabaseObject {
 		
 		$this->dbUpdate((new MySQLBuilder())->
 			update("User",
-				array("userName", "email", "phoneNumber", "firstName", "lastName", "verified", "mapEditor", "siteAdmin", "verificationKey", "elo"),
-				array($this->userName, $this->email, $this->phoneNumber, $this->firstName, $this->lastName, $this->verified, $this->mapEditor, $this->siteAdmin, $this->verificationKey, $this->elo))->
+				array("userName", "email", "phoneNumber", "firstName", "lastName", "verified", "mapEditor", "siteAdmin", "verificationKey", "elo", "tttCSE", "tttMu", "tttSigma"),
+				array($this->userName, $this->email, $this->phoneNumber, $this->firstName, $this->lastName, $this->verified, $this->mapEditor, $this->siteAdmin, $this->verificationKey, $this->elo, $this->tttCSE, $this->tttMu, $this->tttSigma))->
 			where(array("id" => $this->id)));
 		
 		// Update 1-N Links

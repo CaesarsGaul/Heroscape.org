@@ -2,8 +2,11 @@
 	text-align: center;
 }
 
-#TournamentInfoDiv ul {
+#TournamentInfoDiv ul, ol {
 	text-align: left;
+    list-style-position: inside;
+    width: fit-content;
+    margin: auto;
 }
 
 #TournamentMaxesP {
