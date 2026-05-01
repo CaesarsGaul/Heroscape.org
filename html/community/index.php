@@ -64,12 +64,13 @@
 			<li><a href='https://discord.gg/qwqAWdeY' target='_blank'>War League</a></li>
 			<h3>Regional Scenes</h3>
 			<h4>United States</h4>
+			<li><a href='https://discord.gg/JzHBE9SPPy' target='_blank'>Arizona</a></li>
 			<li><a href='https://discord.gg/3bTEsWJ4Dk' target='_blank'>(Northern) California</a></li>
 			<li><a href='https://discord.gg/Q4Fuezje3H' target='_blank'>(Southern) California</a></li>
 			<li><a href='https://discord.gg/395FwnhTCS' target='_blank'>Colorado</a></li>
 			<li><a href='https://discord.gg/wEq6kNjj7Z' target='_blank'>Dallas</a></li>
 			<li><a href='https://discord.gg/pN7T3cGXMz' target='_blank'>(South) Florida</a></li>
-			<li><a href='https://discord.gg/bFdUPBHm' target='_blank'>Georgia</a></li>
+			<li><a href='https://discord.gg/kUqjtgCtyw' target='_blank'>Georgia</a></li>
 			<li><a href='https://discord.gg/QfAQfJFdqf' target='_blank'>Houston</a></li>
 			<li><a href='https://discord.gg/t5CsmakYrG' target='_blank'>(Central) Illinois</a></li>
 			<li><a href='https://discord.com/invite/TU3U67KuJT' target='_blank'>(Bloomington) Indiana</a></li>
@@ -90,7 +91,9 @@
 			<li><a href='https://discord.gg/r2NGNxGksn' target='_blank'>(Calgary) Canada</a></li>
 			<li><a href='https://discord.gg/k5bmeXau9S' target='_blank'>(Ottowa) Canada</a></li>
 			<li><a href='https://discord.gg/TbbQ3xnaju' target='_blank'>Dutch</a></li>
+			<li><a href='https://discord.gg/dmXes7VkBm' target='_blank'>Europe</a></li>
 			<li><a href='https://discord.gg/EFcaztv3xa' target='_blank'>France</a></li>
+			<li><a href='https://discord.gg/TQUUarTAHc' target='_blank'>Montreal</a></li>
 			<li><a href='https://discord.gg/z5XNq9AnCT' target='_blank'>United Kingdom</a></li>
 			<h3>Official Discords</h3>
 			<li><a href='https://discord.gg/renegadegames' target='_blank'>Renegade</a></li>

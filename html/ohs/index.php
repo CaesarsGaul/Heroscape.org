@@ -168,6 +168,13 @@
 					Figures (& Maps)
 				</a>
 			</p>
+			<p class='centerP'>
+				<a 
+						href='https://ohsfiguretool.com/'
+						target='_blank'>
+					OHS Figure Tool (by Ryguy)	
+				</a>
+			</p>
 		</div>
 		
 	</div>

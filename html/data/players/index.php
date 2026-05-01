@@ -43,7 +43,7 @@
 			
 			_sortableTableData = {};
 			
-			var headers = ["User", "ELO", "TTT CSE", "W", "L", "Win %"];
+			var headers = ["User", "TTT CSE", "ELO", "W", "L", "Win %"];
 			var data = [];
 			
 			var playerCount = 1;
@@ -56,7 +56,7 @@
 				}
 				
 				var name = "<a href='https://heroscape.org/user?userName="+user.userName+"' target='_blank'>"+user.userName+"</a>";
-				data.push([name, user.elo, user.tttCSE, user.W, user.L, user.WinPercent]);
+				data.push([name, user.tttCSE, user.elo, user.W, user.L, user.WinPercent]);
 				
 				playerCount++;
 				

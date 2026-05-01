@@ -160,23 +160,31 @@ class Unit {
 	static getBackgroundColor(general) {
 		switch (general) {
 			case "Jandar":
-				return "#4287f5";
+				return "#387bbf";
 			case "Ullar":
-				return "#357854";
+				return "#426a38";
 			case "Einar":
-				return "#e6aa12";
+				return "#4d014c";
 			case "Vydar":
-				return "#7f95e6";
+				return "#7c959a";
 			case "Utgar":
-				return "#e30b00";
+				return "#9e090f";
 			case "Aquilla":
-				return "#b473f5";
+				return "#d5a915";
 			case "Valkrill":
-				return "#d9b800";
+				return "#77571e";
 			case "Revna":
-				return "#b39674";
+				return "#6e644b";
+			case "Volarak":
+				return "#97ae3a";
 			case "Marvel":
 				return "#F1E5AC";
+			case "G.I. Joe":
+				return "darkgreen";
+			case "Cobra":
+				return "grey";
+			case "Unaffiliated":
+				return "#d9942d";
 			
 			// HoSS
 			case "Galactic Empire":
@@ -196,6 +204,8 @@ class Unit {
 	getTextColor() {
 		switch (this.general) {
 			case "Utgar":
+				return "white";
+			case "Einar":
 				return "white";
 			default:
 				return "black";
