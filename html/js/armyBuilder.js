@@ -144,11 +144,11 @@ function displayUnits() {
 					case "Monster Mash":
 					case "Rainbow Wars":
 					case "Reverse the Whip":
-					case "Rule of X":
+					case "Rule of {X}":
 					case "Sideboards":
 					case "Singleton":
-					case "X Card Draft":
-					case "X Pod Draft":
+					case "{X} Card Draft":
+					case "{X} Pod Draft":
 					case "YxZ (i.e. 4x400)":
 						// Do Nothing
 						break;
@@ -188,7 +188,7 @@ function displayUnits() {
 							ineligibleUnit = true;
 						}
 						break;
-					case "X(+/-) & Under":
+					case "{X(+/-)} & Under":
 						var powerRank = vcInclusive()
 							? unit.powerRankings.VC
 							: unit.powerRankings.Classic;
@@ -666,8 +666,8 @@ function _createRightArrow(parentCellElem, unit, numIncluded, caseNum, rowIdx, i
 				case "Sideboards":
 				case "Squads Only":
 				case "Uniques Only":
-				case "X(+/-) & Under":
-				case "X Pod Draft":
+				case "{X(+/-)} & Under":
+				case "{X} Pod Draft":
 				case "YxZ (i.e. 4x400)":
 					// Do Nothing
 					break;
@@ -679,7 +679,7 @@ function _createRightArrow(parentCellElem, unit, numIncluded, caseNum, rowIdx, i
 				case "Restricted List":
 					// TODO
 					break;
-				case "Rule of X":
+				case "Rule of {X}":
 					if (army.containsUnit(unit)) {
 						const numInArmy = army.units[unit.name] * unit.figures;
 						if (numInArmy >= tag.data) {
@@ -687,7 +687,7 @@ function _createRightArrow(parentCellElem, unit, numIncluded, caseNum, rowIdx, i
 						}
 					}
 					break;
-				case "Max X Copies - Squads":
+				case "Max {X} Copies - Squads":
 					if (army.containsUnit(unit) && unit.squad) {
 						const numInArmy = army.units[unit.name];
 						if (numInArmy >= tag.data) {
@@ -695,7 +695,7 @@ function _createRightArrow(parentCellElem, unit, numIncluded, caseNum, rowIdx, i
 						}
 					}
 					break;
-				case "Max X Copies - Heroes":
+				case "Max {X} Copies - Heroes":
 					if (army.containsUnit(unit) && ! unit.squad && (unit.uniqueness.toLowerCase() == "common" || unit.uniqueness.toLowerCase() == "uncommon")) {
 						const numInArmy = army.units[unit.name];
 						if (numInArmy >= tag.data) {
@@ -703,7 +703,7 @@ function _createRightArrow(parentCellElem, unit, numIncluded, caseNum, rowIdx, i
 						}
 					}
 					break;
-				case "X Card Draft":
+				case "{X} Card Draft":
 					if (Object.keys(army.units).length >= tag.data) {
 						arrowNoClick = true;
 					}

@@ -311,7 +311,7 @@
 				}));
 				
 				switch (tag.name) {
-					case "Rule of X":
+					case "Rule of {X}":
 						tagDiv.appendChild(createInput({
 							type: "number",
 							min: 0,
@@ -326,7 +326,7 @@
 							name: "tag_"+tag.id+"_data"
 						}));
 						break;
-					case "X Card Draft":
+					case "{X} Card Draft":
 						tagDiv.appendChild(createInput({
 							type: "number",
 							min: 0,
@@ -334,7 +334,7 @@
 							name: "tag_"+tag.id+"_data"
 						}));
 						break;
-					case "X Pod Draft":
+					case "{X} Pod Draft":
 						tagDiv.appendChild(createInput({
 							type: "number",
 							min: 0,
@@ -342,7 +342,7 @@
 							name: "tag_"+tag.id+"_data"
 						}));
 						break;
-					case "X(+/-) & Under":
+					case "{X(+/-)} & Under":
 						tagDiv.appendChild(createInput({
 							type: "text",
 							class: "short",
@@ -366,14 +366,14 @@
 							name: "tag_"+tag.id+"_data_2"
 						}));
 						break;
-					case "Max X Copies - Squads":
+					case "Max {X} Copies - Squads":
 						tagDiv.appendChild(createInput({
 							type: "text",
 							class: "short",
 							name: "tag_"+tag.id+"_data"
 						}));
 						break;
-					case "Max X Copies - Heroes":
+					case "Max {X} Copies - Heroes":
 						tagDiv.appendChild(createInput({
 							type: "text",
 							class: "short",

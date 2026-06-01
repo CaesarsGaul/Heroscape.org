@@ -85,6 +85,7 @@
 			<li><a href='https://discord.gg/2qPbrNEs5y' target='_blank'>(Inland) Northwest</a></li>
 			<li><a href='https://discord.gg/Qpkr8Vk5qu' target='_blank'>SAS (South Atlantic Scapers)</a></li>
 			<li><a href='https://discord.gg/K3qHjcC' target='_blank'>Utah</a></li>
+			<li><a href='https://discord.gg/AwFW9ze2vH' target='_blank'>Wichita, KS</a></li>
 			<li><a href='https://discord.gg/yNbMCQe2J3' target='_blank'>Wisconsin</a></li>
 			<h4>International</h4>
 			<li><a href='https://discord.gg/YGMzCfFBbw' target='_blank'>(British Columbia) Canada</a></li>
